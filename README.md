@@ -7,4 +7,8 @@
 
 # 3.페이지 구성
 
+<<<<<<< HEAD
 # test euiran12
+=======
+# 4. test 입니다.
+>>>>>>> develop
