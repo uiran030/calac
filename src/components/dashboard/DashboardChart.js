@@ -1,16 +1,7 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const AccountBookChart = () => {
+const DashboardChart = () => {
   const data = [
     {
       name: "식비",
@@ -74,4 +65,4 @@ const AccountBookChart = () => {
   );
 };
 
-export default AccountBookChart;
+export default DashboardChart;

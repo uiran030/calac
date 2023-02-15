@@ -11,7 +11,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 export default function TestTodoList() {
   const [checked, setChecked] = React.useState([0]);
 
-  const handleToggle = (value: number) => () => {
+  const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 

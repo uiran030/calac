@@ -3,16 +3,16 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import Dashboard from "./pages/Dashboard";
-import NotFound from "./pages/NotFound";
-import Feed from "./pages/Feed";
-import FinancialLedger from "./pages/FinancialLedger";
-import FindIdPw from "./pages/FindIdPw";
-import Scheduler from "./pages/Scheduler";
-import SignUp from "./pages/SignUp";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import NotFound from "./pages/NotFound/NotFound";
+import Feed from "./pages/Feed/Feed";
+import FinancialLedger from "./pages/FinancialLedger/FinancialLedger";
+import FindIdPw from "./pages/User/FindIdPw";
+import Scheduler from "./pages/Scheduler/Scheduler";
+import SignUp from "./pages/User/SignUp";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./pages/Login";
-import Setting from "./pages/Setting";
+import Login from "./pages/User/Login";
+import Setting from "./pages/Setting/Setting";
 import ProtectedRoute from "./pages/ProtectedRoute";
 
 const router = createBrowserRouter([
@@ -22,11 +22,11 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: "/dashboard",
+        path: "/",
         element: <Dashboard />,
       },
       {
-        path: "/feed/",
+        path: "/feed",
         element: <Feed />,
       },
       {
@@ -64,7 +64,4 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<RouterProvider router={router} />);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

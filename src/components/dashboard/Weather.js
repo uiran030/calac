@@ -1,13 +1,4 @@
-import {
-  SvgIcon,
-  Box,
-  Button,
-  ButtonGroup,
-  Paper,
-  Typography,
-  Avatar,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Button, ButtonGroup, Paper, Typography, Avatar, CircularProgress } from "@mui/material";
 import { useVisualCrossing } from "react-open-weather";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -16,7 +7,6 @@ import temp from "../../assets/images/weather/temp.svg";
 import humidity from "../../assets/images/weather/humidity.svg";
 import wind from "../../assets/images/weather/wind.svg";
 import { useState } from "react";
-import { typography } from "@mui/system";
 
 const Weather = () => {
   const { data, isLoading, errorMessage } = useVisualCrossing({
@@ -26,18 +16,6 @@ const Weather = () => {
     lang: "en",
     unit: "metric", // values are (metric,us,uk)
   });
-
-  console.log(data);
-
-  // <ReactWeather
-  //   isLoading={isLoading}
-  //   errorMessage={errorMessage}
-  //   data={data}
-  //   lang='en'
-  //   locationLabel='Munich'
-  //   unitsLabels={{ temperature: "C", windSpeed: "Km/h" }}
-  //   showForecast
-  // />
 
   const [day, setDay] = useState(0);
 
