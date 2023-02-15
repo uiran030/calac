@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Divider,
-  Hidden,
-  Typography,
-} from "@mui/material";
+import { Box, List, ListItem, ListItemButton, ListItemText, Divider, Hidden, Typography } from "@mui/material";
 import "../../assets/css/App.css";
 import { Link } from "react-router-dom";
 import JoinRightRoundedIcon from "@mui/icons-material/JoinRightRounded";
 
 const Nav = () => {
-  // const btnList = [1, 2, 3, 4, 5];
-  const [btnActive, setBtnActive] = useState(false);
+  // 첫 페이지 오픈 시 dashboard에 동그라미가 없어서 넣어줌
+  // 추후에 redux를 이용해서 시작은 dashboard에 다른 페이지에서 새로고침했을 때
+  // 열려있는 페이지의 목록에 동그라미 유지되있도록 작업해야함.
+  const [btnActive, setBtnActive] = useState('dashBoard');
   //=================================================================================
   const toggleActive = () => {
     setBtnActive(true);
@@ -28,14 +21,13 @@ const Nav = () => {
       <Box>
         <nav>
           <List>
-            <Link to='/dashboard' style={{ textDecoration: "none" }}>
+            <Link to='/' style={{ textDecoration: "none" }}>
               <ListItem
                 sx={{ padding: `30px`, marginLeft: `5px` }}
                 onClick={() => {
                   setBtnActive("dashBoard");
                 }}
               >
-                {/* <ListItemButton> */}
                 <JoinRightRoundedIcon
                   sx={{ color: "#fff", fontSize: `30px` }}
                 />
@@ -44,7 +36,6 @@ const Nav = () => {
                   disableTypography
                   sx={{ fontSize: "30px" }}
                 />
-                {/* </ListItemButton> */}
               </ListItem>
             </Link>
           </List>
@@ -52,21 +43,19 @@ const Nav = () => {
         <DividerColor />
         <nav>
           <List>
-            <Link to='/dashboard' style={{ textDecoration: "none" }}>
+            <Link to='/' style={{ textDecoration: "none" }}>
               <ListItem
                 sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
                   setBtnActive("dashBoard");
                 }}
               >
-                {/* <ListItemButton> */}
                 <TitleColor
                   primary='Dashboard'
                   className={btnActive === "dashBoard" ? "active" : ""}
                   onClick={toggleActive}
                   disableTypography
                 />
-                {/* </ListItemButton> */}
               </ListItem>
             </Link>
             <Link to='/scheduler' style={{ textDecoration: "none" }}>
@@ -76,13 +65,11 @@ const Nav = () => {
                   setBtnActive("scheduler");
                 }}
               >
-                {/* <ListItemButton> */}
                 <TitleColor
                   primary='Scheduler'
                   className={btnActive === "scheduler" ? "active" : ""}
                   disableTypography
                 />
-                {/* </ListItemButton> */}
               </ListItem>
             </Link>
             <Link to='/financialledger' style={{ textDecoration: "none" }}>
@@ -92,13 +79,11 @@ const Nav = () => {
                   setBtnActive("financialLedger");
                 }}
               >
-                {/* <ListItemButton> */}
                 <TitleColor
                   primary='Financial Ledger'
                   className={btnActive === "financialLedger" ? "active" : ""}
                   disableTypography
                 />
-                {/* </ListItemButton> */}
               </ListItem>
             </Link>
             <Link to='/feed' style={{ textDecoration: "none" }}>
@@ -108,13 +93,11 @@ const Nav = () => {
                   setBtnActive("feed");
                 }}
               >
-                {/* <ListItemButton> */}
                 <TitleColor
                   primary='Feed'
                   className={btnActive === "feed" ? "active" : ""}
                   disableTypography
                 />
-                {/* </ListItemButton> */}
               </ListItem>
             </Link>
           </List>
@@ -129,13 +112,11 @@ const Nav = () => {
                   setBtnActive("setting");
                 }}
               >
-                {/* <ListItemButton> */}
                 <TitleColor
                   primary='Setting'
                   className={btnActive === "setting" ? "active" : ""}
                   disableTypography
                 />
-                {/* </ListItemButton> */}
               </ListItem>
             </Link>
           </List>
@@ -146,13 +127,11 @@ const Nav = () => {
           <List>
             <Link to='/login' style={{ textDecoration: "none" }}>
               <ListItem>
-                {/* <ListItemButton> */}
                 <TitleColor
                   primary='Login'
                   disableTypography
                   sx={{ fontSize: "30px" }}
                 />
-                {/* </ListItemButton> */}
               </ListItem>
             </Link>
           </List>
@@ -174,9 +153,7 @@ const NavBar = styled(Box)({
   width: `250px`,
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
-  // transition: "ease-in-out",
-  // transitionDuration: "3s",
+  justifyContent: "space-between"
 });
 const DividerColor = styled(Divider)({
   width: `80%`,

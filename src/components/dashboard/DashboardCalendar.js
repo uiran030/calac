@@ -5,7 +5,7 @@ import Calendar from "react-calendar";
 import "../../assets/css/Calendar.css";
 import moment from "moment";
 
-const MiniCalendar = () => {
+const DashboardCalendar = () => {
   const [value, onChange] = useState(new Date());
   //======================================================
   const now = new Date();
@@ -39,4 +39,4 @@ const MyBox = styled(Box)({
   width: `86%`,
 });
 //======================================================
-export default MiniCalendar;
+export default DashboardCalendar;
