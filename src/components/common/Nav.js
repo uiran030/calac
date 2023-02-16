@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import {Box,List,ListItem,ListItemText,Divider,Typography,} from "@mui/material";
+import { Box,List,ListItem,ListItemText,Divider,Typography } from "@mui/material";
 import "../../assets/css/App.css";
 import { Link } from "react-router-dom";
 import JoinRightRoundedIcon from "@mui/icons-material/JoinRightRounded";
@@ -10,6 +10,7 @@ const Nav = () => {
   // 추후에 redux를 이용해서 시작은 dashboard에 다른 페이지에서 새로고침했을 때
   // 열려있는 페이지의 목록에 동그라미 유지되있도록 작업해야함.
   // ㄴ확인했습니다 - hhb
+  //=================================================================================
   const [btnActive, setBtnActive] = useState("dashBoard");
   //=================================================================================
   const toggleActive = () => {
@@ -30,15 +31,9 @@ const Nav = () => {
                 }}
               >
                 <Typography color="secondary" fontSize="30px" sx={{margin:"Auto"}}>
-                <JoinRightRoundedIcon
-                  sx={{fontSize: "30px", marginX:"9px"}}
-                />C A L A C
+                  <JoinRightRoundedIcon sx={{fontSize: "30px", marginX:"9px"}} />
+                  C A L A C
                 </Typography>
-                {/* <TitleColor
-                  primary='C A L A C'
-                  disableTypography
-                  sx={{ fontSize: "30px"}}
-                /> */}
               </ListItem>
             </Link>
           </List>
@@ -140,7 +135,8 @@ const Nav = () => {
                   // className={btnActive === "login" ? "active" : ""}
                   // 로그인은 배경 안들어오는게 예쁜 것 같은데,
                   // 달리 생각하실 수 있어서 주석으로 남겨놓겠습니다.
-                  // 검토 후 삭제 바랍니다 - hhb
+                  // 검토 후 삭제 바랍니다 - hhb // 확인 했으나 어떤 디자인인지
+                  // 가늠이 안가 회의때 여쭤보도록 하겠습니다! 
                   sx={{ fontSize: "30px" }}
                 />
               </ListItem>

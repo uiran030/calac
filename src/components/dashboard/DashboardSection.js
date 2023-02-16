@@ -4,59 +4,52 @@ import { Box, Grid, Divider, Typography, List, ListItem} from "@mui/material";
 import DashboardChart from "./DashboardChart";
 import DashboardCalendar from "./DashboardCalendar";
 import DashboardUpper from "./DashboardUpper";
-import DashboardTodoList from "./DashboardTodoList";
+import DashboardMonthGoal from "./DashboardMonthGoal";
 
 const DashboardSection = () => {
   return (
-    <MyGird container>
-      <Grid item xs={12}>
-        <DashboardUpper />
-        <MyDivider />
-        <DashboardChart />
-        <MyDivider />
-      </Grid>
-      <Grid item xs={6}>
-        <Grid container>
-        <Grid item xs={6}>
+    <SectionWrap container>
+      <UpBox>
+        <Grid item xs={12}>
+          <DashboardUpper />
+          <Divider />
+          <DashboardChart />
+        </Grid>
+      </UpBox>
+      <MyDivider />
+      <FlexBox>
+        <Grid item xs={6.5}>
           <DashboardCalendar />
-          </Grid>  
-          <Grid item xs={6}>  
-          <CalandarBox>
-            <Typography color="primary" fontWeight={700}>2023.02.16</Typography>
-            <List>
-              <ListItem>05:00 수강신청</ListItem>
-              <ListItem>12:00 점심 약속</ListItem>
-              <ListItem>17:00 미용실 예약</ListItem>
-              <ListItem>17:00 미용실 예약</ListItem>
-              <ListItem>17:00 미용실 예약</ListItem>
-              <ListItem>17:00 미용실 예약</ListItem>
-              <ListItem>17:00 미용실 예약</ListItem>
-            </List>
-          </CalandarBox>
-          </Grid>  
         </Grid>
-      </Grid>
-      <Divider orientation='vertical' variant='middle' flexItem />
-        <Grid item xs={5.9}>
-        <DashboardTodoList />
+        <Divider orientation='vertical' variant='middle' flexItem />
+        <Grid item xs={5.5}>
+          <DashboardMonthGoal />
         </Grid>
-    </MyGird>
+      </FlexBox>
+    </SectionWrap>
   );
 };
 //style=================================================
-const MyGird = styled(Grid)({
-  padding: `20px`,
-  height: `97vh`,
-  boxSizing: `border-box`,
+const SectionWrap = styled(Grid)({
+  padding: '20px',
+  height:'100vh',
+  width:'100%',
+  display:'flex',
+  justifyContent:'center'
+});
+const UpBox = styled(Box)({
+  display:'flex',
+  height:'55%',
+  width:'100%'
+});
+const FlexBox = styled(Box)({
+  display:'flex',
+  width:'100%',
+  height:'45%',
+  alignItems:'center'
 });
 const MyDivider = styled(Divider)({
-  marginBottom: `20px`,
-});
-const CalandarBox = styled(Box)({
-  height: `60%`,
-  marginTop: `10px`,
-  boxSizing: `border-box`,
-  padding: `30px`,
+  width:'100%'
 });
 //======================================================
 export default DashboardSection;

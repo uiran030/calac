@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 const Home = () => {
   return (
-    <WholeBox>
+    <HomeWrap>
       <MyGrid container>
         <Grid item xs={1.5} sx={{ display: "fixed" }}>
           <Nav />
@@ -15,13 +15,14 @@ const Home = () => {
           <Outlet />
         </DashboardGrid>
       </MyGrid>
-    </WholeBox>
+    </HomeWrap>
   );
 };
 //style=================================================
-const WholeBox = styled(Box)({
+const HomeWrap = styled(Box)({
   backgroundColor: `#07553B`,
   height: `100vh`,
+  overflow:'hidden',
 });
 const MyGrid = styled(Grid)({
   height: `100%`,
@@ -30,9 +31,7 @@ const MyGrid = styled(Grid)({
   alignItems: `center`
 });
 const DashboardGrid = styled(Grid)({
-  // borderRadius: `80px`,
   background: `#fff`,
-  // margin: `0px 10px 13px 0`,
   height: `100%`,
   width: `100%`,
   boxSizing: `border-box`,
