@@ -31,7 +31,7 @@ const DashboardUpper = () => {
 };
 //style=================================================
 const UpperWrap = styled(Box)({
-  maxHeight:`110px`
+  minHeight:`110px`
 });
 //======================================================
 export default DashboardUpper;

@@ -5,38 +5,38 @@ const DashboardChart = () => {
   const data = [
     {
       name: "식비",
-      "This Month": 25,
-      "Last Month": 20,
+      "이번달": 25,
+      "저번달": 20,
     },
     {
       name: "통신비",
-      "This Month": 15,
-      "Last Month": 15,
+      "이번달": 15,
+      "저번달": 15,
     },
     {
       name: "쇼핑",
-      "This Month": 10,
-      "Last Month": 30,
+      "이번달": 10,
+      "저번달": 30,
     },
     {
       name: "보험비",
-      "This Month": 20,
-      "Last Month": 20,
+      "이번달": 20,
+      "저번달": 20,
     },
     {
       name: "병원/약국",
-      "This Month": 2.5,
-      "Last Month": 0,
+      "이번달": 2.5,
+      "저번달": 0,
     },
     {
       name: "간식비",
-      "This Month": 5,
-      "Last Month": 3,
+      "이번달": 5,
+      "저번달": 3,
     },
     {
       name: "반료묘/견",
-      "This Month": 10,
-      "Last Month": 7,
+      "이번달": 10,
+      "저번달": 7,
     },
   ];
   return (
@@ -57,8 +57,8 @@ const DashboardChart = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey='This Month' stackId='a' fill='#82ca9d' />
-          <Bar dataKey='Last Month' fill='#ffc658' />
+          <Bar dataKey='이번달' stackId='a' fill='#82ca9d' />
+          <Bar dataKey='저번달' fill='#ffc658' />
         </BarChart>
       </ResponsiveContainer>
     </div>

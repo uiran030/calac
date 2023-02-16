@@ -45,7 +45,7 @@ const DashboardSection = () => {
 };
 //style=================================================
 const MyGird = styled(Grid)({
-  padding: `25px 25px`,
+  padding: `20px`,
   height: `97vh`,
   boxSizing: `border-box`,
 });
