@@ -1,19 +1,27 @@
-import React from 'react';
-import { Button, Container } from "@mui/material";
+import React from "react";
+import { Box, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const LoginSection = () => {
   return (
-    <Container
-      sx={{ width: "100vw", height: "100%", backgroundColor: "black" }}
+    <Box
+      sx={{
+        width: "100%",
+        height: "97vh",
+        backgroundColor: "#07553B",
+      }}
     >
       <Link to='/login/signup' style={{ textDecoration: "none" }}>
-        <Button variant='outlined'> 회원가입</Button>
+        <Button variant='outlined' color='secondary'>
+          회원가입
+        </Button>
       </Link>
       <Link to='/login/findidpw' style={{ textDecoration: "none" }}>
-        <Button variant='outlined'> ID / PW 찾기</Button>
+        <Button variant='outlined' color='secondary'>
+          ID / PW 찾기
+        </Button>
       </Link>
-    </Container>
+    </Box>
   );
 };
 

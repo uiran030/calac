@@ -10,19 +10,17 @@ const DashboardUpper = () => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingX: "10px",
-        marginY: "0",
       }}
     >
       <Weather />
-      <Box marginRight={3}>
+      <Box>
         <Typography
           variant='body1'
           fontWeight={700}
           color='primary'
           textAlign='right'
         >
-          로그인을 <br />
+          로그인을<br/>
           진행해주세요
         </Typography>
       </Box>
@@ -31,7 +29,7 @@ const DashboardUpper = () => {
 };
 //style=================================================
 const UpperWrap = styled(Box)({
-  minHeight:`110px`
+  height:'25%'
 });
 //======================================================
 export default DashboardUpper;

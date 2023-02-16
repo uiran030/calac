@@ -26,7 +26,7 @@ const Weather = () => {
   };
 
   const CountUp = () => {
-    if (day < 4) {
+    if (day < 2) {
       setDay((prev) => prev + 1);
     }
   };
@@ -48,7 +48,7 @@ const Weather = () => {
                 marginRight={2}
                 color='primary'
                 fontWeight={700}
-                sx={{ lineHeight: "10px" }}
+                sx={{ lineHeight: "0" }}
               >
                 {data.forecast[day].date}
               </Typography>
@@ -56,30 +56,34 @@ const Weather = () => {
                 aria-label='small button group'
                 sx={{ borderColor: "#07553B" }}
               >
-                <WeatherButton onClick={CountDown}>
-                  <ChevronLeftIcon />
-                </WeatherButton>
-                <WeatherButton onClick={CountUp}>
-                  <ChevronRightIcon />
-                </WeatherButton>
+                { (day !== 0 ) && (
+                  <WeatherButton onClick={CountDown}>
+                    <ChevronLeftIcon />
+                  </WeatherButton>
+                )}
+                { (day !== 2 ) && (
+                  <WeatherButton onClick={CountUp}>
+                    <ChevronRightIcon />
+                  </WeatherButton>
+                )}
               </ButtonGroup>
             </Box>
             <Typography variant='caption'>Seoul, Republic of Korea</Typography>
             <Typography color='primary' fontWeight={700}>
               {data.forecast[day].description}
-              {day === 0
-                ? ` ( CURRENT : ${data.current.temperature.current}˚C )`
-                : " "}
+              { day === 0 ? 
+                `( CURRENT : ${data.current.temperature.current}˚C )` : " "
+              }
             </Typography>
             <WeatherBox>
               <WeatherBox>
                 <WeatherBox>
                   <WeatherAvatar alt='emy Sharp' src={temp} />
                 </WeatherBox>
-
                 <Typography variant='button' marginLeft={1} marginRight={2}>
-                  Max {data.forecast[day].temperature.max}˚C &nbsp; Min{" "}
-                  {data.forecast[day].temperature.min}˚C
+                  Max {data.forecast[day].temperature.max}˚C &nbsp; 
+                  Min{" "}{data.forecast[day].temperature.min}˚C
+                  {/* {" "}의 정체는? */}
                 </Typography>
               </WeatherBox>
               <WeatherBox>
