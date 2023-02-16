@@ -48,7 +48,7 @@ const Weather = () => {
                 marginRight={2}
                 color='primary'
                 fontWeight={700}
-                sx={{ lineHeight: "10px" }}
+                sx={{ lineHeight: "0" }}
               >
                 {data.forecast[day].date}
               </Typography>

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { styled } from "@mui/material/styles";
-import { Box, Grid, Divider, Typography } from "@mui/material";
+import { Box, Grid, Divider} from "@mui/material";
 import DashboardChart from "./DashboardChart";
 import DashboardCalendar from "./DashboardCalendar";
 import DashboardUpper from "./DashboardUpper";
@@ -29,15 +29,12 @@ const DashboardSection = () => {
 };
 //style=================================================
 const MyGird = styled(Grid)({
-  padding: `25px 40px`,
+  padding: `25px 25px`,
   height: `97vh`,
   boxSizing: `border-box`,
 });
 const MyDivider = styled(Divider)({
-  padding: `2px`,
-});
-const VerticalDivider = styled(Divider)({
-  height: `80px`,
+  padding: `0px`,
 });
 const CalandarBox = styled(Box)({
   height: `60vh`,

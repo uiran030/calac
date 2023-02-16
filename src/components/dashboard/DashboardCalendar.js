@@ -36,7 +36,7 @@ const DashboardCalendar = () => {
 //style=================================================
 const MyBox = styled(Box)({
   padding: `0 30px`,
-  width: `86%`,
+  width: `95%`,
 });
 //======================================================
 export default DashboardCalendar;
