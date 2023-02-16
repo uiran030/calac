@@ -8,10 +8,10 @@ const Home = () => {
   return (
     <WholeBox>
       <MyGrid container>
-        <Grid item xs={1.7} sx={{ display: "fixed" }}>
+        <Grid item xs={1.5} sx={{ display: "fixed" }}>
           <Nav />
         </Grid>
-        <DashboardGrid item xs={10.2}>
+        <DashboardGrid item xs={10.5}>
           <Outlet />
         </DashboardGrid>
       </MyGrid>
@@ -30,12 +30,11 @@ const MyGrid = styled(Grid)({
   alignItems: `center`
 });
 const DashboardGrid = styled(Grid)({
-  borderRadius: `80px`,
+  // borderRadius: `80px`,
   background: `#fff`,
   // margin: `0px 10px 13px 0`,
-  margin: `0`,
-  height: `96%`,
-  width: `95%`,
+  height: `100%`,
+  width: `100%`,
   boxSizing: `border-box`,
 });
 //======================================================

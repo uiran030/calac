@@ -21,22 +21,24 @@ const Nav = () => {
     <NavBar>
       <Box>
         <nav>
-          <List>
+          <List disablePadding>
             <Link to='/' style={{ textDecoration: "none" }}>
               <ListItem
-                sx={{ padding: `30px`, marginLeft: `5px` }}
+                sx={{height:"110px", paddingRight:"30px"}}
                 onClick={() => {
                   setBtnActive("dashBoard");
                 }}
               >
+                <Typography color="secondary" fontSize="30px" sx={{margin:"Auto"}}>
                 <JoinRightRoundedIcon
-                  sx={{ color: "#fff", fontSize: `30px` }}
-                />
-                <TitleColor
+                  sx={{fontSize: "30px", marginX:"9px"}}
+                />C A L A C
+                </Typography>
+                {/* <TitleColor
                   primary='C A L A C'
                   disableTypography
-                  sx={{ fontSize: "30px" }}
-                />
+                  sx={{ fontSize: "30px"}}
+                /> */}
               </ListItem>
             </Link>
           </List>

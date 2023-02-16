@@ -11,7 +11,7 @@ const DashboardTodoList = () => {
       color='primary'
       marginLeft={2}
     >
-      WEEKLY TO DO{" "}
+      Goals for This Month
     </Typography>
     <TestTodoList />
   </>

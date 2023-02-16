@@ -42,14 +42,14 @@ const DashboardChart = () => {
   return (
     <div>
       <h4>전월 비교 사용내역 (단위:만원)</h4>
-      <ResponsiveContainer width='100%' height={250}>
+      <ResponsiveContainer width='100%' height={350}>
         <BarChart
           data={data}
           margin={{
             top: 0,
             right: 30,
             left: 0,
-            bottom: 5,
+            bottom: 20,
           }}
         >
           <CartesianGrid strokeDasharray='3 3' />
