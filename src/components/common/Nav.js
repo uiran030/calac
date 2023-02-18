@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Box, List, ListItem, ListItemButton, ListItemText, Divider, Hidden, Typography } from "@mui/material";
+import { Box,List,ListItem,ListItemText,Divider,Typography } from "@mui/material";
 import "../../assets/css/App.css";
 import { Link } from "react-router-dom";
 import JoinRightRoundedIcon from "@mui/icons-material/JoinRightRounded";
@@ -9,7 +9,9 @@ const Nav = () => {
   // 첫 페이지 오픈 시 dashboard에 동그라미가 없어서 넣어줌
   // 추후에 redux를 이용해서 시작은 dashboard에 다른 페이지에서 새로고침했을 때
   // 열려있는 페이지의 목록에 동그라미 유지되있도록 작업해야함.
-  const [btnActive, setBtnActive] = useState('dashBoard');
+  // ㄴ확인했습니다 - hhb
+  //=================================================================================
+  const [btnActive, setBtnActive] = useState("dashBoard");
   //=================================================================================
   const toggleActive = () => {
     setBtnActive(true);
@@ -20,22 +22,18 @@ const Nav = () => {
     <NavBar>
       <Box>
         <nav>
-          <List>
+          <List disablePadding>
             <Link to='/' style={{ textDecoration: "none" }}>
               <ListItem
-                sx={{ padding: `30px`, marginLeft: `5px` }}
+                sx={{height:"110px", paddingRight:"30px"}}
                 onClick={() => {
                   setBtnActive("dashBoard");
                 }}
               >
-                <JoinRightRoundedIcon
-                  sx={{ color: "#fff", fontSize: `30px` }}
-                />
-                <TitleColor
-                  primary='C A L A C'
-                  disableTypography
-                  sx={{ fontSize: "30px" }}
-                />
+                <Typography color="secondary" fontSize="30px" sx={{margin:"Auto"}}>
+                  <JoinRightRoundedIcon sx={{fontSize: "30px", marginX:"9px"}} />
+                  C A L A C
+                </Typography>
               </ListItem>
             </Link>
           </List>
@@ -126,10 +124,19 @@ const Nav = () => {
         <nav>
           <List>
             <Link to='/login' style={{ textDecoration: "none" }}>
-              <ListItem>
+              <ListItem
+                onClick={() => {
+                  setBtnActive("login");
+                }}
+              >
                 <TitleColor
                   primary='Login'
                   disableTypography
+                  // className={btnActive === "login" ? "active" : ""}
+                  // 로그인은 배경 안들어오는게 예쁜 것 같은데,
+                  // 달리 생각하실 수 있어서 주석으로 남겨놓겠습니다.
+                  // 검토 후 삭제 바랍니다 - hhb // 확인 했으나 어떤 디자인인지
+                  // 가늠이 안가 회의때 여쭤보도록 하겠습니다! 
                   sx={{ fontSize: "30px" }}
                 />
               </ListItem>
@@ -150,10 +157,10 @@ const NavBar = styled(Box)({
   backgroundColor: `#07553B`,
   textAlign: `center`,
   height: `100vh`,
-  width: `250px`,
+  width: `100%`,
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between"
+  justifyContent: "space-between",
 });
 const DividerColor = styled(Divider)({
   width: `80%`,

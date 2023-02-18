@@ -4,7 +4,7 @@ import DashboardSection from "../../components/Dashboard/DashboardSection";
 
 const Dashboard = () => {
   return (
-    <Box> 
+    <Box>
       <DashboardSection />
     </Box>
   );

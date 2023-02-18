@@ -1,47 +1,55 @@
-import React from 'react';
+import React from "react";
 import { styled } from "@mui/material/styles";
-import { Box, Grid, Divider, Typography } from "@mui/material";
+import { Box, Grid, Divider, Typography, List, ListItem} from "@mui/material";
 import DashboardChart from "./DashboardChart";
 import DashboardCalendar from "./DashboardCalendar";
 import DashboardUpper from "./DashboardUpper";
-import DashboardTestCard from "./DashboardTestCard";
-import DashboardTodoList from "./DashboardTodoList";
+import DashboardMonthGoal from "./DashboardMonthGoal";
 
 const DashboardSection = () => {
   return (
-    <MyGird container>
-      <Grid item xs={7.9}>
-        <DashboardUpper />
-        <MyDivider />
-        <DashboardChart />
-        <DashboardTestCard />
-      </Grid>
-      <Divider orientation='vertical' variant='middle' flexItem />
-      <Grid item xs={4}>
-        <CalandarBox>
+    <SectionWrap container>
+      <UpBox>
+        <Grid item xs={12}>
+          <DashboardUpper />
+          <Divider />
+          <DashboardChart />
+        </Grid>
+      </UpBox>
+      <MyDivider />
+      <FlexBox>
+        <Grid item xs={6.5}>
           <DashboardCalendar />
-        </CalandarBox>
-        <Divider sx={{ marginBottom: "10px" }} />
-        <DashboardTodoList />
-      </Grid>
-    </MyGird>
+        </Grid>
+        <Divider orientation='vertical' variant='middle' flexItem />
+        <Grid item xs={5.5}>
+          <DashboardMonthGoal />
+        </Grid>
+      </FlexBox>
+    </SectionWrap>
   );
 };
 //style=================================================
-const MyGird = styled(Grid)({
-  padding: `25px 40px`,
-  height: `97vh`,
-  boxSizing: `border-box`,
+const SectionWrap = styled(Grid)({
+  padding: '20px',
+  height:'100vh',
+  width:'100%',
+  display:'flex',
+  justifyContent:'center'
+});
+const UpBox = styled(Box)({
+  display:'flex',
+  height:'55%',
+  width:'100%'
+});
+const FlexBox = styled(Box)({
+  display:'flex',
+  width:'100%',
+  height:'45%',
+  alignItems:'center'
 });
 const MyDivider = styled(Divider)({
-  padding: `2px`,
-});
-const VerticalDivider = styled(Divider)({
-  height: `80px`,
-});
-const CalandarBox = styled(Box)({
-  height: `60vh`,
-  width: `100%`,
+  width:'100%'
 });
 //======================================================
 export default DashboardSection;
