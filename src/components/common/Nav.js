@@ -84,7 +84,7 @@ const Nav = () => {
                 />
               </ListItem>
             </Link>
-            <Link to='/feed' style={{ textDecoration: "none" }}>
+            <Link to='/diary' style={{ textDecoration: "none" }}>
               <ListItem
                 sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
@@ -92,8 +92,8 @@ const Nav = () => {
                 }}
               >
                 <TitleColor
-                  primary='Feed'
-                  className={btnActive === "feed" ? "active" : ""}
+                  primary='Diary'
+                  className={btnActive === "diary" ? "active" : ""}
                   disableTypography
                 />
               </ListItem>
