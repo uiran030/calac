@@ -2,20 +2,20 @@ import React, {useState} from 'react';
 import { styled } from "@mui/material/styles";
 import { Box, Card, CardHeader, IconButton, CardMedia, CardContent, Typography } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import FeedMoreButton from './FeedMoreButton';
+import DiaryMoreButton from './DiaryMoreButton';
 
 const FeedSection = () => {
   const [openBox, setOpenBox] = useState(false);
   //======================================================
   return (
-    <MyBox>
+    <>
       <MyCard>
         <CardHeader
           action={
             <IconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
               <MoreVertIcon />
               {openBox &&(
-                <FeedMoreButton/>
+                <DiaryMoreButton/>
               )}
             </IconButton>
           }
@@ -166,22 +166,14 @@ const FeedSection = () => {
           </Typography>
         </CardContent>
       </MyCard>
-    </MyBox>
+    </>
   );
 };
 //style=================================================
-const MyBox = styled(Box)({
-  width: `100vh`,
-  margin: `0 auto`,
-  overflow:'scroll',
-  display: `flex`,
-  flexWrap: `wrap`
-});
 const MyCard = styled(Box)({
   width: `30vh`,
   border: `1px solid #ebebec`,
   margin: `60px auto`,
-  overflow:'hidden',
 });
 //======================================================
 export default FeedSection;

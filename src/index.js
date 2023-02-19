@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
-import Feed from "./pages/Feed/Feed";
+import Diary from "./pages/Diary/Diary";
 import FinancialLedger from "./pages/FinancialLedger/FinancialLedger";
 import FindIdPw from "./pages/User/FindIdPw";
 import Scheduler from "./pages/Scheduler/Scheduler";
@@ -26,8 +26,8 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "/feed",
-        element: <Feed />,
+        path: "/diary",
+        element: <Diary />,
       },
       {
         path: "/financialledger",
