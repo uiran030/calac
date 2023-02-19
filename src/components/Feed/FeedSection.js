@@ -74,7 +74,7 @@ const FeedSection = () => {
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘?
+            오늘은 절약했뉘???
           </Typography>
         </CardContent>
       </MyCard>
