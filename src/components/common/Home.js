@@ -8,10 +8,10 @@ const Home = () => {
   return (
     <HomeWrap>
       <MyGrid container>
-        <Grid item xs={1.5} sx={{ display: "fixed" }}>
+        <Grid item xs={2} sx={{ display: "fixed" }}>
           <Nav />
         </Grid>
-        <DashboardGrid item xs={10.5}>
+        <DashboardGrid item xs={10}>
           <Outlet />
         </DashboardGrid>
       </MyGrid>
