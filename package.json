@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aldabil/react-scheduler": "^2.6.13",
     "@date-io/jalaali": "^2.16.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -13,6 +14,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "@typescript-eslint/parser": "^5.52.0",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
     "moment": "^2.29.4",
@@ -26,6 +28,7 @@
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
     "recharts": "^2.4.1",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.0"
   },
   "scripts": {

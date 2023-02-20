@@ -118,7 +118,7 @@ export default function AddScheduleModal() {
     setContents((prev) => ({ ...prev, locale: selectedMarker.content }));
   }, [selectedMarker]);
 
-  console.log(contents);
+  // console.log(contents);
 
   return (
     <div>

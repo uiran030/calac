@@ -9,19 +9,22 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { Grid, Typography } from "@mui/material";
+import { previousDay } from "date-fns";
 
-export default function DatePicker({ contents, onHandleContentsChange }) {
+export default function DatePicker({ state, onChange }) {
   const [value, setValue] = React.useState(dayjs(new Date()));
 
-  const handleStartChange = (newValue) => {
-    setValue({ target: { name: "startHour", value: newValue } });
-    value && onHandleContentsChange(value);
-  };
+  // const handleStartChange = (newValue) => {
+  //   setValue({ target: { name: "startHour", value: newValue } });
+  //   value && onHandleContentsChange(value);
+  // };
 
-  const handleEndChange = (newValue) => {
-    setValue({ target: { name: "endHour", value: newValue } });
-    value && onHandleContentsChange(value);
-  };
+  // const handleEndChange = (newValue) => {
+  //   setValue({ target: { name: "endHour", value: newValue } });
+  //   value && onHandleContentsChange(value);
+  // };
+
+  console.log(value);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -34,8 +37,10 @@ export default function DatePicker({ contents, onHandleContentsChange }) {
       <DateTimePicker
         renderInput={(props) => <TextField {...props} />}
         label='DateTimePicker'
-        value={value.target ? value.target.value : value}
-        onChange={handleStartChange}
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
       />
       <Typography
         variant='h6'
@@ -56,8 +61,10 @@ export default function DatePicker({ contents, onHandleContentsChange }) {
       <DateTimePicker
         renderInput={(props) => <TextField {...props} />}
         label='DateTimePicker'
-        value={value.target ? value.target.value : value}
-        onChange={handleEndChange}
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
       />
     </LocalizationProvider>
   );

@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import Scheduler from "react-mui-scheduler";
 import AddScheduleModal from "./AddScheduleModal";
 import AddIcon from "@mui/icons-material/Add";
+import TestNew from "./TestNew.tsx";
 
 export default function Calendar() {
   const [state] = useState({
@@ -153,7 +154,7 @@ export default function Calendar() {
             <AddScheduleModal />
           </Box>
         </Box>
-        <Scheduler
+        {/* <Scheduler
           locale='en'
           events={events}
           legacyStyle={false}
@@ -164,7 +165,8 @@ export default function Calendar() {
           onCellClick={handleCellClick}
           onTaskClick={handleEventClick}
           onAlertCloseButtonClicked={handleAlertCloseButtonClicked}
-        />
+        /> */}
+        <TestNew />
       </Box>
     </Box>
   );
