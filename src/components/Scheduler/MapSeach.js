@@ -25,9 +25,12 @@ const style = {
 export default function MapSeach({ selectedMarker, setSelectedMaker }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setKeyword("");
+  };
   const [keyword, setKeyword] = React.useState("");
-  const [markerList, setMarkerList] = React.useState();
+  const [markerList, setMarkerList] = React.useState("");
   // const [selectedMarker, setSelectedMaker] = React.useState();
 
   const handleKeywordChange = (e) => {
@@ -65,9 +68,10 @@ export default function MapSeach({ selectedMarker, setSelectedMaker }) {
                 label='키워드 또는 주소를 입력하세요.'
                 variant='outlined'
                 fullWidth
+                value={keyword}
                 onChange={handleKeywordChange}
               />
-              <Box height='520px' sx={{ overflowY: "scroll" }}>
+              <Box height='520px' sx={{ overflowY: "auto" }}>
                 {markerList &&
                   markerList.map((marker, index) => (
                     <MarkerCard

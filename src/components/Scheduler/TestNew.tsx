@@ -34,14 +34,14 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
   const [state, setState] = useState({
     category: event?.category || "",
     title: event?.title || "",
+    // start: event?.start || "",
+    // end: event?.end || "",
     locale: event?.locale || "",
     description: event?.description || "",
     reminder: event?.reminder || "",
     reminderMethod: event?.reminderMethod || "",
   });
   const [error, setError] = useState("");
-
-  console.log(state);
 
   const handleChange = (value: any, name: string) => {
     setState((prev) => {
@@ -51,11 +51,13 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
       };
     });
   };
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
     // Your own validation
     if (state.title.length < 3) {
       return setError("Min 3 letters");
     }
+
+    console.log(e);
 
     try {
       scheduler.loading(true);
@@ -75,9 +77,17 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
             event_id: event?.event_id || Math.random(),
             category: state.category,
             title: state.title,
-            start: scheduler.state.start.value,
-            end: scheduler.state.end.value,
-            locale: state.locale,
+            /**
+             * 잊기전에 메모
+             * 커스텀 과정이 다소 조잡하다. 더 바람직한 방향이 있을 수도 있겠다. 하지만 잘 작동한다.
+             * scheduler객체에는 클릭한 날짜(셀)의 날짜값과 기타 함수들을 가지고 있다.
+             * 해당 날짜값으로 start,end 날짜값이 초기화되고, 시간만 start는 09시, end는 17시로 할당된다.
+             * 사용자가 모달안에 들어가서 날짜를 수정하게되면, 이 초기값이 나는 새로운 상태값을 사용해야하므로
+             * 아래와 삼항연산자와 같이 새로운 스테이트 값이 감지되면, 그 값으로 대체된다.
+             */
+
+            start: state.start ? state.start : scheduler.state.start.value,
+            end: state.end ? state.end : scheduler.state.end.value,
             description: state.description,
             reminder: state.reminder,
             reminderMethod: state.reminderMethod,
@@ -86,101 +96,60 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
       })) as ProcessedEvent;
 
       scheduler.onConfirm(added_updated_event, event ? "edit" : "create");
-      scheduler.close();
+      e.target.textContent === "저장 후 계속"
+        ? handleReset()
+        : scheduler.close();
     } finally {
       scheduler.loading(false);
     }
   };
 
   //내코드
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
+  const [reset, setReset] = useState(false);
+  const triggerReset = () => {
+    setReset((prev) => !prev);
   };
+
+  const handleReset = () => {
+    triggerReset();
+    setState({
+      category: "",
+      title: "",
+      // start: "",
+      // end: "",
+      start: scheduler.state.start.value,
+      end: scheduler.state.end.value,
+      locale: "",
+      description: "",
+      reminder: "",
+      reminderMethod: "",
+    });
+  };
+
   const handleClose = () => {
-    // let result = window.confirm(
-    //   "아직 저장되지 않은 항목이 있습니다. 그래도 나가시겠습니까?"
-    // );
-    // if (result) {
-    setOpen(false);
-    // handleReset();
+    let result = window.confirm(
+      "아직 저장되지 않은 항목이 있습니다. 그래도 나가시겠습니까?"
+    );
+    if (result) {
+      scheduler.close();
+      handleReset(); // 안해도 초기화 되긴하는데 혹시 몰라서 호출
+    }
   };
-  // };
 
-  // const handleReset = () => {
-  //   // text UI상에서 남아있는 문제 해결 요망
-  //   setContents({
-  //     id: "",
-  //     createdAt: "",
-  //     createdBy: "user1",
-  //     color: "",
-  //     //========
-  //     groupLabel: "",
-  //     label: "",
-  //     locale: "",
-  //     user: "",
-  //     reminderTime: "",
-  //     reminderMethod: "",
-  //     description: "",
-  //     startHour: "",
-  //     endHour: "",
-  //   });
+  console.log(state);
 
-  // window.location.reload();
-  // };
-
-  // const handleSaveProceed = () => {
-  //   //save Function
-  //   handleReset();
-  //   // window.location.reload();
-  // };
-
-  // const handleSaveClose = () => {
-  //   //save Function
-  //   setOpen(false);
-  //   handleReset();
-  // };
-
-  // change 실시간 반영
-  // const [contents, setContents] = useState({
-  //   id: "", // 버튼클릭시 uuid
-  //   createdAt: "", // 버튼 클릭시 현재시간 부여
-  //   createdBy: "user1", // 임시
-  //   color: "",
-  //   //========
-  //   groupLabel: "",
-  //   label: "",
-  //   locale: "",
-  //   user: "",
-  //   reminderTime: "",
-  //   reminderMethod: "",
-  //   description: "",
-  //   startHour: "",
-  //   endHour: "",
-  //   // date: "",
-  // });
-
-  // const handleContentsChange = (e) => {
-  //   // console.log(e);
-  //   const { name, value } = e.target;
-  //   if (!name) {
-  //     setContents((prev) => ({ ...prev, reminderMethod: value }));
-  //   } else {
-  //     setContents((prev) => ({ ...prev, [name]: value }));
-  //   }
-  // };
-
-  const [selectedMarker, setSelectedMaker] = React.useState("");
-
-  // // console.log(selectedMarker);
+  const [selectedMarker, setSelectedMaker] = React.useState({
+    content: "",
+    position: {
+      lat: "",
+      lng: "",
+    },
+  });
 
   useEffect(() => {
     setState((prev) => ({ ...prev, locale: selectedMarker.content }));
   }, [selectedMarker]);
 
-  // console.log(contents);
-
-  // //
   return (
     <div>
       <div style={{ padding: "3rem" }}>
@@ -226,12 +195,11 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               <Select
                 labelId='demo-simple-select-label'
                 id='demo-simple-select'
-                // value={contents.groupLabel} // 원래 뭐였지 바꿔놔야할 것 같은데..
-                // onChange={handleContentsChange}
-                // onChange={(e) => console.log(e.target.value)}
+                value={state.category}
                 onChange={(e) => handleChange(e.target.value, "category")}
                 name='groupLabel'
                 required
+                label='Category'
               >
                 {/* 추후 맵으로 리팩토링 예정 */}
                 <MenuItem value={"회사"}>회사</MenuItem>
@@ -264,9 +232,7 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               id='outlined-basic'
               label='Title'
               variant='outlined'
-              // value={contents.label}
               fullWidth
-              // onChange={handleContentsChange}
               name='label'
               value={state.title}
               onChange={(e) => handleChange(e.target.value, "title")}
@@ -297,7 +263,11 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
             justifyContent='center'
             alignItems='center'
           >
-            <DatePicker onChange={handleChange} state={state} />
+            <DatePicker
+              onChange={handleChange}
+              scheduler={scheduler}
+              doReset={reset}
+            />
           </Grid>
 
           {/* 장소 제목 */}
@@ -322,7 +292,6 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               variant='outlined'
               fullWidth
               value={state.locale}
-              // onChange={handleContentsChange}
               onChange={(e) => handleChange(e.target.value, "locale")}
               name='locale'
               // readOnly
@@ -357,11 +326,9 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               label='Decription'
               multiline
               rows={4}
-              // defaultValue=""
               fullWidth
               name='description'
-              // onChange={handleContentsChange}
-              // value={contents.description}
+              value={state.description}
               onChange={(e) => handleChange(e.target.value, "description")}
             />
           </Grid>
@@ -387,15 +354,17 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               <Select
                 labelId='demo-simple-select-label'
                 id='demo-simple-select'
-                // value={contents.reminderTime}
-                label='Reminder Notification'
-                // onChange={handleContentsChange}
-                onChange={(e) => handleChange(e.target.value, "reminder")}
+                label='Reminder'
+                value={state.reminder}
+                onChange={(e) => {
+                  handleChange(e.target.value, "reminder");
+                  e.target.value === 123 && handleChange("", "reminderMethod");
+                }}
                 name='reminderTime'
               >
                 {/* 추후 맵으로 리팩토링 예정 */}
                 {/* <MenuItem value={10}>직접 입력</MenuItem> */}
-                <MenuItem value=''>사용안함</MenuItem>
+                <MenuItem value={123}>사용안함</MenuItem>
                 <MenuItem value={0}>정시</MenuItem>
                 <MenuItem value={300}>5분 전</MenuItem>
                 <MenuItem value={600}>10분 전</MenuItem>
@@ -419,7 +388,9 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               value={state.reminderMethod}
               exclusive
               aria-label='Platform'
-              // onChange={handleContentsChange}
+              disabled={
+                state.reminder === 123 || state.reminder === "" ? true : false
+              }
               onChange={(e) => handleChange(e.target.value, "reminderMethod")}
             >
               <ToggleButton value='popup'>팝업</ToggleButton>
@@ -436,10 +407,7 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
             justifyContent='center'
             marginTop='40px'
           >
-            <Button
-              variant='outlined'
-              // onClick={handleReset}
-            >
+            <Button variant='outlined' onClick={handleReset}>
               초기화
             </Button>
           </Grid>
@@ -448,18 +416,15 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
           <Grid item xs={9} display='flex' marginTop='20px'>
             <Button
               variant='contained'
-              // onClick={handleSaveProceed}
               sx={{ marginX: "10px" }}
               size='large'
-              // disabled={
-              //   contents.label === "" ||
-              //   contents.groupLabel === "" ||
-              //   contents.startHour === "" ||
-              //   contents.endHour === ""
-              //     ? true
-              //     : false
-              // }
+              disabled={
+                state.category === "" || state.title === "" ? true : false
+              }
               fullWidth
+              onClick={(e) => {
+                handleSubmit(e);
+              }}
             >
               저장 후 계속
             </Button>
@@ -479,14 +444,12 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               // onClick={handleSaveClose}
               size='large'
               sx={{ marginX: "10px" }}
-              // disabled={
-              //   contents.label === "" ||
-              //   contents.groupLabel === "" ||
-              //   contents.startHour === "" ||
-              //   contents.endHour === ""
-              //     ? true
-              //     : false
-              // }
+              onClick={(e) => {
+                handleSubmit(e);
+              }}
+              disabled={
+                state.category === "" || state.title === "" ? true : false
+              }
             >
               저장 후 닫기
             </Button>
@@ -508,10 +471,6 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
           /> */}
         </Grid>
       </div>
-      <DialogActions>
-        <Button onClick={scheduler.close}>Cancel</Button>
-        <Button onClick={handleSubmit}>Confirm</Button>
-      </DialogActions>
     </div>
   );
 };
@@ -525,11 +484,43 @@ export default function TestNew() {
       viewerExtraComponent={(fields, event) => {
         return (
           <div>
-            <p>범주 : {event.category || "Nothing"}</p>
-            <p>장소 : {event.locale || "Nothing"}</p>
-            <p>설명 : {event.description || "Nothing"}</p>
-            <p>알림 : {event.reminder || "Nothing"}</p>
-            <p>알림방법: {event.reminderMethod || "Nothing"}</p>
+            <p>범주 : {event.category || "내용 없음"}</p>
+            <p>장소 : {event.locale || "장소 정보 없음"}</p>
+            <p>설명 : {event.description || "설명 없음"}</p>
+            <p>
+              알림 :{" "}
+              {(() => {
+                switch (event.reminder) {
+                  case 0:
+                    return "정시알림";
+                  case 300:
+                    return "5분 전";
+                  case 600:
+                    return "10분 전";
+                  case 900:
+                    return "15분 전";
+                  case 1800:
+                    return "30분 전";
+                  case 3600:
+                    return "1시간 전";
+                  case 7200:
+                    return "2시간 전";
+                  case 10800:
+                    return "3시간 전";
+                  case 43200:
+                    return "12시간 전";
+                  case 86400:
+                    return "1일(24시간) 전";
+                  case 172800:
+                    return "2일(48시간) 전";
+                  case 604800:
+                    return "1주일(168시간) 전";
+                  default:
+                    return "알림 사용 안함";
+                }
+              })()}
+            </p>
+            <p>알림방법: {event.reminderMethod || "알림 사용하지 않음"}</p>
           </div>
         );
       }}
@@ -541,9 +532,9 @@ export default function TestNew() {
         weekStartOn: 0, // 어떤 요일로 시작할지 (0이 일요일이더라)
         startHour: 9, // 시작 시간 초기값 시간
         endHour: 17, // 끝 초기값 시간
-        // cellRenderer?:(props: CellProps) => JSX.Element,
+        // cellRenderer: (props: CellProps) => JSX.Element,
         navigation: true, // ?
-        disableGoToDay: false, // ?
+        disableGoToDay: false, // 월별달력 날짜 누르면해당 날 자세히 보기
       }}
       events={[
         {
@@ -560,92 +551,6 @@ export default function TestNew() {
           end: new Date("2021/5/4 11:00"),
         },
       ]}
-      // fields={[
-      //   // 핵심!!!!!!
-      //   {
-      //     name: "category",
-      //     type: "select",
-      //     options: [
-      //       //추후 map합수로 리팩토링 예정
-      //       { id: 1, text: "회사", value: 1 },
-      //       { id: 2, text: "개인", value: 2 },
-      //       { id: 3, text: "가족", value: 3 },
-      //       { id: 4, text: "친구", value: 4 },
-      //       { id: 5, text: "생일", value: 5 },
-      //       { id: 6, text: "프로젝트", value: 6 },
-      //     ],
-      //     config: {
-      //       label: "Category",
-      //       required: true,
-      //       errMsg: "Please Select Category",
-      //     },
-      //   },
-      //   {
-      //     name: "locale",
-      //     type: "input",
-      //     config: {
-      //       label: "Locale",
-      //       // required: true,
-      //       // min: 3,
-      //       // email: true,
-      //       variant: "outlined",
-      //     },
-      //   },
-      //   {
-      //     name: "description",
-      //     type: "input",
-      //     // default: "Default Value...",
-      //     config: {
-      //       label: "Description",
-      //       multiline: true,
-      //       rows: 4,
-      //       // required: true,
-      //       // min: 3,
-      //       // email: true,
-      //       // variant: "outlined",
-      //     },
-      //   },
-      //   {
-      //     name: "reminder",
-      //     type: "select",
-      //     options: [
-      //       //추후 map합수로 리팩토링 예정
-      //       { id: 1, text: "사용안함", value: 1 },
-      //       { id: 2, text: "정시", value: 2 },
-      //       { id: 3, text: "5분 전", value: 300 },
-      //       { id: 4, text: "10분 전", value: 600 },
-      //       { id: 5, text: "15분 전", value: 900 },
-      //       { id: 6, text: "30분 전", value: 1800 },
-      //       { id: 7, text: "1시간 전", value: 3600 },
-      //       { id: 8, text: "2시간 전", value: 7200 },
-      //       { id: 9, text: "3시간 전", value: 10800 },
-      //       { id: 10, text: "12시간 전", value: 43200 },
-      //       { id: 11, text: "1일(24시간) 전", value: 86400 },
-      //       { id: 12, text: "2일(24시간) 전", value: 172800 },
-      //       { id: 13, text: "1주일(168시간) 전", value: 604800 },
-      //     ],
-      //     config: {
-      //       label: "Reminder",
-      //       required: false,
-      //       // errMsg: "Please Select Category",
-      //     },
-      //   },
-      //   {
-      //     name: "reminderMethod",
-      //     type: "select",
-      //     options: [
-      //       //추후 map합수로 리팩토링 예정
-      //       { id: 1, text: "팝업", value: 1 },
-      //       { id: 2, text: "메일", value: 2 },
-      //       { id: 3, text: "카카오 메시지", value: 300 },
-      //     ],
-      //     config: {
-      //       label: "Reminder Method",
-      //       required: false,
-      //       // errMsg: "Please Select Category",
-      //     },
-      //   },
-      // ]}
       translations={{
         // 각종 글자들 변경 시켜줌
         navigation: {

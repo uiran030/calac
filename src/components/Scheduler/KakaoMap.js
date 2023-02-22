@@ -52,7 +52,7 @@ export default function KakaoMap({ keyword, setMarkerList }) {
       style={{
         width: "100%",
         height: "100%",
-        borderRadius: "20px",
+        borderRadius: "10px",
       }}
       level={3}
       onCreate={setMap}

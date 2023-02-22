@@ -11,20 +11,24 @@ import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { Grid, Typography } from "@mui/material";
 import { previousDay } from "date-fns";
 
-export default function DatePicker({ state, onChange }) {
-  const [value, setValue] = React.useState(dayjs(new Date()));
+export default function DatePicker({ scheduler, onChange, doReset }) {
+  const [startValue, setStartValue] = React.useState(
+    scheduler.state.start.value
+  );
+  const [endValue, setEndValue] = React.useState(scheduler.state.end.value);
 
-  // const handleStartChange = (newValue) => {
-  //   setValue({ target: { name: "startHour", value: newValue } });
-  //   value && onHandleContentsChange(value);
-  // };
+  React.useEffect(() => {
+    setStartValue(scheduler.state.start.value);
+    setEndValue(scheduler.state.end.value);
+  }, [doReset]);
 
-  // const handleEndChange = (newValue) => {
-  //   setValue({ target: { name: "endHour", value: newValue } });
-  //   value && onHandleContentsChange(value);
-  // };
+  React.useEffect(() => {
+    onChange(startValue, "start");
+  }, [startValue]);
 
-  console.log(value);
+  React.useEffect(() => {
+    onChange(endValue, "end");
+  }, [endValue]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -37,9 +41,10 @@ export default function DatePicker({ state, onChange }) {
       <DateTimePicker
         renderInput={(props) => <TextField {...props} />}
         label='DateTimePicker'
-        value={value}
+        value={startValue}
         onChange={(newValue) => {
-          setValue(newValue);
+          setStartValue(newValue);
+          // onChange({ value: newValue }, "start");
         }}
       />
       <Typography
@@ -61,9 +66,10 @@ export default function DatePicker({ state, onChange }) {
       <DateTimePicker
         renderInput={(props) => <TextField {...props} />}
         label='DateTimePicker'
-        value={value}
+        value={endValue}
         onChange={(newValue) => {
-          setValue(newValue);
+          setEndValue(newValue);
+          // onChange({ value: newValue }, "end");
         }}
       />
     </LocalizationProvider>
