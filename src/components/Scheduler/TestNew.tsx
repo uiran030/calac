@@ -30,6 +30,10 @@ interface CustomEditorProps {
 const CustomEditor = ({ scheduler }: CustomEditorProps) => {
   const event = scheduler.edited;
 
+  const [eventList, setEventList] = useState([]);
+
+  console.log(eventList);
+
   // Make your own form/state
   const [state, setState] = useState({
     category: event?.category || "",
@@ -57,7 +61,7 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
       return setError("Min 3 letters");
     }
 
-    console.log(e);
+    // console.log(e);
 
     try {
       scheduler.loading(true);
@@ -91,14 +95,19 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
             description: state.description,
             reminder: state.reminder,
             reminderMethod: state.reminderMethod,
+            color: "#c1c1c1",
           });
         }, 3000);
       })) as ProcessedEvent;
 
       scheduler.onConfirm(added_updated_event, event ? "edit" : "create");
-      e.target.textContent === "저장 후 계속"
-        ? handleReset()
-        : scheduler.close();
+      if (e.target.textContent === "저장 후 계속") {
+        setEventList((prev) => ({ ...prev, state }));
+        handleReset();
+      } else {
+        setEventList((prev) => ({ ...prev, state }));
+        scheduler.close();
+      }
     } finally {
       scheduler.loading(false);
     }
@@ -136,7 +145,7 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
     }
   };
 
-  console.log(state);
+  // console.log(state);
 
   const [selectedMarker, setSelectedMaker] = React.useState({
     content: "",
@@ -398,7 +407,6 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               <ToggleButton value='kakao'>카카오톡 알림</ToggleButton>
             </ToggleButtonGroup>
           </Grid>
-
           {/* 초기화 버튼 */}
           <Grid
             item
@@ -411,64 +419,75 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
               초기화
             </Button>
           </Grid>
-
           {/* 저장후 계속 버튼*/}
-          <Grid item xs={9} display='flex' marginTop='20px'>
-            <Button
-              variant='contained'
-              sx={{ marginX: "10px" }}
-              size='large'
-              disabled={
-                state.category === "" || state.title === "" ? true : false
-              }
-              fullWidth
-              onClick={(e) => {
-                handleSubmit(e);
-              }}
+          {event ? (
+            <Grid
+              item
+              xs={12}
+              // display='flex'
+              // justifyContent='center'
+              marginTop='20px'
             >
-              저장 후 계속
-            </Button>
-          </Grid>
+              <Button
+                variant='contained'
+                fullWidth
+                // onClick={handleSaveClose}
+                size='large'
+                sx={{ marginX: "10px" }}
+                onClick={(e) => {
+                  handleSubmit(e);
+                }}
+                disabled={
+                  state.category === "" || state.title === "" ? true : false
+                }
+              >
+                수정 완료
+              </Button>
+            </Grid>
+          ) : (
+            <>
+              <Grid item xs={9} display='flex' marginTop='20px'>
+                <Button
+                  variant='contained'
+                  sx={{ marginX: "10px" }}
+                  size='large'
+                  disabled={
+                    state.category === "" || state.title === "" ? true : false
+                  }
+                  fullWidth
+                  onClick={(e) => {
+                    handleSubmit(e);
+                  }}
+                >
+                  저장 후 계속
+                </Button>
+              </Grid>
 
-          {/* 저장 후 닫기 버튼 */}
-          <Grid
-            item
-            xs={3}
-            // display='flex'
-            // justifyContent='center'
-            marginTop='20px'
-          >
-            <Button
-              variant='contained'
-              fullWidth
-              // onClick={handleSaveClose}
-              size='large'
-              sx={{ marginX: "10px" }}
-              onClick={(e) => {
-                handleSubmit(e);
-              }}
-              disabled={
-                state.category === "" || state.title === "" ? true : false
-              }
-            >
-              저장 후 닫기
-            </Button>
-          </Grid>
-
-          {/* <TextField
-            label='Title'
-            value={state.title}
-            onChange={(e) => handleChange(e.target.value, "title")}
-            error={!!error}
-            helperText={error}
-            fullWidth
-          />
-          <TextField
-            label='Description'
-            value={state.description}
-            onChange={(e) => handleChange(e.target.value, "description")}
-            fullWidth
-          /> */}
+              <Grid
+                item
+                xs={3}
+                // display='flex'
+                // justifyContent='center'
+                marginTop='20px'
+              >
+                <Button
+                  variant='contained'
+                  fullWidth
+                  // onClick={handleSaveClose}
+                  size='large'
+                  sx={{ marginX: "10px" }}
+                  onClick={(e) => {
+                    handleSubmit(e);
+                  }}
+                  disabled={
+                    state.category === "" || state.title === "" ? true : false
+                  }
+                >
+                  저장 후 닫기
+                </Button>
+              </Grid>
+            </>
+          )}
         </Grid>
       </div>
     </div>
@@ -534,8 +553,10 @@ export default function TestNew() {
         endHour: 17, // 끝 초기값 시간
         // cellRenderer: (props: CellProps) => JSX.Element,
         navigation: true, // ?
-        disableGoToDay: false, // 월별달력 날짜 누르면해당 날 자세히 보기
+        disableGoToDay: true, // 월별달력 날짜 누르면해당 날 자세히 보기
       }}
+      draggable={false}
+      // disableViewNavigator={true}
       events={[
         {
           event_id: 1,
@@ -546,6 +567,12 @@ export default function TestNew() {
         },
         {
           event_id: 2,
+          title: "Event 2",
+          start: new Date("2021/5/4 10:00"),
+          end: new Date("2021/5/4 11:00"),
+        },
+        {
+          event_id: 3,
           title: "Event 2",
           start: new Date("2021/5/4 10:00"),
           end: new Date("2021/5/4 11:00"),
