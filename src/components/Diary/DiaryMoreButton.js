@@ -9,16 +9,16 @@ const DiaryMoreButton = () => {
     <TabBox>
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButtonIcon>
             <AutoFixNormalIcon />
             <ListItemText primary="modify" />
-          </ListItemButton>
+          </ListItemButtonIcon>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButtonIcon>
             <DeleteOutlineIcon />
             <ListItemText primary="delete" />
-          </ListItemButton>
+          </ListItemButtonIcon>
         </ListItem>
       </List>
     </TabBox>
@@ -28,8 +28,11 @@ const DiaryMoreButton = () => {
 const TabBox = styled(Box)({
   maxWidth: 200, 
   position: 'absolute',
-  top: 20,
-  right: 0
+  top: -7,
+  left: 35
+});
+const ListItemButtonIcon = styled(ListItemButton)({
+  padding: 0
 });
 //======================================================
 

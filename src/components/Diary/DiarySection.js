@@ -20,16 +20,15 @@ const FeedSection = () => {
 };
 //style=================================================
 const MyBox = styled(Box)({
-  width: '100vh',
+  height: '100vh',
   margin: '0 auto',
 });
 const MyTypography = styled(Box)({
   fontSize: 30,
   color: '#07553B',
-  padding: '20px 0 0 20px',
+  padding: '20px 0 0 35px',
 });
 const DiaryBox = styled(Box)({
-  width: '100vh',
   margin: '0 auto',
   display: 'flex',
   flexWrap: 'wrap'
