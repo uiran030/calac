@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
 import { styled } from "@mui/material/styles";
-import { Box, Card, CardHeader, IconButton, CardMedia, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DiaryMoreButton from './DiaryMoreButton';
+import { SecurityUpdateWarningOutlined } from '@mui/icons-material';
+import DiaryDetail from './DiaryDetail';
 
 const FeedSection = () => {
   const [openBox, setOpenBox] = useState(false);
+  const [openDetail, setOpenDetail] = useState(false);
   //======================================================
   return (
     <>
@@ -22,12 +25,16 @@ const FeedSection = () => {
           title="타이틀 타이틀 타이틀"
           subheader="2023-02-19"
         />
-        <CardMedia
-          component="img"
-          height="194"
-          image="../../assets/images/feed/img01.jpeg"
-          alt="이미지"
-        />
+        <Button onClick={()=>setOpenDetail(!openDetail)}>
+          <CardMedia
+            component="img"
+            width="210"
+            height="194"
+            image="../../assets/images/feed/img01.jpeg"
+            alt="이미지"
+          />
+          {openDetail && (<DiaryDetail/>)}
+        </Button>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
             오늘은 절약했뉘?

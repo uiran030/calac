@@ -4,7 +4,7 @@ import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText  } from
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
-const DiaryMoreButton = () => {
+const DiaryDetail = () => {
   return (
     <TabBox>
       <List>
@@ -33,4 +33,4 @@ const TabBox = styled(Box)({
 });
 //======================================================
 
-export default DiaryMoreButton
+export default DiaryDetail
