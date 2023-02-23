@@ -99,7 +99,7 @@ const ModalBox = styled(Box)({
   backgroundColor: '#fff',
   border: '3px solid #07553B',
   boxShadow: 24,
-  padding: 20
+  padding: 37
 });
 const TitleTypography = styled(Typography)({
   fontSize: 30,

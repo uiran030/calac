@@ -1,186 +1,323 @@
 import React, {useState} from 'react';
 import { styled } from "@mui/material/styles";
-import { Box, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button } from "@mui/material";
+import { Box, List, ListItem, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DiaryMoreButton from './DiaryMoreButton';
-import { SecurityUpdateWarningOutlined } from '@mui/icons-material';
 import DiaryDetail from './DiaryDetail';
 
-const FeedSection = () => {
+const DiaryCard = () => {
   const [openBox, setOpenBox] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
   //======================================================
   return (
-    <>
-      <MyCard>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
-              <MoreVertIcon />
-              {openBox &&(
-                <DiaryMoreButton/>
+    <Box>
+      <CardList>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
               )}
-            </IconButton>
-          }
-          title="타이틀 타이틀 타이틀"
-          subheader="2023-02-19"
-        />
-        <Button onClick={()=>setOpenDetail(!openDetail)}>
-          <CardMedia
-            component="img"
-            width="210"
-            height="194"
-            image="../../assets/images/feed/img01.jpeg"
-            alt="이미지"
-          />
-          {openDetail && (<DiaryDetail/>)}
-        </Button>
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘?
-          </Typography>
-        </CardContent>
-      </MyCard>
-      <MyCard sx={{ maxWidth: 345 }}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title="타이틀 타이틀 타이틀"
-          subheader="2023-02-19"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image="../../assets/images/feed/img01.jpeg"
-          alt="이미지"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘?
-          </Typography>
-        </CardContent>
-      </MyCard>
-      <MyCard sx={{ maxWidth: 345 }}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title="타이틀 타이틀 타이틀"
-          subheader="2023-02-19"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image="../../assets/images/feed/img01.jpeg"
-          alt="이미지"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘???
-          </Typography>
-        </CardContent>
-      </MyCard>
-      <MyCard sx={{ maxWidth: 345 }}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title="타이틀 타이틀 타이틀"
-          subheader="2023-02-19"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image="../../assets/images/feed/img01.jpeg"
-          alt="이미지"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘?
-          </Typography>
-        </CardContent>
-      </MyCard>
-      <MyCard sx={{ maxWidth: 345 }}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title="타이틀 타이틀 타이틀"
-          subheader="2023-02-19"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image="../../assets/images/feed/img01.jpeg"
-          alt="이미지"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘?
-          </Typography>
-        </CardContent>
-      </MyCard>
-      <MyCard sx={{ maxWidth: 345 }}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title="타이틀 타이틀 타이틀"
-          subheader="2023-02-19"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image="../../assets/images/feed/img01.jpeg"
-          alt="이미지"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘?
-          </Typography>
-        </CardContent>
-      </MyCard>
-      <MyCard sx={{ maxWidth: 345 }}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title="타이틀 타이틀 타이틀"
-          subheader="2023-02-19"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image="../../assets/images/feed/img01.jpeg"
-          alt="이미지"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            오늘은 절약했뉘?
-          </Typography>
-        </CardContent>
-      </MyCard>
-    </>
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
+              )}
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
+              )}
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
+              )}
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
+              )}
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
+              )}
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
+              )}
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+        <CardListItem>
+          <CardBox>
+            <CardHeader
+              action={
+                <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MoreVertIcon />
+                  {openBox &&(
+                    <DiaryMoreButton/>
+                  )}
+                </MyIconButton>
+              }
+              title="타이틀 타이틀 타이틀"
+              subheader="2023-02-19"
+            />
+            <Button onClick={()=>setOpenDetail(!openDetail)}>
+              <CardMedia
+                component="img"
+                width="290"
+                height="194"
+                image="../../assets/images/feed/img01.jpeg"
+                alt="이미지"
+              />
+              {openDetail && (
+                <DiaryDetail 
+                  openDetail={openDetail}
+                  setOpenDetail={setOpenDetail}
+                />
+              )}
+            </Button>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                오늘은 절약했뉘?
+              </Typography>
+            </CardContent>
+          </CardBox>
+        </CardListItem>
+      </CardList>
+    </Box>
   );
 };
 //style=================================================
-const MyCard = styled(Box)({
-  width: `30vh`,
+const CardList = styled(List)({
+  display: 'flex',
+  flexWrap: 'wrap',
+});
+const CardListItem = styled(ListItem)({
+  width: `45vh`,
   border: `1px solid #ebebec`,
-  margin: `60px auto`,
+  margin: `20px auto`,
+});
+const CardBox = styled(Box)({
+});
+const MyIconButton = styled(IconButton)({
+  marginRight: '-11px',
 });
 //======================================================
-export default FeedSection;
+export default DiaryCard;
