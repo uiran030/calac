@@ -3,15 +3,16 @@ import "../../assets/css/App.css";
 import { styled } from "@mui/material/styles";
 import { Box, Modal, Fade, Typography, Backdrop, Divider, CardMedia } from "@mui/material";
 
-const DiaryDetail = (openDetail,setOpenDetail) => {
+const DiaryDetail = (openDetail,setOpenDetail,openDetailModal,closeDetailModal,id,title,body) => {
   //======================================================
+  console.log(id,body,title)
   return (
     <MyBox>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={openDetail}
-        onClose={()=>setOpenDetail(false)}
+        onClose={closeDetailModal}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -20,7 +21,7 @@ const DiaryDetail = (openDetail,setOpenDetail) => {
       >
         <Fade in={openDetail}>
           <ModalBox>
-            <TitleTypography>가져온 타이틀</TitleTypography><br></br>
+            <TitleTypography>{title}</TitleTypography><br></br>
             <DateTypography>2023-02-19</DateTypography>
             <Divider/>
             <DetailBox>
@@ -32,7 +33,7 @@ const DiaryDetail = (openDetail,setOpenDetail) => {
                 alt="이미지"
               />
               <ContentTypography>
-                본문내용 와랄라라라라라라라
+                {body}
               </ContentTypography>
             </DetailBox>
           </ModalBox>
