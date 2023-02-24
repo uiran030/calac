@@ -2,15 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
-import Feed from "./pages/Feed/Feed";
+import Daily from "./pages/Daily/Daily";
 import FinancialLedger from "./pages/FinancialLedger/FinancialLedger";
+import FinancialLedgerGraph from "./pages/FinancialLedgerGraph/FinancialLedgerGraph";
 import FindIdPw from "./pages/User/FindIdPw";
 import Scheduler from "./pages/Scheduler/Scheduler";
 import SignUp from "./pages/User/SignUp";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/User/Login";
 import Setting from "./pages/Setting/Setting";
 import ProtectedRoute from "./pages/ProtectedRoute";
@@ -26,12 +27,16 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "/feed",
-        element: <Feed />,
+        path: "/daily",
+        element: <Daily />,
       },
       {
         path: "/financialledger",
         element: <FinancialLedger />,
+      },
+      {
+        path: "/financialledger/graph",
+        element: <FinancialLedgerGraph />,
       },
       {
         path: "/login/findidpw",
