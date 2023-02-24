@@ -1,13 +1,6 @@
 import { Scheduler } from "@aldabil/react-scheduler";
-import { useEffect, useState } from "react";
 
-export default function Retry({ categoryFilter, test }) {
-  // categoryFilter.map((item) => {
-  //   console.log(item);
-  // });
-
-  console.log(categoryFilter.slice(1));
-
+export default function Retry({ categoryFilter, btnActive }) {
   return (
     <>
       <Scheduler
@@ -35,10 +28,7 @@ export default function Retry({ categoryFilter, test }) {
             type: "select",
             // Should provide options with type:"select"
             options: categoryFilter.slice(1),
-            // [
-            //   { id: 1, text: "John", value: 1 },
-            //   { id: 2, text: "Mark", value: 2 },
-            // ]
+
             config: {
               label: "Category",
               required: true,

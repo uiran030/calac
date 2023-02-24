@@ -1,22 +1,14 @@
 import {
   Box,
   Button,
-  Fab,
-  Modal,
   Typography,
   TextField,
   Divider,
-  StepContext,
   Paper,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import Scheduler from "react-mui-scheduler";
-import AddScheduleModal from "./AddScheduleModal";
-import AddIcon from "@mui/icons-material/Add";
-import TestNew from "./TestNew.tsx";
-import Retry from "./Retry.jsx";
-// import { Location } from "window";
+import React, { useState } from "react";
+import ReactScheduler from "./ReactScheduler.js";
+import "../../assets/css/App.css";
 
 export default function Calendar() {
   const [categoryFilter, setCategoryFilter] = useState([
@@ -28,34 +20,13 @@ export default function Calendar() {
     { id: 6, text: "생일", value: "#aacfd0" }, // 연청록
   ]);
 
-  // setCategoryFilter([...categoryFilter]);
-
-  // console.log(categoryFilter);
-
-  const [test, setTest] = useState([]);
-
-  let arr = [];
-
-  // useEffect(() => {
-  //   categoryFilter.map((item, index) =>
-  //     arr.push({ id: index, text: item, value: index })
-  //   );
-  //   setTest(arr);
-  //   console.log(arr);
-  // }, [categoryFilter]);
-  // console.log(test);
-
-  useEffect(() => {
-    categoryFilter.map((item, index) =>
-      setTest((prev) => [
-        ...categoryFilter,
-        { id: index, text: item, value: index },
-      ])
-    );
-    // setTest(arr);
-    // console.log(arr);
-  }, [categoryFilter]);
-  console.log(test);
+  const newCategoryColor = [
+    "#ef9e9f",
+    "#cb7575",
+    "#8283a7",
+    "#AF4034",
+    "#D09E88",
+  ];
 
   const [inputCategory, setInputCategory] = useState(false);
   const toggleInputCategory = () => setInputCategory((prev) => !prev);
@@ -63,22 +34,41 @@ export default function Calendar() {
   const [text, setText] = useState("");
   const handleSave = () => {
     if (text !== "") {
-      setCategoryFilter((prev) => [...prev, { id: 6, text: text, value: 6 }]);
-      toggleInputCategory();
-      setText("");
+      if (categoryFilter.find((item) => item.text === text)) {
+        window.alert("이미 존재하는 카테고리 입니다.");
+      } else {
+        if (categoryFilter.length > 8) {
+          window.alert("카테고리는 최대 3개까지 추가가 가능합니다.");
+        } else {
+          setCategoryFilter((prev) => [
+            ...prev,
+            {
+              id: 6,
+              text: text,
+              value:
+                newCategoryColor[
+                  Math.floor(Math.floor(Math.random() * 10) / 2)
+                ], // 0~4중에서 임의로 출력됨. (미완성, 같은 색상이 나올 수 있음.)
+            },
+          ]);
+          toggleInputCategory();
+          setText("");
+        }
+      }
     } else {
       return;
     }
-    // window.location.reload();
   };
 
-  console.log(text);
-  const [selected, setSelected] = useState("");
+  const [btnActive, setBtnActive] = useState("전체");
+
+  console.log(btnActive);
+
   return (
     <Box>
-      <Box height='62px' paddingX='50px' paddingY='10px'>
+      <Box height='70px' paddingX='50px' paddingY='15px'>
         <Typography variant='h4' color='primary' fontWeight={700}>
-          MY SCHEDULER
+          일정 관리
         </Typography>
       </Box>
 
@@ -86,41 +76,56 @@ export default function Calendar() {
         <Box
           sx={{
             display: "flex",
-            // justifyContent: "space-between",
             paddingX: "10px",
             paddingY: "5px",
           }}
         >
-          <Box sx={{ display: "flex" /* backgroundColor: "#000000" */ }}>
-            <Box>
+          <Box>
+            <Box
+              sx={{ display: "flex", height: "30px", boxSize: "border-box" }}
+            >
               {categoryFilter.map((item, index) => (
-                <Button
+                <Box
                   key={index}
                   variant='text'
-                  sx={{}} // item.text === selected ? : 흠 방법이 읎나
-                  onClick={(e) => setSelected(e.target.textContent)}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    paddingX: "10px",
+                    marginX: "5px",
+                    cursor: "pointer",
+
+                    borderRadius: "30px",
+                  }}
+                  onClick={(e) => {
+                    setBtnActive(e.target.textContent);
+                  }}
+                  className={btnActive === item.text ? "active2" : ""}
                 >
-                  <Paper
+                  <Paper // 페이퍼 클릭시 음영사라지는 것 수정 요망
                     sx={{
                       background: item.value,
                       width: "12px",
                       height: "12px",
-                      marginRight: "5px",
                     }}
                   >
                     　
                   </Paper>
-                  {item.text}
-                </Button>
+                  <Typography width='auto' paddingLeft='5px'>
+                    {item.text}
+                  </Typography>
+                </Box>
               ))}
-              <Divider width='100%' sx={{ marginLeft: "0px" }} />
             </Box>
+            <Divider width='100%' sx={{ marginY: "5px" }} />
           </Box>
           {inputCategory ? (
             <Box display='flex' alignItems='center'>
               <TextField
                 id='outlined-basic'
-                label='키워드 또는 주소를 입력하세요.'
+                label='카테고리를 입력하세요.'
                 variant='outlined'
                 size='small'
                 sx={{ marginX: "5px" }}
@@ -134,9 +139,7 @@ export default function Calendar() {
             <Button onClick={toggleInputCategory}>+</Button>
           )}
         </Box>
-        {/* <Divider width='80%' sx={{ marginLeft: "0px" }} /> */}
-        {/* <TestNew /> */}
-        <Retry categoryFilter={categoryFilter} test={test} />
+        <ReactScheduler categoryFilter={categoryFilter} btnActive={btnActive} />
       </Box>
     </Box>
   );
