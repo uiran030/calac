@@ -1,32 +1,24 @@
 import React, {useState,useEffect} from 'react';
 import { styled } from "@mui/material/styles";
-import { Box, List, ListItem, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button } from "@mui/material";
+import { Box, List, ListItem, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DiaryMoreButton from './DiaryMoreButton';
 import DiaryDetail from './DiaryDetail';
 import axios from 'axios';
-
 const DiaryCard = () => {
-  const [openBox, setOpenBox] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
+  const [openMoreButton, setOpenMoreButton] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [id, setId] = useState(0);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [post, setPost] = useState([]);
   //======================================================
   const openDetailModal = (id,title,body) => {
-    console.log(id);
+    setIsDetailOpen(true);
     setId(id);
     setTitle(title);
     setBody(body);
-    setOpenDetail(true);
-    console.log(title)
-    console.log(body)
   }
-  const closeDetailModal = (id) => {
-    setOpenDetail(false);
-  }
-  
   //======================================================
   useEffect(()=>{
     axios.get('https://jsonplaceholder.typicode.com/posts')
@@ -43,9 +35,9 @@ const DiaryCard = () => {
             <Box>
               <MyCardHeader
                 action={
-                  <MyIconButton aria-label="settings" onClick={()=>setOpenBox(!openBox)}>
+                  <MyIconButton aria-label="settings" onClick={()=>setOpenMoreButton(!openMoreButton)}>
                     <MoreVertIcon />
-                    {openBox &&(
+                    {openMoreButton &&(
                       <DiaryMoreButton/>
                     )}
                   </MyIconButton>
@@ -59,16 +51,9 @@ const DiaryCard = () => {
                   component="img"
                   width="40vh"
                   height="194"
-                  image="../../assets/images/feed/img01.jpeg"
+                  src="/images/diary/img01.jpeg"
                   alt="이미지"
                 />
-                {/* {openDetail && (
-                  <DiaryDetail 
-                    openDetail={openDetail}
-                    setOpenDetail={setOpenDetail}
-                    openDetailModal={openDetailModal}
-                  />
-                )} */}
               </Button>
               <CardContent>
                 <BodyTypography variant="body2" color="text.secondary">
@@ -79,15 +64,39 @@ const DiaryCard = () => {
           </CardListItem>
         )})}
       </CardList>
-      {openDetail && (
-      <DiaryDetail 
-        openDetail={openDetail}
-        setOpenDetail={setOpenDetail}
-        closeDetailModal={closeDetailModal}
-        id={id}
-        title={title}
-        body={body}
-      />
+      {/* MUI Modal은 ref와 함께 자식 컴포넌트로 전달? 함수형 컴포넌트에서 사용불가..? */}
+      {isDetailOpen && (
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={isDetailOpen}
+          onClose={()=>setIsDetailOpen(false)}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+        <Fade in={isDetailOpen}>
+          <ModalBox>
+            <TitleTypography>{title}</TitleTypography><br></br>
+            <ModalDateTypography>2023-02-19</ModalDateTypography>
+            <Divider/>
+            <DetailBox>
+              <CardMedia
+                component="img"
+                width="210"
+                height="194"
+                image="/images/diary/img01.jpeg"
+                alt="이미지"
+              />
+              <ContentTypography>
+                {body}
+              </ContentTypography>
+            </DetailBox>
+          </ModalBox>
+        </Fade>
+      </Modal>
       )}
     </Box>
   );
@@ -104,6 +113,8 @@ const CardListItem = styled(ListItem)({
   margin: `20px 10px 15px 20px`,
 });
 const MyCardHeader = styled(CardHeader)({
+  fontSize: 25,
+  fontWeight: 'bold',
 });
 const DateTypography = styled(Typography)({
   display: 'flex',
@@ -122,6 +133,37 @@ const BodyTypography = styled(Typography)({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   wordWrap: 'break-word',
+});
+//======================================================
+const ModalBox = styled(Box)({
+  position: 'absolute',
+  top: '50%',
+  left: '57%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  height: '60vh',
+  backgroundColor: '#fff',
+  border: '3px solid #07553B',
+  boxShadow: 24,
+  padding: 20,
+});
+const DetailBox = styled(Box)({
+  padding: 20,
+});
+const TitleTypography = styled(Typography)({
+  fontSize: 30,
+  color: '#07553B',
+  textAlign: 'center'
+});
+const ModalDateTypography = styled(Typography)({
+  fontSize: 15,
+  color: '#07553B',
+  textAlign: 'right'
+});
+const ContentTypography = styled(Typography)({
+  fontSize: 20,
+  textAlign: 'center',
+  paddingTop: 30,
 });
 //======================================================
 export default DiaryCard;
