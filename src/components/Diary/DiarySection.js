@@ -26,7 +26,8 @@ const MyBox = styled(Box)({
 const MyTypography = styled(Box)({
   fontSize: 30,
   color: '#07553B',
-  padding: '20px 0 0 35px',
+  paddingTop: 20,
+  paddingLeft: '13vh',
 });
 const DiaryBox = styled(Box)({
   margin: '0 auto',
@@ -36,7 +37,7 @@ const DiaryBox = styled(Box)({
 const WriteBox = styled(Box)({
   display: 'flex',
   justifyContent: 'end',
-  paddingRight: 25,
+  paddingRight: '13vh',
 });
 //======================================================
 export default FeedSection;

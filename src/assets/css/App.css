@@ -46,4 +46,6 @@ table {
 };
 
 /* ckEditor ====================================== */
-.ck-editor__editable { height: 400px; }
+div.ck.ck-reset.ck-editor.ck-rounded-corners {height: 285px !important;}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main {height: 200px;}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div > p {height: 200px;}

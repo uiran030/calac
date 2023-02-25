@@ -3,7 +3,7 @@ import "../../assets/css/App.css";
 import { styled } from "@mui/material/styles";
 import { Box, Modal, Fade, Typography, Backdrop, Divider, CardMedia } from "@mui/material";
 
-const DiaryDetail = (openDetail,setOpenDetail,openDetailModal,closeDetailModal,id,title,body) => {
+const DiaryDetail = (isDetailOpen,closeDetail,id,title,body) => {
   //======================================================
   console.log(id,body,title)
   return (
@@ -11,15 +11,15 @@ const DiaryDetail = (openDetail,setOpenDetail,openDetailModal,closeDetailModal,i
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={openDetail}
-        onClose={closeDetailModal}
+        open={isDetailOpen}
+        onClose={closeDetail}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={openDetail}>
+        <Fade in={isDetailOpen}>
           <ModalBox>
             <TitleTypography>{title}</TitleTypography><br></br>
             <DateTypography>2023-02-19</DateTypography>
@@ -29,7 +29,7 @@ const DiaryDetail = (openDetail,setOpenDetail,openDetailModal,closeDetailModal,i
                 component="img"
                 width="210"
                 height="194"
-                image="../../assets/images/feed/img01.jpeg"
+                image="/images/diary/img01.jpeg"
                 alt="이미지"
               />
               <ContentTypography>
@@ -44,7 +44,6 @@ const DiaryDetail = (openDetail,setOpenDetail,openDetailModal,closeDetailModal,i
 };
 //style=================================================
 const MyBox = styled(Box)({
-  backgroundColor: 'red',
 })
 const ModalBox = styled(Box)({
   position: 'absolute',

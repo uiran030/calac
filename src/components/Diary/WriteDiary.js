@@ -65,18 +65,22 @@ const WriteDiary = () => {
                 onChange={getValue}
               />
             </TitleBox>
-            <CKEditor
-              style={{paddingTop:'20px'}}
-              editor={ClassicEditor}
-              config={{placeholder: "내용을 입력하세요 :)"}}
-              onReady={editor => {console.log( 'Editor is ready to use!',editor);}}
-              onChange={(event,editor ) => {
-                const data = editor.getData();
-                console.log({event,editor,data});
-              }}
-              onBlur={(event,editor) => {console.log('Blur :',editor);}}
-              onFocus={(event,editor) => {console.log('Focus :',editor);}}
-            />
+
+            <EditorBox>
+              <CKEditor
+                style={{paddingTop:'20px'}}
+                editor={ClassicEditor}
+                config={{placeholder: "내용을 입력하세요 :)"}}
+                onReady={editor => {console.log( 'Editor is ready to use!',editor);}}
+                onChange={(event,editor ) => {
+                  const data = editor.getData();
+                  console.log({event,editor,data});
+                }}
+                onBlur={(event,editor) => {console.log('Blur :',editor);}}
+                onFocus={(event,editor) => {console.log('Focus :',editor);}}
+              />
+            </EditorBox>
+
             <Button onClick={handleBtnClick}>이미지업로드</Button>
             <input ref={imgInput} onChange={handleChange} type="file" id="fileUpload" style={{display:"none"}}/>
             <BtnBox>
@@ -107,6 +111,9 @@ const TitleTypography = styled(Typography)({
 });
 const TitleBox = styled(Box)({
   padding: 20,
+});
+const EditorBox = styled(Box)({
+  height: 290
 });
 const BtnBox = styled(Box)({
   padding: 20,
