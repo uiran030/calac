@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react';
 import { styled } from "@mui/material/styles";
-import { Box, List, ListItem, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider } from "@mui/material";
+import { Box, List, ListItem, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DiaryMoreButton from './DiaryMoreButton';
 import DiaryDetail from './DiaryDetail';
@@ -93,6 +93,8 @@ const DiaryCard = () => {
               <ContentTypography>
                 {body}
               </ContentTypography>
+              <DetailDivider/>
+              <CommentTextField id="outlined-basic" variant="outlined" size="samll" fullWidth/>
             </DetailBox>
           </ModalBox>
         </Fade>
@@ -164,6 +166,13 @@ const ContentTypography = styled(Typography)({
   fontSize: 20,
   textAlign: 'center',
   paddingTop: 30,
+});
+const DetailDivider = styled(Divider)({
+  paddingTop: 30,
+});
+const CommentTextField = styled(TextField)({
+  paddingTop: 20,
+  height: 30
 });
 //======================================================
 export default DiaryCard;
