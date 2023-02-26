@@ -3,7 +3,6 @@ import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import DiaryCard from './DiaryCard';
 import WriteDiary from './WriteDiary';
-import { PaddingTwoTone } from '@mui/icons-material';
 
 const FeedSection = () => {
   return (
