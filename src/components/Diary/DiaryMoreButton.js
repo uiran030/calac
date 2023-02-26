@@ -4,7 +4,11 @@ import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText  } from
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
-const DiaryMoreButton = () => {
+const DiaryMoreButton = (post,setPost) => {
+  const onDelete = (id) => {
+    window.confirm(`정말 삭제하시겠습니까?`);
+    post.setPost(post.post.filter(item => item.id !== id));
+  }
   return (
     <TabBox>
       <List>
@@ -15,7 +19,7 @@ const DiaryMoreButton = () => {
           </ListItemButtonIcon>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButtonIcon>
+          <ListItemButtonIcon onClick={()=>onDelete(post.id)}>
             <DeleteOutlineIcon />
             <ListItemText primary="delete" />
           </ListItemButtonIcon>

@@ -13,9 +13,14 @@ const DiaryCard = () => {
   const [body, setBody] = useState('');
   const [post, setPost] = useState([]);
   //======================================================
-  const openDetailModal = (id,title,body) => {
+  const handleOpenMoreButton = (id) => {
+    console.log("id",id)
+    post.map(item => {
+      item.id === id && (setOpenMoreButton(!openMoreButton))
+    })
+  }
+  const openDetailModal = (title,body) => {
     setIsDetailOpen(true);
-    setId(id);
     setTitle(title);
     setBody(body);
   }
@@ -35,10 +40,14 @@ const DiaryCard = () => {
             <Box>
               <MyCardHeader
                 action={
-                  <MyIconButton aria-label="settings" onClick={()=>setOpenMoreButton(!openMoreButton)}>
+                  <MyIconButton aria-label="settings" onClick={()=>handleOpenMoreButton(list.id)}>
                     <MoreVertIcon />
                     {openMoreButton &&(
-                      <DiaryMoreButton/>
+                      <DiaryMoreButton 
+                        post={post} 
+                        setPost={setPost} 
+                        id={list.id}
+                        />
                     )}
                   </MyIconButton>
                 }
@@ -46,7 +55,7 @@ const DiaryCard = () => {
                 disableTypography
               />
               <DateTypography>2023-02-24</DateTypography>
-              <Button onClick={()=>openDetailModal(list.id, list.title, list.body)}>
+              <Button onClick={()=>openDetailModal(list.title, list.body)}>
                 <MyCardMedia
                   component="img"
                   width="40vh"
@@ -59,6 +68,7 @@ const DiaryCard = () => {
                 <BodyTypography variant="body2" color="text.secondary">
                   {list.body}
                 </BodyTypography>
+                <CountCommentTypography>댓글 1개</CountCommentTypography>
               </CardContent>
             </Box>
           </CardListItem>
@@ -93,9 +103,13 @@ const DiaryCard = () => {
               <ContentTypography>
                 {body}
               </ContentTypography>
-              <DetailDivider/>
-              <CommentTextField id="outlined-basic" variant="outlined" size="samll" fullWidth/>
             </DetailBox>
+            <DetailDivider/>
+            <CommentBox>
+              <CommentTextField id="outlined-basic" variant="outlined" label="댓글달기" size="small"/>
+              <CommentButton>등록</CommentButton><br></br>
+              <CommentTypography>하이하이하잌ㅋㅋㅋㅋㅋㅋ</CommentTypography>
+            </CommentBox>
           </ModalBox>
         </Fade>
       </Modal>
@@ -136,6 +150,10 @@ const BodyTypography = styled(Typography)({
   whiteSpace: 'nowrap',
   wordWrap: 'break-word',
 });
+const CountCommentTypography = styled(Typography)({
+  color: 'rgba(0, 0, 0, 0.6)',
+  fontSize: '0.875rem'
+});
 //======================================================
 const ModalBox = styled(Box)({
   position: 'absolute',
@@ -168,11 +186,20 @@ const ContentTypography = styled(Typography)({
   paddingTop: 30,
 });
 const DetailDivider = styled(Divider)({
-  paddingTop: 30,
+});
+const CommentBox = styled(Box)({
+  paddingTop: 20,
+  height:30
 });
 const CommentTextField = styled(TextField)({
-  paddingTop: 20,
-  height: 30
+  width: '80%',
+});
+const CommentButton = styled(Button)({
+  marginLeft: 20
+});
+const CommentTypography = styled(Typography)({
+  margin: '10px 0 0 2px',
+  fontSize: 15
 });
 //======================================================
 export default DiaryCard;
