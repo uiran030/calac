@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import DiaryCard from './DiaryCard';
 import WriteDiary from './WriteDiary';
+import axios from 'axios';
 
 const FeedSection = () => {
+  useEffect(()=>{
+    axios.get("http://localhost:8004/")
+    .then(res=>console.log(res.data))
+  },[])
   return (
     <MyBox>
       <MyTypography>Diary</MyTypography>
