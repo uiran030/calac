@@ -10,33 +10,48 @@
 }
 
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
   display: block;
-};
+}
 body {
   line-height: 1;
-};
-ol, ul {
+}
+ol,
+ul {
   list-style: none;
-};
-blockquote, q {
+}
+blockquote,
+q {
   quotes: none;
-};
-blockquote:before, blockquote:after, q:before, q:after {
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
   content: "";
   content: none;
-};
+}
 table {
   border-collapse: collapse;
   border-spacing: 0;
-};
+}
 @font-face {
   font-family: "Pretendard-Regular";
   src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
     format("woff");
   font-weight: 400;
   font-style: normal;
-};
+}
 /* =============================================== */
 
 .active {
@@ -44,4 +59,9 @@ table {
   color: #333 !important;
   padding: 10px 0;
   border-radius: 30px;
-};
+}
+
+.active2 {
+  background-color: rgba(7, 85, 59, 0.2);
+  color: #333 !important;
+}
