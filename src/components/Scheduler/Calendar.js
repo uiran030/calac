@@ -143,6 +143,4 @@ export default function Calendar() {
       </Box>
     </Box>
   );
-}
-// 수ㄹ
-// ReactDOM.render(<App />, document.querySelector('#yourComponentRootId'))
+};

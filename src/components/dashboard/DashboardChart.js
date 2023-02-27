@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { styled } from "@mui/material/styles";
 
@@ -49,6 +49,7 @@ const DashboardChart = () => {
           variant='p'
           fontWeight={600}
           color='primary'
+          paddingLeft='20px'
         >
           전월 비교 사용내역 (단위:만원)
         </Typography>
@@ -72,12 +73,13 @@ const DashboardChart = () => {
           <Bar dataKey='이번달' stackId='a' fill='#82ca9d' />
         </BarChart>
       </ResponsiveContainer>
+      <Divider />
     </ChartWrap>
   );
 };
 //style=================================================
 const ChartWrap = styled(Box)({
-  height:'55%',
+  height:'60%'
 });
 const ChartTitle = styled(Box)({
   margin:'20px 0'
