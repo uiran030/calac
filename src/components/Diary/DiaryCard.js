@@ -8,16 +8,15 @@ import axios from 'axios';
 const DiaryCard = () => {
   const [openMoreButton, setOpenMoreButton] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [countIndex, setCountIndex] = useState(0);
   const [id, setId] = useState(0);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [post, setPost] = useState([]);
   //======================================================
-  const handleOpenMoreButton = (id) => {
-    console.log("id",id)
-    post.map(item => {
-      item.id === id && (setOpenMoreButton(!openMoreButton))
-    })
+  const handleOpenMoreButton = (e,idx) => {
+    setCountIndex(idx);
+    setOpenMoreButton(!openMoreButton);
   }
   const openDetailModal = (title,body) => {
     setIsDetailOpen(true);
@@ -40,14 +39,16 @@ const DiaryCard = () => {
             <Box>
               <MyCardHeader
                 action={
-                  <MyIconButton aria-label="settings" onClick={()=>handleOpenMoreButton(list.id)}>
+                  <MyIconButton aria-label="settings" onClick={(e)=>handleOpenMoreButton(e,list.id)}>
                     <MoreVertIcon />
-                    {openMoreButton &&(
-                      <DiaryMoreButton 
-                        post={post} 
-                        setPost={setPost} 
-                        id={list.id}
+                    {countIndex === list.id && (
+                      openMoreButton && (
+                        <DiaryMoreButton 
+                          post={post} 
+                          setPost={setPost} 
+                          id={list.id}
                         />
+                      )
                     )}
                   </MyIconButton>
                 }
