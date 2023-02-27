@@ -1,12 +1,10 @@
-import { Box, Container } from "@mui/system";
-import React from "react";
-import Calendar from "./Calendar";
+import React from 'react';
 
 const SchedulerSection = () => {
   return (
-    <Box>
-      <Calendar />
-    </Box>
+    <div>
+      스케줄 페이지
+    </div>
   );
 };
 
