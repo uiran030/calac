@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
+import Calendar from "./Calendar";
 
 const SchedulerSection = () => {
   return (
-    <div>
-      스케줄 페이지
-    </div>
+    <Box>
+      <Calendar />
+    </Box>
   );
 };
 
