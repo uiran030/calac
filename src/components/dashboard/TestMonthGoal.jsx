@@ -27,7 +27,7 @@ const TestTodoList = () => {
       sx={{
         width: "100%",
         bgcolor: "background.paper",
-        marginRight: "30px",
+        marginRight: "30px"
       }}
     >
       {[0, 1, 2, 3].map((value) => {
