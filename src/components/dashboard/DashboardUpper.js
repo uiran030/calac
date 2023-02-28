@@ -5,13 +5,7 @@ import Weather from "./Weather";
 
 const DashboardUpper = () => {
   return (
-    <UpperWrap
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
+    <UpperWrap>
       <Weather />
       <Box>
         <Typography
@@ -29,7 +23,10 @@ const DashboardUpper = () => {
 };
 //style=================================================
 const UpperWrap = styled(Box)({
-  height:'25%'
+  height:'110px',
+  display:'flex',
+  justifyContent:'space-between',
+  alignItems:'center'
 });
 //======================================================
 export default DashboardUpper;

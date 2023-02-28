@@ -77,7 +77,7 @@ const DashboardChart = () => {
 };
 //style=================================================
 const ChartWrap = styled(Box)({
-  height:'55%'
+  height:'55%',
 });
 const ChartTitle = styled(Box)({
   margin:'20px 0'

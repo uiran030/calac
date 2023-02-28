@@ -16,6 +16,7 @@ const DashboardSection = () => {
           <DashboardChart />
         </Grid>
       </UpBox>
+      <MyDivider />
       <FlexBox>
         <Grid item xs={6.5}>
           <DashboardCalendar />
@@ -30,6 +31,7 @@ const DashboardSection = () => {
 };
 //style=================================================
 const SectionWrap = styled(Grid)({
+  padding: '20px',
   height:'100vh',
   width:'100%',
   display:'flex',
@@ -38,15 +40,16 @@ const SectionWrap = styled(Grid)({
 const UpBox = styled(Box)({
   display:'flex',
   height:'55%',
-  width:'100%',
-  borderBottom:'1px solid #ddd',
-  padding:'0 20px'
+  width:'100%'
 });
 const FlexBox = styled(Box)({
   display:'flex',
   width:'100%',
   height:'45%',
   alignItems:'center'
+});
+const MyDivider = styled(Divider)({
+  width:'100%'
 });
 //======================================================
 export default DashboardSection;

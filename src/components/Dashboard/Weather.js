@@ -69,6 +69,12 @@ const Weather = () => {
               </ButtonGroup>
             </Box>
             <Typography variant='caption'>Seoul, Republic of Korea</Typography>
+            <Typography color='primary' fontWeight={700}>
+              {data.forecast[day].description}
+              { day === 0 ? 
+                `( CURRENT : ${data.current.temperature.current}˚C )` : " "
+              }
+            </Typography>
             <WeatherBox>
               <WeatherBox>
                 <WeatherBox>
