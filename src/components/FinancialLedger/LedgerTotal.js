@@ -7,7 +7,9 @@ const LedgerTotal = () => {
 
   const [tabValue, setTabValue] = useState('expense');
 
-  const handleTabValue = (event, value) => { setTabValue(value); };
+  const handleTabValue = (event, value) => { 
+    if (value !== null ) { setTabValue(value); }
+  };
 
   return (
   <AddInfoArea>
@@ -32,7 +34,7 @@ const LedgerTotal = () => {
         <TabBox>
           <ShowTotal>
             <TotalText>수입 전액</TotalText>
-            <TotalCount>225,463원</TotalCount>
+            <TotalCount>2,125,463원</TotalCount>
           </ShowTotal>
           <ShowRecent>
             <RecentList>
@@ -45,7 +47,7 @@ const LedgerTotal = () => {
                       variant="body2"
                       color="text.primary"
                     >
-                      254,000원
+                      1,850,000원
                     </RecentPrice>
                   </Box>
                 }
@@ -61,7 +63,7 @@ const LedgerTotal = () => {
                       variant="body2"
                       color="text.primary"
                     >
-                      254,000원
+                      50,000원
                     </RecentPrice>
                   </Box>
                 }
@@ -69,7 +71,7 @@ const LedgerTotal = () => {
             </RecentList>
             <RecentList>
               <ListItemText
-                primary="수입"
+                primary="수입3"
                 sx={{fontSize:'30px'}}
                 secondary={
                   <Box>
@@ -78,7 +80,7 @@ const LedgerTotal = () => {
                       variant="body2"
                       color="text.primary"
                     >
-                      254,000원
+                      24,000원
                     </RecentPrice>
                   </Box>
                 }

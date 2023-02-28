@@ -1,14 +1,14 @@
 import React from 'react';
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles"; 
-import TopStateBar from '../common/TopStateBar';
+import TopBar from '../common/TopBar';
 import LedgerDonut from './LedgerDonut';
 import LedgerTotal from './LedgerTotal';
 
 const FinancialLedger = () => {
   return (
     <LedgerWrap>
-      <TopStateBar />
+      <TopBar />
       <LedgerFlex>
         <LedgerDonut/>
         <LedgerTotal/>

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import TopStateBar from '../common/TopStateBar';
+import TopBar from '../common/TopBar';
 import LedgerGraphChart from './LedgerGraphChart';
 
 const LedgerGraphSection = () => {
   return (
     <LedgerGraphWrap>
-      <TopStateBar />
+      <TopBar />
       <LedgerGraphChart/>
     </LedgerGraphWrap>
   );

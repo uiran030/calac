@@ -53,9 +53,8 @@ const DashboardCalendar = () => {
 };
 //style=================================================
 const SectionCalendar = styled(Grid)({
-  // height:'600px',
-  //height 수정 필요
-  width:'100%'
+  width:'100%',
+  height:'100%'
 });
 const CalendarLeft = styled(Grid)({
   maxHeight:'100%'

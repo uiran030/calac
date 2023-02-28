@@ -133,7 +133,7 @@ const DountWrap = styled(Box)({
 });
 const Test = styled('p')({
   textAlign:'center',
-  marginBottom:'50px',
+  marginBottom:'70px'
 })
 const DountGraph = styled(Box)({
   width:'100%'
