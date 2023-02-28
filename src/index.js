@@ -14,6 +14,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/User/Login";
 import Setting from "./pages/Setting/Setting";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import LedgerGraphSection from "./pages/FinancialLedgerGraph/FinancialLedgerGraph";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/financialledger",
         element: <FinancialLedger />,
+      },
+      {
+        path: "/financialledger/graph",
+        element: <LedgerGraphSection />,
       },
       {
         path: "/login/findidpw",

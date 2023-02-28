@@ -6,10 +6,6 @@ import { Link } from "react-router-dom";
 import JoinRightRoundedIcon from "@mui/icons-material/JoinRightRounded";
 
 const Nav = () => {
-  // 첫 페이지 오픈 시 dashboard에 동그라미가 없어서 넣어줌
-  // 추후에 redux를 이용해서 시작은 dashboard에 다른 페이지에서 새로고침했을 때
-  // 열려있는 페이지의 목록에 동그라미 유지되있도록 작업해야함.
-  // ㄴ확인했습니다 - hhb
   //=================================================================================
   const [btnActive, setBtnActive] = useState("dashBoard");
   //=================================================================================
@@ -17,7 +13,6 @@ const Nav = () => {
     setBtnActive(true);
   };
   //=================================================================================
-
   return (
     <NavBar>
       <Box>
