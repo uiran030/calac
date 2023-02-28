@@ -24,13 +24,21 @@ const TopStateBar = () => {
           </Box>
         </CommonTopState>
       )}
-      { pathname === '/financialledger' && (
+      { pathname.includes('/financialledger') && (
         <CommonTopState>
           <Box>
             <h4>이번달 지출 목표 금액</h4>
             <p>1,000,000원 <GoalCount>(+258,020)</GoalCount></p>
           </Box>
-          <p>000님</p>
+          <Typography
+              variant='body1'
+              fontWeight={700}
+              color='primary'
+              textAlign='right'
+            >
+              로그인을<br/>
+              진행해주세요
+            </Typography>
         </CommonTopState>
       )}
     </TopStateBarWrap>
