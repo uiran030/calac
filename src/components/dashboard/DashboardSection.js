@@ -9,10 +9,10 @@ import TopStateBar from "../common/TopBar";
 const DashboardSection = () => {
   return (
     <SectionWrap container>
-      <Grid item xs={12}>
+      <SectionUpGrid item xs={12}>
         <TopStateBar />
         <DashboardChart />
-      </Grid>
+      </SectionUpGrid>
       <FlexBox>
         <Grid item xs={6.5}>
           <DashboardCalendar />
@@ -32,11 +32,15 @@ const SectionWrap = styled(Grid)({
   display:'flex',
   justifyContent:'center'
 });
+const SectionUpGrid = styled(Grid)({
+  height:'55%',
+  borderBottom:'1px solid #ddd'
+});
 const FlexBox = styled(Box)({
+  height:'45%',
   display:'flex',
   width:'100%',
-  height:'45%',
-  alignItems:'center'
+  alignItems:'center',
 });
 //======================================================
 export default DashboardSection;
