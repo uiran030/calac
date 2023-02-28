@@ -2,19 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
-import Daily from "./pages/Daily/Daily";
+import Diary from "./pages/Diary/Diary";
 import FinancialLedger from "./pages/FinancialLedger/FinancialLedger";
-import FinancialLedgerGraph from "./pages/FinancialLedgerGraph/FinancialLedgerGraph";
 import FindIdPw from "./pages/User/FindIdPw";
 import Scheduler from "./pages/Scheduler/Scheduler";
 import SignUp from "./pages/User/SignUp";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/User/Login";
 import Setting from "./pages/Setting/Setting";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import LedgerGraphSection from "./pages/FinancialLedgerGraph/FinancialLedgerGraph";
 
 const router = createBrowserRouter([
   {
@@ -27,8 +27,8 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "/daily",
-        element: <Daily />,
+        path: "/diary",
+        element: <Diary />,
       },
       {
         path: "/financialledger",
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/financialledger/graph",
-        element: <FinancialLedgerGraph />,
+        element: <LedgerGraphSection />,
       },
       {
         path: "/login/findidpw",

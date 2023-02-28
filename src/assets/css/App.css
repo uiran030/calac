@@ -38,10 +38,14 @@ table {
   font-style: normal;
 };
 /* =============================================== */
-
 .active {
   background-color: #fff;
   color: #333 !important;
   padding: 10px 0;
   border-radius: 30px;
 };
+
+/* ckEditor ====================================== */
+div.ck.ck-reset.ck-editor.ck-rounded-corners {height: 285px !important;}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main {height: 200px;}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div > p {height: 200px;}

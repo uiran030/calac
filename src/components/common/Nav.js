@@ -79,16 +79,16 @@ const Nav = () => {
                 />
               </ListItem>
             </Link>
-            <Link to='/daily' style={{ textDecoration: "none" }}>
+            <Link to='/diary' style={{ textDecoration: "none" }}>
               <ListItem
                 sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
-                  setBtnActive("daily");
+                  setBtnActive("feed");
                 }}
               >
                 <TitleColor
-                  primary='Daily'
-                  className={btnActive === "daily" ? "active" : ""}
+                  primary='Diary'
+                  className={btnActive === "diary" ? "active" : ""}
                   disableTypography
                 />
               </ListItem>
@@ -149,24 +149,24 @@ const Nav = () => {
 };
 //style=================================================
 const NavBar = styled(Box)({
-  backgroundColor: '#07553B',
-  textAlign: 'center',
-  height: '100vh',
-  width: '100%',
+  backgroundColor: `#07553B`,
+  textAlign: `center`,
+  height: `100vh`,
+  width: `100%`,
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
 });
 const DividerColor = styled(Divider)({
-  width: '80%',
-  backgroundColor: '#fff',
-  margin: 'auto',
+  width: `80%`,
+  backgroundColor: `#fff`,
+  margin: `auto`,
 });
 const TitleColor = styled(ListItemText)({
-  color: '#fff',
-  textAlign: 'center',
-  fontSize: '20px',
-  margin: '10px',
+  color: `#fff`,
+  textAlign: `center`,
+  fontSize: `20px`,
+  margin: `10px`,
 });
 //======================================================
 export default function StyledComponents() {
