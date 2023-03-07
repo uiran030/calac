@@ -1,11 +1,29 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import { ResponsivePie } from '@nivo/pie';
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import axios from 'axios';
 
 const FinalncialLedgerDonut = () => {
+
+  const [ledgerData, setLedgerData] = useState(false);
+
+  useEffect(() => {
+      axios.get('http://localhost:5000/ledger')
+      .then((res) => {
+        console.log('res', res.data);
+        setLedgerData(res.data);
+      })
+    }, []);
+
+    const testFunction = () => {
+      ledgerData.map(data => {
+        console.log(data);
+      })
+    }
+
   return (
     <DountWrap className="donut">
       <DountGraph>
@@ -20,7 +38,7 @@ const FinalncialLedgerDonut = () => {
                 { id: '보험비', value: 159800 },
                 { id: '병원/약국', value: 6000 },
                 { id: '간식비', value: 8500 },
-                { id: '반료묘/견', value: 156200 },
+                { id: '반려묘/견', value: 156200 },
                 { id: '추가 카테고리', value: 123456 },
             ]}
             margin={{ top: 40, right: 80, bottom: 80, left: 0 }}
@@ -87,7 +105,7 @@ const FinalncialLedgerDonut = () => {
               },
               {
                 match: {
-                  id: '반료묘/견'
+                  id: '반려묘/견'
                 },
                 id: 'dots'
               },
@@ -115,7 +133,6 @@ const FinalncialLedgerDonut = () => {
           />
         </Box>
       </DountGraph>
-      
       <Link to='/financialledger/graph'>
         <NextBtn variant="text">
           그래프 보기<KeyboardArrowRightIcon/>

@@ -1,12 +1,21 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { styled } from "@mui/material/styles";
 import { Box, Grid, Divider } from "@mui/material";
 import DashboardChart from "./DashboardChart";
 import DashboardCalendar from "./DashboardCalendar";
 import DashboardMonthGoal from "./DashboardMonthGoal";
 import TopStateBar from "../common/TopBar";
+import axios from 'axios';
 
 const DashboardSection = () => {
+
+  // useEffect(() => {
+  //   axios.get('http://localhost:5000/api')
+  //   .then((res) => {
+  //     console.log('res', res);
+  //   })
+  // }, []);
+
   return (
     <SectionWrap container>
       <SectionUpGrid item xs={12}>
