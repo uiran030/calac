@@ -7,8 +7,6 @@ import axios from 'axios';
 
 const FeedSection = () => {
   useEffect(()=>{
-    axios.get("http://localhost:8004/")
-    .then(res=>console.log(res.data))
   },[])
   return (
     <MyBox>
