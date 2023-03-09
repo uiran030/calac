@@ -1,15 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { Typography, Box, ListItem, IconButton, ListItemButton, ListItemText, ListItemIcon, Checkbox } from "@mui/material";
-// import TestMonthGoal from "./TestMonthGoal";
 import { styled } from "@mui/material/styles";
 import axios from 'axios';
 import CommentIcon from "@mui/icons-material/Comment";
-// import ListItem from "@mui/material/ListItem";
-// import ListItemButton from "@mui/material/ListItemButton";
-// import ListItemIcon from "@mui/material/ListItemIcon";
-// import ListItemText from "@mui/material/ListItemText";
-// import Checkbox from "@mui/material/Checkbox";
-// import IconButton from "@mui/material/IconButton";
 
 const DashboardMonthGoal = () => {
   const [checked, setChecked] = useState([0]);
