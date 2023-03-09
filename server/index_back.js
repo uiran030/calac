@@ -1,26 +1,27 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-require('dotenv').config();
 const PORT = process.env.PORT;
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const {urlencoded} = require('body-parser');
 //==============================================
+const connectDB = require('./config/connectDB.js');
+const db = connectDB.init();
+connectDB.open(db);
+//==============================================
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
 //==============================================
-const LEDGER = require('./router/ledger.js');  
-app.use('/ledger',LEDGER);
-
-const DAIRY = require('./router/dairy.js');  
-app.use('/dairy',DAIRY);
-
-const SCHEDULER = require('./router/scheduler.js');  
-app.use('/scheduler',SCHEDULER);
-
-const USERS = require('./router/users.js');  
-app.use('/users',USERS);
+// ledger page의 data
+app.get('/ledger', (req, res) => {
+    const sqlQuery = "select * from ledger"
+    db.query(sqlQuery, (err, result) => {
+      res.send(result);
+      console.log('result', result);
+    })
+  });
 //==============================================
 app.listen(PORT, () => {
   console.log(`running on port ${PORT}`);
