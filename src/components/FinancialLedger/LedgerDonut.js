@@ -5,18 +5,21 @@ import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from 'axios';
+import { ExpandOutlined } from '@mui/icons-material';
 
 const FinalncialLedgerDonut = () => {
 
-  const [ledgerData, setLedgerData] = useState(false);
+  const [ledgerAllData, setLedgerAllData] = useState(false);
+  const [expenseList, setExpenseList] = useState(false);
 
   useEffect(() => {
-      axios.get('http://localhost:5000/ledger')
-      .then((res) => {
-        console.log('res', res.data);
-        setLedgerData(res.data);
-      })
-    }, []);
+    axios.get('http://localhost:5000/ledger')
+    .then((res) => {
+      console.log('res', res.data);
+      setLedgerAllData(res.data[0]);
+    })
+  }, []);
+
 
   return (
     <DountWrap className="donut">

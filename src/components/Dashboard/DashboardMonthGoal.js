@@ -11,7 +11,6 @@ const DashboardMonthGoal = () => {
   const handleToggle = (list) => {
   };
 
-
   useEffect(() => {
     axios.get('http://localhost:5000/goal')
     .then((res) => {
