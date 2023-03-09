@@ -181,7 +181,7 @@ const TotalText = styled('h3')({
   fontSize:'20px',
   marginBottom:'10px'
 });
-const TotalCount = styled('p')({
+const TotalCount = styled(Typography)({
   fontSize:'30px'
 });
 const ShowRecent = styled(Box)({

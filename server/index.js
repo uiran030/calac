@@ -16,22 +16,38 @@ const db = mysql.createPool({
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
-// app.get('/api', (req, res) => {
-//   const sqlQuery = "select * from testtable;"
-//   db.query(sqlQuery, (err, result) => {
-//     res.send(result);
-//     console.log('result', result);
-//   })
-// });
 
-// ledger page의 data
+// dashboard page의 goal data
+app.get('/goal', (req, res) => {
+  const selectQuery = "select * from goal;"
+  db.query(selectQuery, (err, result) => {
+    res.send(result);
+    console.log('result', result);
+  })
+});
+
+// ledger page의 show data
 app.get('/ledger', (req, res) => {
-    const sqlQuery = "select * from ledger;"
-    db.query(sqlQuery, (err, result) => {
-      res.send(result);
-      console.log('result', result);
-    })
-  });
+  const selectQuery = "select * from ledger;"
+  db.query(selectQuery, (err, result) => {
+    res.send(result);
+    console.log('result', result);
+  })
+});
+// ledger page의 add
+app.post('/ledger/insert', (req, res) => {
+  console.log('req', req.data)
+  const category = req.body.category;
+  const type = req.body.type;
+  const description = req.body.description;
+  const count = req.body.count;
+  const insertQuery = `INSERT INTO ledger (ledger_category, ledger_type, ledger_description, ledger_count) VALUES ('${category}', '${type}', '${description}', '${count}');`
+  db.query(insertQuery, (err, result) => {
+    res.send('success!!!!!!!!!!');
+    console.log('result', result);
+    console.log('req', req.body);
+  })
+});
 
 app.listen(PORT, () => {
   console.log(`running on port ${PORT}`);

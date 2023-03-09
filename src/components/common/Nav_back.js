@@ -13,38 +13,17 @@ const Nav = () => {
     setBtnActive(true);
   };
   //=================================================================================
-  const tabMenu = [
-    {
-      link : '/',
-      text : 'DashBoard'
-    },
-    {
-      link : '/scheduler',
-      text : 'Scheduler'
-    },
-    {
-      link : '/financialledger',
-      text : 'Financial ledger'
-    },
-    {
-      link : '/diary',
-      text : 'Diary'
-    },
-    {
-      link : '/setting',
-      text : 'Setting'
-    }
-  ];
-  //=================================================================================
   return (
     <NavBar>
-      <nav>
-        <Box>
+      <Box>
+        <nav>
           <List disablePadding>
-            <Link to='/'>
+            <Link to='/' style={{ textDecoration: "none" }}>
               <ListItem
                 sx={{height:"110px", paddingRight:"30px"}}
-                onClick={() => { setBtnActive("dashBoard"); }}
+                onClick={() => {
+                  setBtnActive("dashBoard");
+                }}
               >
                 <Typography color="secondary" fontSize="30px" sx={{margin:"Auto"}}>
                   <JoinRightRoundedIcon sx={{fontSize: "30px", marginX:"9px"}} />
@@ -53,12 +32,13 @@ const Nav = () => {
               </ListItem>
             </Link>
           </List>
-        </Box>
+        </nav>
         <DividerColor />
         <nav>
           <List>
-            <Link to='/'>
-              <CommonListItem
+            <Link to='/' style={{ textDecoration: "none" }}>
+              <ListItem
+                sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
                   setBtnActive("dashBoard");
                 }}
@@ -69,10 +49,11 @@ const Nav = () => {
                   onClick={toggleActive}
                   disableTypography
                 />
-              </CommonListItem>
+              </ListItem>
             </Link>
-            <Link to='/scheduler'>
-              <CommonListItem
+            <Link to='/scheduler' style={{ textDecoration: "none" }}>
+              <ListItem
+                sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
                   setBtnActive("scheduler");
                 }}
@@ -82,10 +63,11 @@ const Nav = () => {
                   className={btnActive === "scheduler" ? "active" : ""}
                   disableTypography
                 />
-              </CommonListItem>
+              </ListItem>
             </Link>
-            <Link to='/financialledger'>
-              <CommonListItem
+            <Link to='/financialledger' style={{ textDecoration: "none" }}>
+              <ListItem
+                sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
                   setBtnActive("financialLedger");
                 }}
@@ -95,10 +77,11 @@ const Nav = () => {
                   className={btnActive === "financialLedger" ? "active" : ""}
                   disableTypography
                 />
-              </CommonListItem>
+              </ListItem>
             </Link>
-            <Link to='/diary'>
-              <CommonListItem
+            <Link to='/diary' style={{ textDecoration: "none" }}>
+              <ListItem
+                sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
                   setBtnActive("feed");
                 }}
@@ -108,15 +91,16 @@ const Nav = () => {
                   className={btnActive === "diary" ? "active" : ""}
                   disableTypography
                 />
-              </CommonListItem>
+              </ListItem>
             </Link>
           </List>
         </nav>
         <DividerColor />
         <nav>
           <List sx={{ boxSize: "border-box" }}>
-            <Link to='/setting'>
-              <CommonListItem
+            <Link to='/setting' style={{ textDecoration: "none" }}>
+              <ListItem
+                sx={{ height: "70px", boxSize: "border-box" }}
                 onClick={() => {
                   setBtnActive("setting");
                 }}
@@ -126,15 +110,15 @@ const Nav = () => {
                   className={btnActive === "setting" ? "active" : ""}
                   disableTypography
                 />
-              </CommonListItem>
+              </ListItem>
             </Link>
           </List>
         </nav>
-      </nav>
+      </Box>
       <Box marginBottom={10} fontSize={30}>
         <nav>
           <List>
-            <Link to='/login'>
+            <Link to='/login' style={{ textDecoration: "none" }}>
               <ListItem
                 onClick={() => {
                   setBtnActive("login");
@@ -143,12 +127,17 @@ const Nav = () => {
                 <TitleColor
                   primary='Login'
                   disableTypography
+                  // className={btnActive === "login" ? "active" : ""}
+                  // 로그인은 배경 안들어오는게 예쁜 것 같은데,
+                  // 달리 생각하실 수 있어서 주석으로 남겨놓겠습니다.
+                  // 검토 후 삭제 바랍니다 - hhb // 확인 했으나 어떤 디자인인지
+                  // 가늠이 안가 회의때 여쭤보도록 하겠습니다! 
                   sx={{ fontSize: "30px" }}
                 />
               </ListItem>
             </Link>
           </List>
-          <Link to='/login/signup'>
+          <Link to='/login/signup' style={{ textDecoration: "none" }}>
             <Typography sx={{ color: "#c1c1c1", textDecoration: "underline" }}>
               Sign up
             </Typography>
@@ -178,10 +167,6 @@ const TitleColor = styled(ListItemText)({
   textAlign: `center`,
   fontSize: `20px`,
   margin: `10px`,
-});
-const CommonListItem = styled(ListItem)({
-  height: "70px", 
-  boxSize: "border-box"
 });
 //======================================================
 export default function StyledComponents() {
