@@ -1,9 +1,24 @@
-import React from 'react';
-import { Typography, Box } from "@mui/material";
-import TestMonthGoal from "./TestMonthGoal";
+import React, {useEffect, useState} from 'react';
+import { Typography, Box, ListItem, IconButton, ListItemButton, ListItemText, ListItemIcon, Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import axios from 'axios';
+import CommentIcon from "@mui/icons-material/Comment";
 
 const DashboardMonthGoal = () => {
+  const [checked, setChecked] = useState([0]);
+  const [goalList, setGoalList] = useState(false);
+  
+  const handleToggle = (list) => {
+  };
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/goal')
+    .then((res) => {
+      console.log('res', res.data);
+      setGoalList(res.data);
+    })
+  }, []);
+
   return (
   <MonthGoalWrap>
     <Typography
@@ -13,7 +28,42 @@ const DashboardMonthGoal = () => {
     >
       이번달 목표
     </Typography>
-    <TestMonthGoal />
+      {
+        goalList && goalList.map((list) => {
+          return(
+            <ListItem
+            key={list.goal_no}
+            secondaryAction={
+              <IconButton edge='end' aria-label='comments'>
+                <CommentIcon />
+              </IconButton>
+            }
+            disablePadding
+            >
+              <ListItemButton
+              role={undefined}
+              dense
+              onClick={handleToggle(list)}
+              >
+                <ListItemIcon>
+                    <Checkbox
+                      edge='start'
+                      // checked = {checked}
+                      tabIndex={-1}
+                      disableRipple
+                      // inputProps={{ "aria-labelledby": list.goal_no }}
+                    />
+                </ListItemIcon>
+                <ListItemText
+                  id={list.goal_no}
+                  primary={list.goal_title}
+                  sx={{ marginLeft: "-20px" }}
+                />
+              </ListItemButton>
+            </ListItem>
+          )
+        })
+      }
   </MonthGoalWrap>
   );
 };

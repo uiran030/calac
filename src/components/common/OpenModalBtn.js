@@ -6,41 +6,41 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
 
 const BottomLedgerButton = () => {
   const modalData = [];
   const [open, setOpen] = useState(false);
-  const [tabValue, setTabValue] = useState('food');
   const [choiceModal, setChoiceModal] = useState(false);
+  const [category, setCategory] = useState('식비');
   const [count, setCount] = useState(false);
-  const [description, setDescription] = useState(false);
-
+  const [description, setDescription] = useState('');
+  //=================================================================================
   const actions = [
     { icon: <PaymentsIcon />, name: '지출', value:'expense' },
     { icon: <AddCircleOutlineIcon />, name: '수입', value:'income' }
   ];
-  
+  //=================================================================================
   // 모달창 닫기
   const handleClose = () => setOpen(false);
+  //=================================================================================
   // 카테고리 고르기
-  const handleChange = (e, value) => { setTabValue(value); };
+  const handleChange = (e, value) => { setCategory(value); };
+  //=================================================================================
   // 지출/수입 모달 고른 후 클릭했을 때
   const handleChoiceModal = event => {
     setOpen(true);
     setCount(false);
-    setDescription(false);
+    setDescription('');
     setChoiceModal(event);
   };
-  // 설명 입력창 (수정 필요)
+  //=================================================================================
+  // 설명 입력창 (빈값 허용)
   const hadleDescription = (e) => {
     const descriptionValue = e.target.value;
     setDescription(descriptionValue);
-    if (!descriptionValue){
-      setCount(descriptionValue);
-    } else {
-      setCount(false);
-    }
   };
+  //=================================================================================
   // 금액 입력창
   const hadleCount = (e) => {
     const countValue = e.target.value;
@@ -53,14 +53,21 @@ const BottomLedgerButton = () => {
       setCount(countValue);
     }
   };
+  //=================================================================================
   // 저장 버튼 클릭 시
   const handleSave = () => {
-    modalData.push({choiceModal, count, description});
+    modalData.push({choiceModal, category, count, description});
     setOpen(false);
     console.log('modalData', modalData);
+    console.log('modalData', modalData[0].choiceModal);
+    axios.post('http://localhost:5000/ledger/insert', {
+      category : modalData[0].category,
+      type : modalData[0].choiceModal,
+      description : modalData[0].description,
+      count : modalData[0].count
+    })
   };
-  
-
+  //=================================================================================
   const style = {
     position: 'absolute',
     top: '50%',
@@ -72,6 +79,7 @@ const BottomLedgerButton = () => {
     boxShadow: 24,
     p: 4,
   };
+  //=================================================================================
 
   return (
     <BtnWrap>
@@ -120,7 +128,7 @@ const BottomLedgerButton = () => {
             }}
           >
             <Tabs
-              value={tabValue}
+              value={category}
               onChange={handleChange}
               variant="scrollable"
               scrollButtons
@@ -131,14 +139,14 @@ const BottomLedgerButton = () => {
                 },
               }}
             >
-              <Tab sx={{padding:'0px'}} label="식비" value='food'/>
-              <Tab sx={{padding:'0px'}} label="통신비" value='phone'/>
-              <Tab sx={{padding:'0px'}} label="쇼핑" value='shopping'/>
-              <Tab sx={{padding:'0px'}} label="보험비" value='insuranceFee'/>
-              <Tab sx={{padding:'0px'}} label="병원/약국" value='hospital/pharmacy'/>
-              <Tab sx={{padding:'0px'}} label="간식비" value='dessert'/>
-              <Tab sx={{padding:'0px'}} label="반료묘/견" value='pet'/>
-              <Tab sx={{padding:'0px'}} label="추가 카테고리" value='addCategory'/>
+              <Tab sx={{padding:'0px'}} label="식비" value='식비'/>
+              <Tab sx={{padding:'0px'}} label="통신비" value='통신비'/>
+              <Tab sx={{padding:'0px'}} label="쇼핑" value='쇼핑'/>
+              <Tab sx={{padding:'0px'}} label="보험비" value='보험비'/>
+              <Tab sx={{padding:'0px'}} label="병원/약국" value='병원/약국'/>
+              <Tab sx={{padding:'0px'}} label="간식비" value='간식비'/>
+              <Tab sx={{padding:'0px'}} label="반료묘/견" value='반료묘/견'/>
+              <Tab sx={{padding:'0px'}} label="추가 카테고리" value='추가 카테고리'/>
             </Tabs>
           </Box>
           <Box sx={{mt:3, textAlign:'right'}}>
