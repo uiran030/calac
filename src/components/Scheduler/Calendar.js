@@ -6,11 +6,34 @@ import {
   Divider,
   Paper,
 } from "@mui/material";
-import React, { useState } from "react";
-import ReactScheduler from "./ReactScheduler.js";
+import React, { useEffect, useState } from "react";
+import ReactScheduler from "./ReactScheduler.tsx";
 import "../../assets/css/App.css";
+import axios from "axios";
 
 export default function Calendar() {
+  // useEffect(() => {
+  //   axios.get("http://localhost:5000/scheduler").then((res) => {
+  //     console.log("res", res.data);
+  //     // setLedgerData(res.data);
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   axios
+  //     .all([
+  //       axios.get("http://localhost:5000/scheduler"),
+  //       axios.get("http://localhost:5000/scheduler/event"),
+  //     ])
+  //     .then(
+  //       axios.spread((res1, res2) => {
+  //         console.log(res1, res2);
+  //       })
+  //       // setLedgerData(res.data);
+  //     )
+  //     .catch((err) => console.log(err));
+  // }, []);
+
   const [categoryFilter, setCategoryFilter] = useState([
     { id: 1, text: "전체", value: "" },
     { id: 2, text: "회사", value: "#4f953b" }, // 진녹
@@ -143,4 +166,4 @@ export default function Calendar() {
       </Box>
     </Box>
   );
-};
+}

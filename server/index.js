@@ -1,38 +1,27 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const mysql = require('mysql');
-const PORT = 5000;
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const {urlencoded} = require('body-parser');
-
-const db = mysql.createPool({
-  host : 'localhost',
-  user : 'root',
-  password : '1234',
-  database : 'calacDB'
-});
-
+require("dotenv").config();
+const PORT = process.env.PORT;
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const { urlencoded } = require("body-parser");
+//==============================================
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended:true}));
-// app.get('/api', (req, res) => {
-//   const sqlQuery = "select * from testtable;"
-//   db.query(sqlQuery, (err, result) => {
-//     res.send(result);
-//     console.log('result', result);
-//   })
-// });
+app.use(bodyParser.urlencoded({ extended: true }));
+//==============================================
+const LEDGER = require("./router/ledger.js");
+app.use("/ledger", LEDGER);
 
-// ledger page의 data
-app.get('/ledger', (req, res) => {
-    const sqlQuery = "select * from ledger;"
-    db.query(sqlQuery, (err, result) => {
-      res.send(result);
-      console.log('result', result);
-    })
-  });
+const DAIRY = require("./router/dairy.js");
+app.use("/dairy", DAIRY);
 
+const SCHEDULER = require("./router/scheduler.js");
+app.use("/scheduler", SCHEDULER);
+
+const USERS = require("./router/users.js");
+app.use("/users", USERS);
+//==============================================
 app.listen(PORT, () => {
   console.log(`running on port ${PORT}`);
 });

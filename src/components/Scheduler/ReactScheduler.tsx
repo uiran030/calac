@@ -1,6 +1,109 @@
+import React, { useState, useEffect } from "react";
 import { Scheduler } from "@aldabil/react-scheduler";
+import {
+  EventActions,
+  ProcessedEvent,
+  ViewEvent,
+} from "@aldabil/react-scheduler/types";
+import axios from "axios";
 
-export default function Retry({ categoryFilter, btnActive }) {
+export default function ReactScheduler({ categoryFilter, btnActive }) {
+  const fetch = axios.get("http://localhost:5000/scheduler").then((res) => {
+    const processedData = res.data.map((item) => ({
+      ...item,
+      start: new Date(item.start),
+      end: new Date(item.end),
+    }));
+    return processedData;
+  });
+
+  const [eventData, setEventData] = useState(fetch);
+
+  console.log(eventData);
+
+  const fetchRemote = async (query: ViewEvent): Promise<ProcessedEvent[]> => {
+    /**Simulate fetchin remote data */
+
+    return new Promise((res) => {
+      setTimeout(() => {
+        eventData && res(eventData);
+      }, 3000);
+    });
+  };
+
+  const handleConfirm = async (
+    event: ProcessedEvent,
+    action: EventActions
+  ): Promise<ProcessedEvent> => {
+    console.log("handleConfirm =", action, event.title);
+
+    return new Promise((res, rej) => {
+      if (action === "edit") {
+        /** PUT event to remote DB */
+        ///======
+        axios
+          .post("http://localhost:5000/scheduler/edit", {
+            event: event,
+          })
+          .then(() => {
+            alert("등록성공!");
+            console.log(event);
+          })
+          .catch(() => {
+            alert("등록실패");
+          });
+        ///======
+      } else if (action === "create") {
+        /**POST event to remote DB */
+        ///======
+        axios
+          .post("http://localhost:5000/scheduler/insert", {
+            event: event,
+          })
+          .then(() => {
+            alert("등록성공!");
+            console.log(event);
+          })
+          .catch(() => {
+            alert("등록실패");
+          });
+        ///======
+      }
+
+      const isFail = Math.random() > 0.6;
+      // Make it slow just for testing
+      setTimeout(() => {
+        if (isFail) {
+          rej("Ops... Faild");
+        } else {
+          res({
+            ...event,
+            event_id: event.event_id || Math.random(),
+          });
+        }
+      }, 100000);
+    });
+  };
+
+  const handleDelete = async (deletedId: string): Promise<string> => {
+    axios
+      .post("http://localhost:5000/scheduler/delete", {
+        deletedId: deletedId,
+      })
+      .then(() => {
+        alert("삭제 성공!");
+        console.log(deletedId);
+      })
+      .catch(() => {
+        alert("삭제 실패ㅠ");
+      });
+
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        res(deletedId);
+      }, 3000);
+    });
+  };
   return (
     <>
       <Scheduler
@@ -10,7 +113,6 @@ export default function Retry({ categoryFilter, btnActive }) {
           weekStartOn: 0, // 어떤 요일로 시작할지 (0이 일요일이더라)
           startHour: 9, // 시작 시간 초기값 시간
           endHour: 17, // 끝 초기값 시간
-          // cellRenderer: (props: CellProps) => JSX.Element,
           navigation: true, // ?
           disableGoToDay: false, // 월별달력 날짜 누르면해당 날 자세히 보기
         }}
@@ -26,9 +128,7 @@ export default function Retry({ categoryFilter, btnActive }) {
           {
             name: "color",
             type: "select",
-            // Should provide options with type:"select"
             options: categoryFilter.slice(1),
-
             config: {
               label: "Category",
               required: true,
@@ -43,13 +143,11 @@ export default function Retry({ categoryFilter, btnActive }) {
           {
             name: "description",
             type: "input",
-            default: "Default Value...",
             config: { label: "Details", multiline: true, rows: 4 },
           },
           {
-            name: "remider",
+            name: "reminder",
             type: "select",
-            // Should provide options with type:"select"
             options: [
               { id: 1, text: "사용안함", value: "" },
               { id: 2, text: "정시알림", value: 0 },
@@ -66,24 +164,19 @@ export default function Retry({ categoryFilter, btnActive }) {
               { id: 13, text: "1주일(168시간) 전", value: 604800 },
             ],
             config: {
-              label: "Remider",
-              // required: true,
-              // errMsg: "Plz Select User",
+              label: "reminder",
             },
           },
           {
-            name: "remiderMethod",
+            name: "reminderMethod",
             type: "select",
-            // Should provide options with type:"select"
             options: [
               { id: 1, text: "팝업", value: "#c1c1c1" },
               { id: 2, text: "이메일", value: 2 },
               { id: 3, text: "카카오톡", value: 3 },
             ],
             config: {
-              label: "Remider Method",
-              // required: true,
-              // errMsg: "Plz Select User",
+              label: "reminder Method",
             },
           },
         ]}
@@ -110,44 +203,9 @@ export default function Retry({ categoryFilter, btnActive }) {
           moreEvents: "More...",
           loading: "Loading...",
         }}
-        events={[
-          {
-            event_id: 1,
-            title: "Event 1",
-            start: new Date("2023/2/2 09:30"),
-            end: new Date("2023/2/8 10:30"),
-            color: "#4f953b",
-            // allDay: true,
-          },
-          {
-            event_id: 2,
-            title: "Event 2",
-            start: new Date("2023/2/10 13:00"),
-            end: new Date("2023/2/10 18:00"),
-            color: "#a7a7a2",
-          },
-          {
-            event_id: 3,
-            title: "Event 3",
-            start: new Date("2023/2/15 10:00"),
-            end: new Date("2023/2/27 11:00"),
-            color: "#3a5134",
-          },
-          {
-            event_id: 4,
-            title: "Event 3",
-            start: new Date("2023/2/15 10:00"),
-            end: new Date("2023/2/15 19:00"),
-            color: "#79a8a9",
-          },
-          {
-            event_id: 5,
-            title: "Event 3",
-            start: new Date("2023/2/27 10:00"),
-            end: new Date("2023/2/28 11:00"),
-            color: "#aacfd0",
-          },
-        ]}
+        getRemoteEvents={fetchRemote}
+        onConfirm={handleConfirm}
+        onDelete={handleDelete}
       />
     </>
   );

@@ -167,6 +167,7 @@ const ModalBox = styled(Box)({
   border: '3px solid #07553B',
   boxShadow: 24,
   padding: 20,
+  overflowY: 'auto',
 });
 const DetailBox = styled(Box)({
   padding: 20,
