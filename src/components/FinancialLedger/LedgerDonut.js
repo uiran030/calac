@@ -1,33 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { ResponsivePie } from '@nivo/pie';
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from 'axios';
+import { ExpandOutlined } from '@mui/icons-material';
 
 const FinalncialLedgerDonut = () => {
 
-  const [ledgerData, setLedgerData] = useState(false);
+  const [ledgerAllData, setLedgerAllData] = useState(false);
+  const [expenseList, setExpenseList] = useState(false);
 
   useEffect(() => {
-      axios.get('http://localhost:5000/ledger')
-      .then((res) => {
-        console.log('res', res.data);
-        setLedgerData(res.data);
-      })
-    }, []);
+    axios.get('http://localhost:5000/ledger')
+    .then((res) => {
+      console.log('res', res.data);
+      setLedgerAllData(res.data[0]);
+    })
+  }, []);
 
-    const testFunction = () => {
-      ledgerData.map(data => {
-        console.log(data);
-      })
-    }
 
   return (
     <DountWrap className="donut">
       <DountGraph>
-        <Test>이번달 지출 현황</Test>
+        <DountTitle>이번달 지출 현황</DountTitle>
         <Box style={{ width: '100%', height: '600px', margin: '0 auto' }}>
         {/* nivo로 만든 도넛차트 */}
           <ResponsivePie
@@ -148,7 +145,7 @@ const DountWrap = styled(Box)({
   width:'100%',
   position:'relative'
 });
-const Test = styled('p')({
+const DountTitle = styled(Typography)({
   textAlign:'center',
   marginBottom:'70px'
 })
