@@ -33,10 +33,7 @@ const DiaryCard = () => {
     axios.post('http://localhost:5000/comments', {
       dairy_no : id
     })
-    .then(res=>{
-      setComments(res.data[0])
-      console.log("comment",res.data[0])
-    });
+    .then(res=>setComments(res.data[0]));
   }
   //======================================================
   const commentHandle = (e) => {
@@ -54,20 +51,8 @@ const DiaryCard = () => {
     })
     .then(()=>{
       alert('댓글이 등록되었습니다 :)');
-      onReset();
+      setNewComment({comment: ''});
     })
-  }
-  const onReset = () => {setNewComment({comment: ''});}
-  //======================================================
-  const commentDelete = (id) => {
-    if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
-      axios.post('http://localhost:5000/comments/delete' , {
-        comment_no : id
-      })
-      .then(()=>alert("삭제되었습니다 :)"))
-    } else {
-      alert("취소되었습니다 :)")
-    }
   }
   //======================================================
   useEffect(()=>{
@@ -121,61 +106,73 @@ const DiaryCard = () => {
       </CardList>
       {/* MUI Modal은 ref와 함께 자식 컴포넌트로 전달? 함수형 컴포넌트에서 사용불가..? */}
       {isDetailOpen && (
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            open={isDetailOpen}
-            onClose={()=>setIsDetailOpen(false)}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-          <Fade in={isDetailOpen}>
-            <ModalBox>
-              <TitleTypography>{title}</TitleTypography>
-              <ModalDateTypography>{createdAt.substring(0,10)}</ModalDateTypography>
-              <Divider/>
-              <DetailBox>
-                  <CardMedia
-                    component="img"
-                    width="210"
-                    height="194"
-                    image="/images/diary/img01.jpeg"
-                    alt="이미지"
-                  />
-                  <ContentTypography>
-                    {ReactHtmlParser(content)}
-                  </ContentTypography>
-              </DetailBox>
-              <DetailDivider/>
-              <CommentBox>
-                <CommentTextField 
-                  id="outlined-basic" 
-                  variant="outlined" 
-                  label="댓글달기" 
-                  size="small" 
-                  onChange={commentHandle}
-                  />
-                <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
-                <List>
-                  {comments.map(list => {
-                    return (
-                      <ListItem>
-                        <ListItemText
-                          primary={`${list.comment} (${list.user_id} ${(list.createdAt).substring(0,10)})`}
-                        />
-                      <CommentUpdate>수정</CommentUpdate>
-                      <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
-                      </ListItem>
-                    )
-                  })}
-                </List>
-              </CommentBox>
-            </ModalBox>
-          </Fade>
-        </Modal>
+        <DiaryDetail
+        isDetailOpen={isDetailOpen}
+        setIsDetailOpen={setIsDetailOpen}
+        Backdrop={Backdrop}
+        id={id}
+        title={title}
+        createdAt={createdAt}
+        content={content}
+        submitComment={submitComment}
+        comments={comments}
+        commentHandle={commentHandle}
+        />
+        //   <Modal
+        //     aria-labelledby="transition-modal-title"
+        //     aria-describedby="transition-modal-description"
+        //     open={isDetailOpen}
+        //     onClose={()=>setIsDetailOpen(false)}
+        //     closeAfterTransition
+        //     BackdropComponent={Backdrop}
+        //     BackdropProps={{
+        //       timeout: 500,
+        //     }}
+        //   >
+        //   <Fade in={isDetailOpen}>
+        //     <ModalBox>
+        //       <TitleTypography>{title}</TitleTypography>
+        //       <ModalDateTypography>{createdAt.substring(0,10)}</ModalDateTypography>
+        //       <Divider/>
+        //       <DetailBox>
+        //           <CardMedia
+        //             component="img"
+        //             width="210"
+        //             height="194"
+        //             image="/images/diary/img01.jpeg"
+        //             alt="이미지"
+        //           />
+        //           <ContentTypography>
+        //             {ReactHtmlParser(content)}
+        //           </ContentTypography>
+        //       </DetailBox>
+        //       <DetailDivider/>
+        //       <CommentBox>
+        //         <CommentTextField 
+        //           id="outlined-basic" 
+        //           variant="outlined" 
+        //           label="댓글달기" 
+        //           size="small" 
+        //           onChange={commentHandle}
+        //           />
+        //         <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
+        //         <List>
+        //           {comments.map(list => {
+        //             return (
+        //               <ListItem>
+        //                 <ListItemText
+        //                   primary={list.comment}
+        //                 />
+        //               <CommentUpdate>수정</CommentUpdate>
+        //               <CommentDelete>삭제</CommentDelete>
+        //               </ListItem>
+        //             )
+        //           })}
+        //         </List>
+        //       </CommentBox>
+        //     </ModalBox>
+        //   </Fade>
+        // </Modal>
       )}
     </Box>
   );

@@ -19,6 +19,9 @@ app.use("/ledger", LEDGER);
 const DAIRY = require("./router/dairy.js");
 app.use("/dairy", DAIRY);
 
+const COMMENTS = require("./router/comments.js");
+app.use("/comments", COMMENTS);
+
 const SCHEDULER = require("./router/scheduler.js");
 app.use("/scheduler", SCHEDULER);
 
