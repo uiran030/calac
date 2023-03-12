@@ -1,44 +1,68 @@
 import React from 'react'
 import "../../assets/css/App.css";
 import { styled } from "@mui/material/styles";
-import { Box, Modal, Fade, Typography, Backdrop, Divider, CardMedia } from "@mui/material";
+import { Box, List, ListItem, ListItemText, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
+import ReactHtmlParser from "react-html-parser";
 
-const DiaryDetail = (isDetailOpen,closeDetail,id,title,body) => {
+const DiaryDetail = (isDetailOpen,setIsDetailOpen,Backdrop,id,title,createdAt,content,submitComment,comments,commentHandle) => {
   //======================================================
-  console.log(id,body,title)
   return (
     <MyBox>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={isDetailOpen}
-        onClose={closeDetail}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={isDetailOpen}>
-          <ModalBox>
-            <TitleTypography>{title}</TitleTypography><br></br>
-            <DateTypography>2023-02-19</DateTypography>
-            <Divider/>
-            <DetailBox>
-              <CardMedia
-                component="img"
-                width="210"
-                height="194"
-                image="/images/diary/img01.jpeg"
-                alt="이미지"
-              />
-              <ContentTypography>
-                {body}
-              </ContentTypography>
-            </DetailBox>
-          </ModalBox>
-        </Fade>
-      </Modal>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={isDetailOpen}
+            onClose={()=>setIsDetailOpen(false)}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+          <Fade in={isDetailOpen}>
+            <ModalBox>
+              <TitleTypography>{title}</TitleTypography>
+              <ModalDateTypography>{createdAt}</ModalDateTypography>
+              <Divider/>
+              <DetailBox>
+                  <CardMedia
+                    component="img"
+                    width="210"
+                    height="194"
+                    image="/images/diary/img01.jpeg"
+                    alt="이미지"
+                  />
+                  <ContentTypography>
+                    {ReactHtmlParser(content)}
+                  </ContentTypography>
+              </DetailBox>
+              <DetailDivider/>
+              <CommentBox>
+                <CommentTextField 
+                  id="outlined-basic" 
+                  variant="outlined" 
+                  label="댓글달기" 
+                  size="small" 
+                  onChange={commentHandle}
+                  />
+                <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
+                <List>
+                  {comments.map(list => {
+                    return (
+                      <ListItem>
+                        <ListItemText
+                          primary={list.comment}
+                        />
+                      <CommentUpdate>수정</CommentUpdate>
+                      <CommentDelete>삭제</CommentDelete>
+                      </ListItem>
+                    )
+                  })}
+                </List>
+              </CommentBox>
+            </ModalBox>
+          </Fade>
+        </Modal>
     </MyBox>
   )
 };
@@ -56,6 +80,7 @@ const ModalBox = styled(Box)({
   border: '3px solid #07553B',
   boxShadow: 24,
   padding: 20,
+  overflowY: 'auto',
 });
 const DetailBox = styled(Box)({
   padding: 20,
@@ -65,14 +90,33 @@ const TitleTypography = styled(Typography)({
   color: '#07553B',
   textAlign: 'center'
 });
-const DateTypography = styled(Typography)({
+const ModalDateTypography = styled(Typography)({
   fontSize: 15,
   color: '#07553B',
   textAlign: 'right'
 });
 const ContentTypography = styled(Typography)({
-  fontSize: 15,
-  textAlign: 'center'
+  fontSize: 20,
+  textAlign: 'center',
+  paddingTop: 30,
+});
+const DetailDivider = styled(Divider)({
+});
+const CommentBox = styled(Box)({
+  paddingTop: 20,
+  height:30
+});
+const CommentTextField = styled(TextField)({
+  width: '80%',
+});
+const CommentButton = styled(Button)({
+  left: 26,
+});
+const CommentUpdate = styled(Button)({
+  left: 26,
+});
+const CommentDelete = styled(Button)({
+  left: 26,
 });
 //======================================================
 
