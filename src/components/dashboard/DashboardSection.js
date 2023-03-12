@@ -9,13 +9,6 @@ import axios from 'axios';
 
 const DashboardSection = () => {
 
-  // useEffect(() => {
-  //   axios.get('http://localhost:5000/api')
-  //   .then((res) => {
-  //     console.log('res', res);
-  //   })
-  // }, []);
-
   return (
     <SectionWrap container>
       <SectionUpGrid item xs={12}>

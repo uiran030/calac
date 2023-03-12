@@ -1,52 +1,96 @@
 import React, {useState,useEffect} from 'react';
 import { styled } from "@mui/material/styles";
-import { Box, List, ListItem, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
+import { Box, List, ListItem, ListItemText, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DiaryMoreButton from './DiaryMoreButton';
 import DiaryDetail from './DiaryDetail';
 import axios from 'axios';
+import ReactHtmlParser from "react-html-parser";
+
 const DiaryCard = () => {
   const [openMoreButton, setOpenMoreButton] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [countIndex, setCountIndex] = useState(0);
-  const [id, setId] = useState(0);
+  const [id, setId] = useState('');
   const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-  const [post, setPost] = useState([]);
+  const [content, setContent] = useState('');
+  const [createdAt, setCreatedAt] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState ({comment: ''})
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
     setOpenMoreButton(!openMoreButton);
   }
-  const openDetailModal = (title,body) => {
+  //======================================================
+  const openDetailModal = (id,title,content,createdAt) => {
     setIsDetailOpen(true);
+    setId(id);
     setTitle(title);
-    setBody(body);
+    setContent(content);
+    setCreatedAt(createdAt)
+    axios.post('http://localhost:5000/comments', {
+      dairy_no : id
+    })
+    .then(res=>{
+      setComments(res.data[0])
+      console.log("comment",res.data[0])
+    });
+  }
+  //======================================================
+  const commentHandle = (e) => {
+    const data = e.target.value;
+    setNewComment({
+      ...newComment,
+      comment : data
+    })
+  }
+  //======================================================
+  const submitComment = (id) => {
+    axios.post('http://localhost:5000/comments/insert',{
+      dairy_no : id,
+      comment : newComment.comment
+    })
+    .then(()=>{
+      alert('댓글이 등록되었습니다 :)');
+      onReset();
+    })
+  }
+  const onReset = () => {setNewComment({comment: ''});}
+  //======================================================
+  const commentDelete = (id) => {
+    if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
+      axios.post('http://localhost:5000/comments/delete' , {
+        comment_no : id
+      })
+      .then(()=>alert("삭제되었습니다 :)"))
+    } else {
+      alert("취소되었습니다 :)")
+    }
   }
   //======================================================
   useEffect(()=>{
-    axios.get('https://jsonplaceholder.typicode.com/posts')
-    .then(res=>setPost(res.data));
-    console.log(post)
-  },[])
+    axios.get('http://localhost:5000/dairy')
+    .then(res=>setPosts(res.data));
+  },[posts])
   //======================================================
   return (
     <Box>
       <CardList>
-        {post.map(list=>{
+        {posts.map((list,idx)=>{
           return(
-          <CardListItem key={list.id}>
+          <CardListItem key={idx}>
             <Box>
               <MyCardHeader
                 action={
-                  <MyIconButton aria-label="settings" onClick={(e)=>handleOpenMoreButton(e,list.id)}>
+                  <MyIconButton aria-label="settings" onClick={(e)=>handleOpenMoreButton(e,list.dairy_no)}>
                     <MoreVertIcon />
-                    {countIndex === list.id && (
+                    {countIndex === list.dairy_no && (
                       openMoreButton && (
                         <DiaryMoreButton 
-                          post={post} 
-                          setPost={setPost} 
-                          id={list.id}
+                          posts={posts} 
+                          id={list.dairy_no}
                         />
                       )
                     )}
@@ -55,8 +99,8 @@ const DiaryCard = () => {
                 title={list.title}
                 disableTypography
               />
-              <DateTypography>2023-02-24</DateTypography>
-              <Button onClick={()=>openDetailModal(list.title, list.body)}>
+              <DateTypography>{list.createdAt.substring(0,10)}</DateTypography>
+              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.createdAt)}>
                 <MyCardMedia
                   component="img"
                   width="40vh"
@@ -67,7 +111,7 @@ const DiaryCard = () => {
               </Button>
               <CardContent>
                 <BodyTypography variant="body2" color="text.secondary">
-                  {list.body}
+                  {ReactHtmlParser(list.content)}
                 </BodyTypography>
                 <CountCommentTypography>댓글 1개</CountCommentTypography>
               </CardContent>
@@ -77,43 +121,61 @@ const DiaryCard = () => {
       </CardList>
       {/* MUI Modal은 ref와 함께 자식 컴포넌트로 전달? 함수형 컴포넌트에서 사용불가..? */}
       {isDetailOpen && (
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={isDetailOpen}
-          onClose={()=>setIsDetailOpen(false)}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-        <Fade in={isDetailOpen}>
-          <ModalBox>
-            <TitleTypography>{title}</TitleTypography><br></br>
-            <ModalDateTypography>2023-02-19</ModalDateTypography>
-            <Divider/>
-            <DetailBox>
-              <CardMedia
-                component="img"
-                width="210"
-                height="194"
-                image="/images/diary/img01.jpeg"
-                alt="이미지"
-              />
-              <ContentTypography>
-                {body}
-              </ContentTypography>
-            </DetailBox>
-            <DetailDivider/>
-            <CommentBox>
-              <CommentTextField id="outlined-basic" variant="outlined" label="댓글달기" size="small"/>
-              <CommentButton>등록</CommentButton><br></br>
-              <CommentTypography>하이하이하잌ㅋㅋㅋㅋㅋㅋ</CommentTypography>
-            </CommentBox>
-          </ModalBox>
-        </Fade>
-      </Modal>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={isDetailOpen}
+            onClose={()=>setIsDetailOpen(false)}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+          <Fade in={isDetailOpen}>
+            <ModalBox>
+              <TitleTypography>{title}</TitleTypography>
+              <ModalDateTypography>{createdAt.substring(0,10)}</ModalDateTypography>
+              <Divider/>
+              <DetailBox>
+                  <CardMedia
+                    component="img"
+                    width="210"
+                    height="194"
+                    image="/images/diary/img01.jpeg"
+                    alt="이미지"
+                  />
+                  <ContentTypography>
+                    {ReactHtmlParser(content)}
+                  </ContentTypography>
+              </DetailBox>
+              <DetailDivider/>
+              <CommentBox>
+                <CommentTextField 
+                  id="outlined-basic" 
+                  variant="outlined" 
+                  label="댓글달기" 
+                  size="small" 
+                  onChange={commentHandle}
+                  />
+                <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
+                <List>
+                  {comments.map(list => {
+                    return (
+                      <ListItem>
+                        <ListItemText
+                          primary={`${list.comment} (${list.user_id} ${(list.createdAt).substring(0,10)})`}
+                        />
+                      <CommentUpdate>수정</CommentUpdate>
+                      <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
+                      </ListItem>
+                    )
+                  })}
+                </List>
+              </CommentBox>
+            </ModalBox>
+          </Fade>
+        </Modal>
       )}
     </Box>
   );
@@ -142,7 +204,7 @@ const MyCardMedia = styled(CardMedia)({
   width : '40vh'
 });
 const MyIconButton = styled(IconButton)({
-  marginRight: '-11px',
+  
 });
 const BodyTypography = styled(Typography)({
   width: '40vh',
@@ -197,11 +259,13 @@ const CommentTextField = styled(TextField)({
   width: '80%',
 });
 const CommentButton = styled(Button)({
-  marginLeft: 20
+  left: 26,
 });
-const CommentTypography = styled(Typography)({
-  margin: '10px 0 0 2px',
-  fontSize: 15
+const CommentUpdate = styled(Button)({
+  left: 26,
+});
+const CommentDelete = styled(Button)({
+  left: 26,
 });
 //======================================================
 export default DiaryCard;

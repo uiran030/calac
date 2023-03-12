@@ -5,12 +5,31 @@ import { Box, Button, Modal, Fade, Typography, Backdrop, Divider, TextField } fr
 import CreateIcon from '@mui/icons-material/Create';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import axios from 'axios';
 
 const WriteDiary = () => {
   const [open, setOpen] = useState(false);
+  const [allContent, setAllContent] = useState({
+    title : '',
+    content : '',
+    image : ''
+  })
+  // ======================================================
+  const getValue = (e) => {
+    const {name, value} = e.target;
+    setAllContent({
+      ...allContent,
+      [name]:value
+    })
+  }
   //======================================================
-  const getValue = () => {
-
+  const ckHandle = (e, editor) => {
+    const data = editor.getData();
+    // console.log({e,editor, data})
+    setAllContent({
+      ...allContent,
+      content : data
+    })
   }
   //======================================================
   const handleBtnClick = () => {
@@ -26,7 +45,15 @@ const WriteDiary = () => {
   }
   //======================================================
   const submit = () => {
-
+    axios.post('http://localhost:5000/dairy/insert', {
+      title : allContent.title,
+      content : allContent.content,
+      image : allContent.img
+    })
+    .then(()=>{
+      alert('등록되었습니다 :)');
+      setOpen(false);
+    })
   }
   //======================================================
 
@@ -71,13 +98,7 @@ const WriteDiary = () => {
                 style={{paddingTop:'20px'}}
                 editor={ClassicEditor}
                 config={{placeholder: "내용을 입력하세요 :)"}}
-                onReady={editor => {console.log( 'Editor is ready to use!',editor);}}
-                onChange={(event,editor ) => {
-                  const data = editor.getData();
-                  console.log({event,editor,data});
-                }}
-                onBlur={(event,editor) => {console.log('Blur :',editor);}}
-                onFocus={(event,editor) => {console.log('Focus :',editor);}}
+                onChange={ckHandle}
               />
             </EditorBox>
 
@@ -103,7 +124,8 @@ const ModalBox = styled(Box)({
   backgroundColor: '#fff',
   border: '3px solid #07553B',
   boxShadow: 24,
-  padding: 37
+  padding: 37,
+  overflowY: 'auto'
 });
 const TitleTypography = styled(Typography)({
   fontSize: 30,
