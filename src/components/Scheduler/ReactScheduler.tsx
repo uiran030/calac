@@ -6,8 +6,17 @@ import {
   ViewEvent,
 } from "@aldabil/react-scheduler/types";
 import axios from "axios";
+import { Box } from "@mui/material";
 
 export default function ReactScheduler({ categoryFilter, btnActive }) {
+  const [changedFilter, setChangedFilter] = useState(categoryFilter);
+
+  useEffect(() => {
+    setChangedFilter(categoryFilter);
+  }, [categoryFilter]);
+
+  // console.log("here", changedFilter);
+
   const fetch = axios.get("http://localhost:5000/scheduler").then((res) => {
     const processedData = res.data.map((item) => ({
       ...item,
@@ -19,7 +28,7 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
 
   const [eventData, setEventData] = useState(fetch);
 
-  console.log(eventData);
+  // console.log(eventData);
 
   const fetchRemote = async (query: ViewEvent): Promise<ProcessedEvent[]> => {
     /**Simulate fetchin remote data */
@@ -35,7 +44,7 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
     event: ProcessedEvent,
     action: EventActions
   ): Promise<ProcessedEvent> => {
-    console.log("handleConfirm =", action, event.title);
+    // console.log("handleConfirm =", action, event.title);
 
     return new Promise((res, rej) => {
       if (action === "edit") {
@@ -105,7 +114,7 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
     });
   };
   return (
-    <>
+    <Box>
       <Scheduler
         view='month'
         month={{
@@ -123,12 +132,12 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
           endHour: 17,
           step: 60,
         }}
-        height={700}
+        height={650}
         fields={[
           {
             name: "color",
             type: "select",
-            options: categoryFilter.slice(1),
+            options: changedFilter && changedFilter.slice(1),
             config: {
               label: "Category",
               required: true,
@@ -171,9 +180,9 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
             name: "reminderMethod",
             type: "select",
             options: [
-              { id: 1, text: "팝업", value: "#c1c1c1" },
-              { id: 2, text: "이메일", value: 2 },
-              { id: 3, text: "카카오톡", value: 3 },
+              { id: 1, text: "팝업", value: "1" },
+              { id: 2, text: "이메일", value: "2" },
+              { id: 3, text: "카카오톡", value: "3" },
             ],
             config: {
               label: "reminder Method",
@@ -188,11 +197,11 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
             today: "Go to Today",
           },
           form: {
-            addTitle: "Add Event",
-            editTitle: "Edit Event",
-            confirm: "Confirm",
-            delete: "Delete",
-            cancel: "Cancel",
+            addTitle: "일정 추가하기",
+            editTitle: "일정 수정하기",
+            confirm: "확인",
+            delete: "삭제",
+            cancel: "취소",
           },
           event: {
             title: "Title",
@@ -207,6 +216,6 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
         onConfirm={handleConfirm}
         onDelete={handleDelete}
       />
-    </>
+    </Box>
   );
 }
