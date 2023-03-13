@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React from 'react'
 import "../../assets/css/App.css";
 import { styled } from "@mui/material/styles";
 import { Box, List, ListItem, ListItemText, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
@@ -6,21 +6,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import ReactHtmlParser from "react-html-parser";
 
 const DiaryDetail = (isDetailOpen,setIsDetailOpen,Backdrop,id,title,createdAt,content,submitComment,comments,commentHandle) => {
-  const closeModal = () => {setIsDetailOpen(false)}
   //======================================================
   return (
     <MyBox>
       <Dialog
-        onClose={closeModal}
+        onClose={isDetailOpen}
         aria-labelledby="customized-dialog-title"
         open={isDetailOpen}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
       >
-        <DialogTitle id="customized-dialog-title" >
+        <DialogTitle id="customized-dialog-title" onClose={()=>setIsDetailOpen(false)}>
           Modal title
         </DialogTitle>
         <DialogContent dividers>
