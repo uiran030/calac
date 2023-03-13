@@ -14,6 +14,7 @@ import "../../assets/css/App.css";
 import axios from "axios";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import EditIcon from "@mui/icons-material/Edit";
+import { Navigate } from "react-router-dom";
 
 export default function Calendar() {
   const [categoryFilter, setCategoryFilter] = useState();
@@ -36,6 +37,12 @@ export default function Calendar() {
   //   { id: 5, text: "친구", value: "#79a8a9" }, // 청록
   //   { id: 6, text: "생일", value: "#aacfd0" }, // 연청록
   // ])
+
+  // const navigate = Navigate();
+
+  // useEffect(() => {
+  //   Navigate("/scheduler");
+  // }, [categoryFilter]);
 
   const newCategoryColor = [
     "#ef9e9f",

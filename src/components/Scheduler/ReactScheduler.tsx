@@ -28,8 +28,6 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
 
   const [eventData, setEventData] = useState(fetch);
 
-  // console.log(eventData);
-
   const fetchRemote = async (query: ViewEvent): Promise<ProcessedEvent[]> => {
     /**Simulate fetchin remote data */
 
@@ -113,6 +111,41 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
       }, 3000);
     });
   };
+
+  // 연구대상 ====
+  // const fetch = axios.get("http://localhost:5000/scheduler").then((res) => {
+  //   const processedData = res.data.map((item) => ({
+  //     ...item,
+  //     start: new Date(item.start),
+  //     end: new Date(item.end),
+  //   }));
+  //   return processedData;
+  // });
+  // ====
+  const [love, setLove] = useState([]);
+
+  const please = () =>
+    axios
+      .get("http://localhost:5000/scheduler/category") //
+      .then((res) => {
+        console.log("res", res.data);
+        return setLove([...res.data]);
+      });
+
+  love && console.log("shiiiiitttt", love);
+
+  ///=========
+  // const please = useEffect(() => {
+  //   axios.get("http://localhost:5000/scheduler/category").then((res) => {
+  //     return setLove(res.data);
+  //   }),
+  //     [];
+  // });
+
+  // const [love, setLove] = useState(please);
+
+  //========
+
   return (
     <Box>
       <Scheduler
@@ -137,7 +170,8 @@ export default function ReactScheduler({ categoryFilter, btnActive }) {
           {
             name: "color",
             type: "select",
-            options: changedFilter && changedFilter.slice(1),
+            // options: changedFilter && changedFilter.slice(1),
+            options: love && love.slice(1),
             config: {
               label: "Category",
               required: true,
