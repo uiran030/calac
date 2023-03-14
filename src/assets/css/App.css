@@ -52,3 +52,6 @@ table {
 div.ck.ck-reset.ck-editor.ck-rounded-corners {height: 285px !important;}
 div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main {height: 200px;}
 div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div > p {height: 200px;}
+
+/* MUI dialog ==================================== */
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded{ position: absolute; top: 50%; left: 57%; transform: translate(-50%,-50%);}

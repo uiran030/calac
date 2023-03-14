@@ -16,8 +16,6 @@ const DiaryCard = () => {
   const [content, setContent] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState ({comment: ''})
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
@@ -30,29 +28,6 @@ const DiaryCard = () => {
     setTitle(title);
     setContent(content);
     setCreatedAt(createdAt)
-    axios.post('http://localhost:5000/comments', {
-      dairy_no : id
-    })
-    .then(res=>setComments(res.data[0]));
-  }
-  //======================================================
-  const commentHandle = (e) => {
-    const data = e.target.value;
-    setNewComment({
-      ...newComment,
-      comment : data
-    })
-  }
-  //======================================================
-  const submitComment = (id) => {
-    axios.post('http://localhost:5000/comments/insert',{
-      dairy_no : id,
-      comment : newComment.comment
-    })
-    .then(()=>{
-      alert('댓글이 등록되었습니다 :)');
-      setNewComment({comment: ''});
-    })
   }
   //======================================================
   useEffect(()=>{
@@ -95,9 +70,9 @@ const DiaryCard = () => {
                 />
               </Button>
               <CardContent>
-                <BodyTypography variant="body2" color="text.secondary">
+                <ContentBox variant="body2" color="text.secondary">
                   {ReactHtmlParser(list.content)}
-                </BodyTypography>
+                </ContentBox>
                 <CountCommentTypography>댓글 1개</CountCommentTypography>
               </CardContent>
             </Box>
@@ -109,14 +84,10 @@ const DiaryCard = () => {
         <DiaryDetail
           isDetailOpen={isDetailOpen}
           setIsDetailOpen={setIsDetailOpen}
-          Backdrop={Backdrop}
           id={id}
           title={title}
           createdAt={createdAt}
           content={content}
-          submitComment={submitComment}
-          comments={comments}
-          commentHandle={commentHandle}
         />
       )}
     </Box>
@@ -148,7 +119,7 @@ const MyCardMedia = styled(CardMedia)({
 const MyIconButton = styled(IconButton)({
   
 });
-const BodyTypography = styled(Typography)({
+const ContentBox = styled(Box)({
   width: '40vh',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
