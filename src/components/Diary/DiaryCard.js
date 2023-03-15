@@ -16,6 +16,7 @@ const DiaryCard = () => {
   const [content, setContent] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
+  const [commentCnt, setCommentCnt] = useState('0');
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
@@ -29,6 +30,13 @@ const DiaryCard = () => {
     setContent(content);
     setCreatedAt(createdAt)
   }
+  //======================================================
+  useEffect(()=>{
+    axios.get('http://localhost:5000/comments/count')
+    .then(res=>{
+      setCommentCnt(res.data);
+    })
+  },[])
   //======================================================
   useEffect(()=>{
     axios.get('http://localhost:5000/dairy')
@@ -73,13 +81,18 @@ const DiaryCard = () => {
                 <ContentBox variant="body2" color="text.secondary">
                   {ReactHtmlParser(list.content)}
                 </ContentBox>
-                <CountCommentTypography>댓글 1개</CountCommentTypography>
+                {commentCnt.map((count,idx) => {
+                  return(
+                    (list.dairy_no === count.dairy_no) && (
+                      <CountCommentTypography key={idx}>댓글 {count.cnt}개</CountCommentTypography>
+                    )
+                  )
+                  })}
               </CardContent>
             </Box>
           </CardListItem>
         )})}
       </CardList>
-      {/* MUI Modal은 ref와 함께 자식 컴포넌트로 전달? 함수형 컴포넌트에서 사용불가..? */}
       {isDetailOpen && (
         <DiaryDetail
           isDetailOpen={isDetailOpen}
