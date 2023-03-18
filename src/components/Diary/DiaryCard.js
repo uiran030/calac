@@ -35,6 +35,7 @@ const DiaryCard = () => {
     axios.get('http://localhost:5000/comments/count')
     .then(res=>{
       setCommentCnt(res.data);
+      console.log("cnt",res.data)
     })
   },[])
   //======================================================
@@ -79,15 +80,15 @@ const DiaryCard = () => {
               </Button>
               <CardContent>
                 <ContentBox variant="body2" color="text.secondary">
-                  {ReactHtmlParser(list.content)}
+                  {ReactHtmlParser((list.content).substring(0,list.content.indexOf('</')))}
                 </ContentBox>
                 {commentCnt.map((count,idx) => {
                   return(
-                    (list.dairy_no === count.dairy_no) && (
+                    list.dairy_no === count.dairy_no && (
                       <CountCommentTypography key={idx}>댓글 {count.cnt}개</CountCommentTypography>
-                    )
+                    ) 
                   )
-                  })}
+                })}
               </CardContent>
             </Box>
           </CardListItem>

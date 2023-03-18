@@ -49,9 +49,9 @@ table {
 };
 
 /* ckEditor ====================================== */
-div.ck.ck-reset.ck-editor.ck-rounded-corners {height: 285px !important;}
+.MuiBox-root.css-1vva2nt {height: 240px;}
 div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main {height: 200px;}
-div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div > p {height: 200px;}
-
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div {height: 200px;}
+.MuiBox-root.css-11yd3ge > p , .MuiBox-root.css-11yd3ge > strong , .MuiBox-root.css-11yd3ge > i {overflow: hidden; text-overflow: ellipsis; white-space: nowrap;} 
 /* MUI dialog ==================================== */
 .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded{ position: absolute; top: 50%; left: 57%; transform: translate(-50%,-50%);}

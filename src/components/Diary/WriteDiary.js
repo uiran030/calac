@@ -13,7 +13,11 @@ const WriteDiary = () => {
     title : '',
     content : '',
     image : ''
-  })
+  });
+  const [uploadImg, setUploadImg] = useState({
+    fileName:'',
+    filePath:''
+  });
   // ======================================================
   const getValue = (e) => {
     const {name, value} = e.target;
@@ -32,12 +36,12 @@ const WriteDiary = () => {
     })
   }
   //======================================================
-  const handleBtnClick = () => {
-
+  const handleBtnClick = (e) => {
+    imgInput.current.click();
   }
   //======================================================
-  const handleChange = () => {
-    
+  const handleChange = (e) => {
+    setAllContent.image(e.target.files[0]);
   }
   //======================================================
   const imgInput = () => {
@@ -45,15 +49,20 @@ const WriteDiary = () => {
   }
   //======================================================
   const submit = () => {
-    axios.post('http://localhost:5000/dairy/insert', {
-      title : allContent.title,
-      content : allContent.content,
-      image : allContent.img
-    })
-    .then(()=>{
-      alert('등록되었습니다 :)');
-      setOpen(false);
-    })
+    if (allContent.title.length == 0 || allContent.content.length == 0) {
+      alert('제목 또는 내용을 입력해주세요 !')
+    } else {
+      axios.post('http://localhost:5000/dairy/insert', {
+        title : allContent.title,
+        content : allContent.content,
+        image : allContent.img
+      })
+      .then((res)=>{
+        console.log(res.data)
+        alert('등록되었습니다 :)');
+        setOpen(false);
+      })
+    }
   }
   //======================================================
 
