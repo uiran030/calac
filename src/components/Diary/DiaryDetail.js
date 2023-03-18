@@ -5,7 +5,7 @@ import { Box, List, ListItem, ListItemText, CardMedia, Typography, Button, Divid
 import ReactHtmlParser from "react-html-parser";
 import axios from 'axios';
 
-const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,createdAt,content}) => {
+const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,image,createdAt}) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState ({comment: ''})
   //======================================================
@@ -54,20 +54,13 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,createdAt,content}) 
         aria-labelledby="customized-dialog-title"
       >
         <DialogBox>
-          <Avatar alt="Remy Sharp" src="/images/diary/avatar.png">
+          <Avatar alt="Remy Sharp" src="/images/avatar.png">
             <UserTypography>{id}</UserTypography>
           </Avatar>
           <DialogTitle>{title}</DialogTitle>
           <DateTypography>{createdAt.substring(0,10)}</DateTypography>
           <MyDialogContent dividers>
             <DetailBox>
-              <CardMedia
-                component="img"
-                width="210"
-                height="194"
-                image="/images/diary/img01.jpeg"
-                alt="이미지"
-              />
               <ContentBox>
                 {ReactHtmlParser(content)}
               </ContentBox>

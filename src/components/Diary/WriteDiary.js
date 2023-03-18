@@ -12,12 +12,42 @@ const WriteDiary = () => {
   const [allContent, setAllContent] = useState({
     title : '',
     content : '',
-    image : ''
   });
-  const [uploadImg, setUploadImg] = useState({
-    fileName:'',
-    filePath:''
-  });
+  const [uploadImg, setUploadImg] = useState('');
+  const [flag, setFlag] = useState(false);
+  const imgLink = "http://localhost:5000/images/dairy";
+  // ckeditor img upload ==================================
+  const customUploadAdapter = (loader) => {
+    return {
+      upload(){
+        return new Promise ((resolve, reject) => {
+          const data = new FormData();
+          loader.file.then( (file) => {
+            data.append("name", file.name);
+            data.append("file", file);
+
+            axios.post('http://localhost:5000/upload', data)
+            .then((res) => {
+              if(!flag){
+                setFlag(true);
+                setUploadImg(res.data.filename);
+              }
+              resolve({
+                default: `${imgLink}/${res.data.filename}`
+              });
+            })
+            .catch((err)=>reject(err));
+          })
+        })
+      }
+    }
+  }
+  // 화살표함수로 하니까 오류나는데...이유를 모르겠다....
+  function uploadPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return customUploadAdapter(loader);
+    }
+  }
   // ======================================================
   const getValue = (e) => {
     const {name, value} = e.target;
@@ -29,33 +59,20 @@ const WriteDiary = () => {
   //======================================================
   const ckHandle = (e, editor) => {
     const data = editor.getData();
-    // console.log({e,editor, data})
     setAllContent({
       ...allContent,
       content : data
     })
   }
   //======================================================
-  const handleBtnClick = (e) => {
-    imgInput.current.click();
-  }
-  //======================================================
-  const handleChange = (e) => {
-    setAllContent.image(e.target.files[0]);
-  }
-  //======================================================
-  const imgInput = () => {
-
-  }
-  //======================================================
   const submit = () => {
-    if (allContent.title.length == 0 || allContent.content.length == 0) {
+    if (allContent.title.length === 0 || allContent.content.length === 0) {
       alert('제목 또는 내용을 입력해주세요 !')
     } else {
       axios.post('http://localhost:5000/dairy/insert', {
         title : allContent.title,
         content : allContent.content,
-        image : allContent.img
+        image : uploadImg
       })
       .then((res)=>{
         console.log(res.data)
@@ -106,13 +123,23 @@ const WriteDiary = () => {
               <CKEditor
                 style={{paddingTop:'20px'}}
                 editor={ClassicEditor}
-                config={{placeholder: "내용을 입력하세요 :)"}}
+                config={{
+                  placeholder: "내용을 입력하세요 :)",
+                  extraPlugins : [uploadPlugin]
+                }}
+                onReady={editor=>{
+                  // console.log('Editor is ready to use!', editor);
+                }}
                 onChange={ckHandle}
+                onBlur={(event, editor) => {
+                    // console.log('Blur.', editor);
+                }}
+                onFocus={(event, editor) => {
+                    // console.log('Focus.', editor);
+                }}
               />
             </EditorBox>
 
-            <Button onClick={handleBtnClick}>이미지업로드</Button>
-            <input ref={imgInput} onChange={handleChange} type="file" id="fileUpload" style={{display:"none"}}/>
             <BtnBox>
               <SubmitButton fullWidth variant="outlined" onClick={submit}>Submit</SubmitButton>
             </BtnBox>

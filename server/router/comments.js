@@ -51,7 +51,7 @@ router.post('/delete',(req,res)=>{
 //==============================================
 
 router.get('/count',(req,res)=>{
-  const countQuery = `SELECT dairy_no, COUNT(*) as cnt FROM comments GROUP BY dairy_no;;`
+  const countQuery = `SELECT dairy_no, COUNT(*) as cnt FROM comments GROUP BY dairy_no;`
   db.query(countQuery, (err,result)=>{
     if(err) console.log("err",err);
     else{
