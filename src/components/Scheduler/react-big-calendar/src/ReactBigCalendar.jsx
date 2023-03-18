@@ -68,16 +68,22 @@
 // };
 
 // ///
-import React, { useCallback, useState, useMemo, Fragment } from "react";
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  Fragment,
+  momentLocalizer,
+} from "react";
 import PropTypes from "prop-types";
 import { Calendar, Views, DateLocalizer } from "react-big-calendar";
 import DemoLink from "./DemoLink.component";
 import events from "./events";
+import moment from "moment";
 
-export default function CreateEventWithNoOverlap({
-  localizer,
-  dayLayoutAlgorithm = "no-overlap",
-}) {
+export default function CreateEventWithNoOverlap() {
+  const localizer = momentLocalizer(moment);
+
   const [myEvents, setEvents] = useState(events);
 
   const handleSelectSlot = useCallback(
@@ -95,39 +101,28 @@ export default function CreateEventWithNoOverlap({
     []
   );
 
-  const { defaultDate, scrollToTime } = useMemo(
+  const { defaultDate, scrollToTime, formats } = useMemo(
     () => ({
       defaultDate: new Date(2015, 3, 12),
       scrollToTime: new Date(1970, 1, 1, 6),
+      formats: {
+        // the 'date' on each day cell of the 'month' view
+        dateFormat: "D",
+        // the day of the week header in the 'month' view
+        weekdayFormat: (date, culture, localizer) =>
+          localizer.format(date, "dddd", culture),
+        // the day header in the 'week' and 'day' (Time Grid) views
+        dayFormat: (date, culture, localizer) =>
+          localizer.format(date, "ddd MM/DD", culture),
+        // the time in the gutter in the Time Grid views
+        timeGutterFormat: (date, culture, localizer) =>
+          localizer.format(date, "hh:mm a", culture),
+      },
     }),
     []
   );
 
-  //==
-
-  function Formats() {
-    const { defaultDate, formats } = useMemo(
-      () => ({
-        defaultDate: new Date(2015, 3, 1),
-        formats: {
-          // the 'date' on each day cell of the 'month' view
-          dateFormat: "D",
-          // the day of the week header in the 'month' view
-          weekdayFormat: (date, culture, localizer) =>
-            localizer.format(date, "dddd", culture),
-          // the day header in the 'week' and 'day' (Time Grid) views
-          dayFormat: (date, culture, localizer) =>
-            localizer.format(date, "dddd Do", culture),
-          // the time in the gutter in the Time Grid views
-          timeGutterFormat: (date, culture, localizer) =>
-            localizer.format(date, "hh:mm a", culture),
-        },
-      }),
-      []
-    );
-  }
-
-  //===
+  console.log(formats);
 
   return (
     <Fragment>
@@ -141,7 +136,7 @@ export default function CreateEventWithNoOverlap({
       </DemoLink>
       <div className='height600'>
         <Calendar
-          dayLayoutAlgorithm={dayLayoutAlgorithm}
+          dayLayoutAlgorithm={"no-overlap"}
           defaultDate={defaultDate}
           defaultView={Views.WEEK}
           events={myEvents}
@@ -150,7 +145,7 @@ export default function CreateEventWithNoOverlap({
           onSelectSlot={handleSelectSlot}
           selectable
           scrollToTime={scrollToTime}
-          formats={formats} /// 여기
+          formats={formats}
         />
       </div>
     </Fragment>
