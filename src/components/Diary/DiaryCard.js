@@ -14,6 +14,7 @@ const DiaryCard = () => {
   const [id, setId] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [image, setImage] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState('0');
@@ -23,12 +24,13 @@ const DiaryCard = () => {
     setOpenMoreButton(!openMoreButton);
   }
   //======================================================
-  const openDetailModal = (id,title,content,createdAt) => {
+  const openDetailModal = (id,title,content,image,createdAt) => {
     setIsDetailOpen(true);
     setId(id);
     setTitle(title);
     setContent(content);
     setCreatedAt(createdAt)
+    setImage(image);
   }
   //======================================================
   useEffect(()=>{
@@ -69,27 +71,40 @@ const DiaryCard = () => {
                 disableTypography
               />
               <DateTypography>{list.createdAt.substring(0,10)}</DateTypography>
-              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.createdAt)}>
-                <MyCardMedia
-                  component="img"
-                  width="40vh"
-                  height="194"
-                  src="/images/diary/img01.jpeg"
-                  alt="이미지"
-                />
+              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.image,list.createdAt)}>
+                {list.image === "NULL" && (
+                  <MyCardMedia
+                    component="img"
+                    width="40vh"
+                    height="194"
+                    src="/images/logo.png"
+                    alt="이미지"
+                  />
+                  ) 
+                }
               </Button>
-              <CardContent>
-                <ContentBox variant="body2" color="text.secondary">
-                  {ReactHtmlParser((list.content).substring(0,list.content.indexOf('</')))}
-                </ContentBox>
-                {commentCnt.map((count,idx) => {
+              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.image,list.createdAt)}>
+                <MyCardContent>
+                  <ContentBox variant="body2" color="text.secondary">
+                    {list.content.includes("<img") ? (
+                      ReactHtmlParser((list.content))
+                    ) : (
+                      ReactHtmlParser((list.content).substring(0,list.content.indexOf('</')))
+                    )}
+                  </ContentBox>
+                </MyCardContent>
+              </Button>
+              <CommentBox>
+              {commentCnt.arr !== 0 && (
+                commentCnt.map((count,idx) => {
                   return(
                     list.dairy_no === count.dairy_no && (
                       <CountCommentTypography key={idx}>댓글 {count.cnt}개</CountCommentTypography>
-                    ) 
+                    )
                   )
-                })}
-              </CardContent>
+                })
+              )}
+              </CommentBox>
             </Box>
           </CardListItem>
         )})}
@@ -100,8 +115,9 @@ const DiaryCard = () => {
           setIsDetailOpen={setIsDetailOpen}
           id={id}
           title={title}
-          createdAt={createdAt}
           content={content}
+          image={image}
+          createdAt={createdAt}
         />
       )}
     </Box>
@@ -125,13 +141,17 @@ const MyCardHeader = styled(CardHeader)({
 const DateTypography = styled(Typography)({
   display: 'flex',
   justifyContent: 'end',
-  marginRight: 16
+  marginRight: '1vh'
 });
 const MyCardMedia = styled(CardMedia)({
-  width : '40vh'
+  width : '40vh',
+  objectFit : 'none'
 });
 const MyIconButton = styled(IconButton)({
-  
+  marginRight: '-2vh',
+});
+const MyCardContent = styled(CardContent)({
+  padding: 0,
 });
 const ContentBox = styled(Box)({
   width: '40vh',
@@ -139,6 +159,8 @@ const ContentBox = styled(Box)({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   wordWrap: 'break-word',
+});
+const CommentBox = styled(Box)({
 });
 const CountCommentTypography = styled(Typography)({
   color: 'rgba(0, 0, 0, 0.6)',
