@@ -9,7 +9,7 @@ connectDB.open(db);
 
 router.post('/',(req,res) => {
   const dairy_no = req.body.dairy_no;
-  const selectQuery = `SELECT * FROM comments LEFT JOIN users on comments.user_no=users.user_no WHERE comments.user_no=1 AND comments.dairy_no=${dairy_no};`;
+  const selectQuery = `SELECT comments.comment_no, comments.dairy_no, comments.user_no, comments.comment, comments.createdAt, comments.updatedAt, users.user_id FROM comments LEFT JOIN users on comments.user_no=users.user_no WHERE comments.user_no=1 AND comments.dairy_no=${dairy_no};`;
   const countQuery = `SELECT COUNT(*) as cnt FROM comments WHERE dairy_no=${dairy_no};`
   db.query(selectQuery + countQuery, (err, result) => {
     if(err) console.log("err",err);
@@ -57,6 +57,17 @@ router.get('/count',(req,res)=>{
     else{
       res.send(result);
     }
+  })
+})
+//==============================================
+
+router.post('/update', (req,res) => {
+  const updateComment = req.body.updateComment;
+  const comment_no = req.body.comment_no;
+  const updateQuery = `UPDATE comments SET comment = '${updateComment}', updatedAt=now() WHERE comment_no = ${comment_no};`
+  db.query(updateQuery, (err,result) => {
+    if(err) console.log("err",err);
+    else res.send(result);
   })
 })
 //==============================================
