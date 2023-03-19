@@ -26,7 +26,7 @@ const WriteDiary = () => {
             data.append("name", file.name);
             data.append("file", file);
 
-            axios.post('http://localhost:5000/upload', data)
+            axios.post('http://localhost:5000/dairy/upload', data)
             .then((res) => {
               if(!flag){
                 setFlag(true);
@@ -65,6 +65,14 @@ const WriteDiary = () => {
     })
   }
   //======================================================
+  const onReset = () => {
+    setAllContent ({
+      title : '',
+      content : '',
+    })
+    setUploadImg('')
+  }
+  //======================================================
   const submit = () => {
     if (allContent.title.length === 0 || allContent.content.length === 0) {
       alert('제목 또는 내용을 입력해주세요 !')
@@ -77,6 +85,7 @@ const WriteDiary = () => {
       .then((res)=>{
         console.log(res.data)
         alert('등록되었습니다 :)');
+        onReset();
         setOpen(false);
       })
     }

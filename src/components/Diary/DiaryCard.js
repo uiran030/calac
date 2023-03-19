@@ -17,7 +17,7 @@ const DiaryCard = () => {
   const [image, setImage] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
-  const [commentCnt, setCommentCnt] = useState('0');
+  const [commentCnt, setCommentCnt] = useState([]);
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
@@ -29,21 +29,22 @@ const DiaryCard = () => {
     setId(id);
     setTitle(title);
     setContent(content);
-    setCreatedAt(createdAt)
+    setCreatedAt(new Date(createdAt).toLocaleString())
     setImage(image);
   }
   //======================================================
   useEffect(()=>{
     axios.get('http://localhost:5000/comments/count')
     .then(res=>{
-      setCommentCnt(res.data);
-      console.log("cnt",res.data)
-    })
-  },[])
+      setCommentCnt(res.data)
+    });
+  },[commentCnt])
   //======================================================
   useEffect(()=>{
     axios.get('http://localhost:5000/dairy')
-    .then(res=>setPosts(res.data));
+    .then(res=>{
+      setPosts(res.data)
+    });
   },[posts])
   //======================================================
   return (
@@ -70,32 +71,35 @@ const DiaryCard = () => {
                 title={list.title}
                 disableTypography
               />
-              <DateTypography>{list.createdAt.substring(0,10)}</DateTypography>
+              <DateTypography>{new Date(list.createdAt).toLocaleString()}</DateTypography>
               <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.image,list.createdAt)}>
-                {list.image === "NULL" && (
+                {list.image !== "NULL" ? (
                   <MyCardMedia
+                    component="img"
+                    width="40vh"
+                    height="194"
+                    src={`http://localhost:5000/images/dairy/${list.image}`}
+                    alt="이미지"
+                  />
+                  ):(
+                    <MyCardMedia
                     component="img"
                     width="40vh"
                     height="194"
                     src="/images/logo.png"
                     alt="이미지"
                   />
-                  ) 
+                  )
                 }
               </Button>
-              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.image,list.createdAt)}>
-                <MyCardContent>
-                  <ContentBox variant="body2" color="text.secondary">
-                    {list.content.includes("<img") ? (
-                      ReactHtmlParser((list.content))
-                    ) : (
-                      ReactHtmlParser((list.content).substring(0,list.content.indexOf('</')))
-                    )}
-                  </ContentBox>
-                </MyCardContent>
-              </Button>
+              
+              <MyCardContent>
+                <ContentBox variant="body2" color="text.secondary">
+                  {ReactHtmlParser((list.content_parse).substring(0,list.content_parse.indexOf('</')))}
+                </ContentBox>
+              </MyCardContent>
               <CommentBox>
-              {commentCnt.arr !== 0 && (
+              {commentCnt.length !== 0 && (
                 commentCnt.map((count,idx) => {
                   return(
                     list.dairy_no === count.dairy_no && (
@@ -141,17 +145,16 @@ const MyCardHeader = styled(CardHeader)({
 const DateTypography = styled(Typography)({
   display: 'flex',
   justifyContent: 'end',
-  marginRight: '1vh'
+  marginRight: '3vh'
 });
 const MyCardMedia = styled(CardMedia)({
   width : '40vh',
-  objectFit : 'none'
+  objectFit : 'contain'
 });
 const MyIconButton = styled(IconButton)({
-  marginRight: '-2vh',
 });
 const MyCardContent = styled(CardContent)({
-  padding: 0,
+  paddingTop: 16,
 });
 const ContentBox = styled(Box)({
   width: '40vh',

@@ -5,26 +5,40 @@ import { Box, List, ListItem, ListItemText, CardMedia, Typography, Button, Divid
 import ReactHtmlParser from "react-html-parser";
 import axios from 'axios';
 
-const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,image,createdAt}) => {
+const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState ({comment: ''})
+  const [isUpdate, setIsUpdate] = useState('false');
+  const [updateComment, setUpdateComment] = useState('')
+  const [updateTime, setUpdateTime] = useState(false);
   //======================================================
   const commentHandle = (e) => {
     const data = e.target.value;
-    setNewComment({
-      ...newComment,
-      comment : data
-    })
+    if(isUpdate) {
+      setNewComment({
+        ...newComment,
+        comment : data
+      })
+    } else {
+      setUpdateComment({
+        ...updateComment,
+        comment : data
+      })
+    }
   }
   //======================================================
   const submitComment = (id) => {
-    axios.post('http://localhost:5000/comments/insert',{
-      dairy_no : id,
-      comment : newComment.comment
-    })
-    .then(()=>alert('댓글이 등록되었습니다 :)'))
-    .catch(err=>console.log("err",err))
-    setNewComment({comment:''})
+    if(newComment.comment.length > 0){
+      axios.post('http://localhost:5000/comments/insert',{
+        dairy_no : id,
+        comment : newComment.comment
+      })
+      .then(()=>alert('댓글이 등록되었습니다 :)'))
+      .catch(err=>console.log("err",err))
+      setNewComment({comment:''})
+    } else {
+      alert('댓글을 입력해주세요 :(');
+    }
   }
   //======================================================
   const commentDelete = (id) => {
@@ -39,11 +53,31 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,image,create
     }
   }
   //======================================================
+  const clickUpdateBtn = (id) => {
+    if(isUpdate) {
+      setIsUpdate(false);
+    } else {
+      setIsUpdate(true);
+      if(window.confirm(`정말 수정하시겠습니까?`) === true) {
+        axios.post('http://localhost:5000/comments/update', {
+          updateComment : updateComment.comment,
+          comment_no : id
+        })
+        .then(()=>{
+          alert("수정되었습니다 :)")
+          setUpdateTime(true);
+        })
+      } else {
+        alert ("취소되었습니다 :)");
+      }
+    }
+  }
+  //======================================================
   useEffect(()=>{
     axios.post('http://localhost:5000/comments', {
       dairy_no : id
     })
-    .then(res=>setComments(res.data[0]));
+    .then(res=>{setComments(res.data[0])});
   },[comments])
   //======================================================
   return (
@@ -58,7 +92,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,image,create
             <UserTypography>{id}</UserTypography>
           </Avatar>
           <DialogTitle>{title}</DialogTitle>
-          <DateTypography>{createdAt.substring(0,10)}</DateTypography>
+          <DateTypography>{createdAt}</DateTypography>
           <MyDialogContent dividers>
             <DetailBox>
               <ContentBox>
@@ -73,16 +107,32 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,image,create
                 label="댓글달기" 
                 size="small" 
                 onChange={commentHandle}
-                />
+              />
               <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
               <List>
                 {comments.map(list => {
                   return (
                     <ListItem key={list.comment_no}>
-                      <ListItemText
-                        primary={`${list.comment} (${list.user_id} ${(list.createdAt).substring(0,10)})`}
-                      />
-                    <CommentUpdate>수정</CommentUpdate>
+                      {isUpdate ? (
+                        updateTime ? (
+                          <ListItemText
+                            primary={`${list.comment} (${list.user_id} ${new Date(list.createdAt).toLocaleString()})`}
+                          />
+                        ):(
+                          <ListItemText
+                            primary={`${list.comment} (${list.user_id} ${new Date(list.updatedAt).toLocaleString()})`}
+                          />
+                        )
+                      ):(
+                        <CommentTextField 
+                          id="outlined-basic" 
+                          variant="outlined" 
+                          label="댓글수정" 
+                          size="small" 
+                          onChange={commentHandle}
+                        />
+                        )}
+                      <CommentUpdate onClick={()=>clickUpdateBtn(list.comment_no)}>{isUpdate ? "수정" : "완료"}</CommentUpdate>
                     <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
                     </ListItem>
                   )
@@ -138,6 +188,9 @@ const CommentButton = styled(Button)({
   left: 26,
 });
 const CommentUpdate = styled(Button)({
+  left: 26,
+});
+const CommentSubmit = styled(Button)({
   left: 26,
 });
 const CommentDelete = styled(Button)({
