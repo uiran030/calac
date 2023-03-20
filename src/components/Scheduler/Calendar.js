@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Fullcalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { formatDate } from "@fullcalendar/core";
@@ -22,6 +22,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import { EVENTSTEST } from "./EVENTSTEST";
 import { createEventId } from "./event-utils";
+import axios from "axios";
+import { Details } from "@mui/icons-material";
 
 function Calendar() {
   //========
@@ -48,57 +50,15 @@ function Calendar() {
     outline: "none",
   };
   //========
-  const [mock, setMock] = useState(EVENTSTEST);
+  // const [mock, setMock] = useState(EVENTSTEST);
 
+  const [doSubmit, setDoSubmit] = useState(false);
   const handleSubmit = () => {
-    setMock([
-      ...mock,
-      { id: 4, start: data.start, end: data.end, title: data.title },
-    ]);
-    // setData({ id: 4, start: "", end: "", title: "" });
+    setDoSubmit(true);
+    setOpen(false);
   };
-
   //========
 
-  const [openDetail, setOpenDetail] = useState(false);
-  const [detailLocation, setDetailLocation] = useState({
-    x: 0,
-    y: 0,
-  });
-  const [detailContents, setDetailContents] = useState({
-    id: "",
-    title: "",
-    start: "",
-    end: "",
-    color: "",
-  });
-
-  // 여기도!!
-  // const handleEventClick = (event) => {
-  //   setDetailLocation({
-  //     x: event.jsEvent.clientX,
-  //     y: event.jsEvent.clientY,
-  //   });
-  //   setOpenDetail((prev) => !prev);
-
-  //   setDetailContents(
-  //     mock.filter((item) => item.id === parseInt(event.event._def.publicId))
-  //   );
-
-  // console.log(mock.filter((item) => item.id === detailContents.id));
-  // };
-
-  // const handleEventClick = (clickInfo) => {
-  //   if (
-  //     confirm(
-  //       `Are you sure you want to delete the event '${clickInfo.event.title}'`
-  //     )
-  //   ) {
-  //     clickInfo.event.remove();
-  //   }
-  // };
-
-  const [data, setData] = useState({ start: "", end: "", title: "" });
   // const [modalOn, setModalOn] = useState(false);
 
   //========
@@ -128,24 +88,301 @@ function Calendar() {
   //     allDay: selectInfo.allDay,
   //   }));
   // };
+  const [data, setData] = useState({ title: "", start: "", end: "" });
 
   const handleDateSelect = (selectInfo) => {
-    let title = prompt("Please enter a new title for your event");
+    setOpen(true);
+    setData({ title: "", start: selectInfo.startStr, end: selectInfo.endStr });
+    // let title = prompt("Please enter a new title for your event");
     let calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); // clear date selection
 
-    if (title) {
+    if (data.title) {
       calendarApi.addEvent({
         id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
+        title: data.title,
+        start: data.start,
+        end: data.end,
+        // allDay: selectInfo.allDay,
       });
     }
-    console.log(calendarApi.getEvents());
+    // setDoSubmit(false);
   };
+
+  // 여기도!!
+  // const handleEventClick = (event) => {
+  //   setDetailLocation({
+  //     x: event.jsEvent.clientX,
+  //     y: event.jsEvent.clientY,
+  //   });
+  //   setOpenDetail((prev) => !prev);
+
+  //   setDetailContents(
+  //     mock.filter((item) => item.id === parseInt(event.event._def.publicId))
+  //   );
+
+  // console.log(mock.filter((item) => item.id === detailContents.id));
+  // };
+
+  // const handleEventClick = (clickInfo) => {
+  //   if (
+  //     confirm(
+  //       `Are you sure you want to delete the event '${clickInfo.event.title}'`
+  //     )
+  //   ) {
+  //     clickInfo.event.remove();
+  //   }
+  // };
+  const [updatedData, setUpdatedData] = useState([]);
+
+  const [originData, setOriginData] = useState();
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/scheduler").then((res) => {
+      // console.log("res", res.data);
+      setOriginData(res.data);
+    });
+  }, []);
+
+  let already = []; // 삭제금지 handleEvents 함수에서 사용한다. 좋은 방식은 아닌듯 하다
+  // 이벤트의 변경이 감지될 때마다 실행되는 함수.
+  // events 인자는 모든 이벤트의 정보를 JSON형식으로 뱉어냄.
+  const handleEvents = async (events) => {
+    console.log("origin", originData); // DB에서 받아온 데이터
+    console.log("event", events); // 변경사항이 적용된 데이터
+
+    // DB에서 받아온 데이터를 생성날짜를 삭제한 형태로 파싱한 데이터
+    let parsingOrigin =
+      originData &&
+      originData
+        .map((item) => ({
+          id: String(item.id),
+          title: item.title,
+          start: item.start,
+          end: item.end,
+        }))
+        .sort();
+
+    console.log("here", parsingOrigin);
+
+    // EventImpl객체의 나열로 뱉어지는 events 데이터를 필요한 정보만 골라 파싱
+    let parsingEvents =
+      events &&
+      events
+        .map((item) => ({
+          id: item.id,
+          title: item.title,
+          start: item.start.toISOString(),
+          end: item.end.toISOString(),
+        }))
+        .sort();
+
+    console.log("here2", parsingEvents);
+
+    // 여기까지 수정할 것 없음
+
+    /////////////////
+    // console.log(JSON.stringify(parsingOrigin) === JSON.stringify(parsingEvents));
+    ///////////////////
+
+    //할 수 있어
+
+    /**
+     * 이벤트는 추가되거나, 삭제되거나, 변경되거나 한다.
+     * origin의 개수 보다 events의 개수가 많다면 => 추가된 것이고,
+     * origin의 개수 보다 events의 개수가 적다면 => 삭제된 것이고,
+     * origin의 개수 보다 events의 개수가 같다면 => 어떤 이벤트의 내용이 수정되었거나, 네비게이션을 이동했을 것이다.
+     */
+
+    // origin 요소들의 id값만 모든 배열
+    let originIdList = parsingOrigin && parsingOrigin.map((item) => item.id);
+
+    // event 요소들의 id값만 모든 배열
+    let eventsIdList = parsingEvents.map((item) => item.id);
+
+    // 이벤트 추가가 감지된 경우
+    if (parsingOrigin && parsingOrigin.length < parsingEvents.length) {
+      // console.log("추가됐을겨");
+      let addedEventId = eventsIdList.filter(
+        (item) => !originIdList.includes(item)
+      );
+      // console.log("추가된 모든 놈 아이디", addedEventId);
+      // console.log("already1", already);
+      let newDataId = addedEventId.filter((a) => {
+        return already.indexOf(a) === -1;
+      });
+      console.log("최종", newDataId);
+      newDataId.map((i) => already.push(i));
+      // console.log("already2", already);
+
+      // console.log("test", parsingEvents.id === "3");
+      // console.log(parsingEvents);
+      console.log(newDataId);
+      let newEventIndex = parsingEvents.findIndex((item) => {
+        return item.id === newDataId[0];
+      });
+      // console.log("findIndex", newDataIndex);
+      // console.log(parsingEvents[newDataIndex]);
+      // axiosInsert(parsingEvents[newEventIndex]); /////핵심핵심핵심.
+
+      // console.log(parsingEvents[parsingEvents.findIndex(addedEventId)]);
+      // originIdList = eventsIdList;
+
+      // 이벤트 삭제가 감지된 경우
+    } else if (parsingOrigin && parsingOrigin.length > parsingEvents.length) {
+      // // console.log("삭제됐을겨");
+      // // console.log(
+      // //   "삭제된 놈 아이디",
+      // //   originIdList.filter((item) => !eventsIdList.includes(item))
+      // // );
+      // let deletedEventId = originIdList.filter(
+      //   (item) => !eventsIdList.includes(item)
+      // );
+      // // console.log(parseInt(deletedEventId));
+      // axiosDelete(parseInt(deletedEventId));
+      // 이벤트 수정이 감지된 경우
+    } else {
+      console.log("변함없거나 수정됐을겨");
+      console.log(
+        "하이"
+        // origin.filter((i) => parsingOrigin.map((item) => item.id === i))
+      );
+    }
+
+    // console.log(
+    //     "re",
+    //     events.filter(
+    //       (item) => !originData.map((i) => i.id).includes(parseInt(item.id))
+    //     )
+    //   );
+
+    // if (result.length > 0) {
+    // await axios
+    //   .post("http://localhost:5000/scheduler/insert", {
+    //     event: parsingEvents,
+    //   })
+    //   .then(() => {
+    //     alert("등록성공!");
+    //   })
+    //   .catch(() => {
+    //     alert("등록실패");
+    //   });
+    // } else {
+    // await axios
+    //   .post("http://localhost:5000/scheduler/edit", {
+    //     event: parsingEvents,
+    //   })
+    //   .then(() => {
+    //     alert("수정성공!");
+    //   })
+    //   .catch(() => {
+    //     alert("수정실패");
+    //   });
+    // }
+    // /======
+
+    // /======
+
+    // /======
+  };
+
+  const axiosInsert = (newData) => {
+    axios
+      .post("http://localhost:5000/scheduler/insert", {
+        event: newData,
+      })
+      .then(() => {
+        alert("등록성공!");
+      })
+      .catch(() => {
+        alert("등록실패");
+      });
+  };
+
+  const axiosDelete = (deletedEventId) => {
+    axios
+      .post("http://localhost:5000/scheduler/delete", {
+        deletedEventId: deletedEventId,
+      })
+      .then(() => {
+        alert("삭제성공!");
+      })
+      .catch(() => {
+        alert("삭제실패");
+      });
+  };
+
+  // console.log("updated", updatedData);
+
+  // const handleEventClick = (event) => {
+  //   setDetailLocation({
+  //     x: event.jsEvent.clientX,
+  //     y: event.jsEvent.clientY,
+  //   });
+  //   setOpenDetail((prev) => !prev);
+
+  //   setDetailContents(
+  //     mock.filter((item) => item.id === parseInt(event.event._def.publicId))
+  //   );
+
+  // console.log(mock.filter((item) => item.id === detailContents.id));
+  // };
+
+  const [openDetail, setOpenDetail] = useState(false);
+  const [detailLocation, setDetailLocation] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [detailContents, setDetailContents] = useState({
+    id: "",
+    title: "",
+    start: "",
+    end: "",
+    // color: "",
+  });
+
+  const handleEventClick = (clickInfo) => {
+    console.log("hi", clickInfo);
+    setDetailLocation({
+      x: clickInfo.jsEvent.clientX,
+      y: clickInfo.jsEvent.clientY,
+    });
+    setOpenDetail((prev) => !prev);
+
+    setDetailContents(
+      clickInfo /* {
+      id: clickInfo.event.id,
+      title: clickInfo.event.title,
+      start: clickInfo.event.start.toLocaleString("ko-KR"),
+      end: clickInfo.event.end.toLocaleString("ko-KR"),
+    } */
+    );
+
+    // let deletedEventId = clickInfo.event.id;
+    // if (
+    //   window.confirm(
+    //     `Are you sure you want to delete the event '${clickInfo.event.title}'`
+    //   )
+    // ) {
+    //   axiosDelete(parseInt(deletedEventId));
+    //   clickInfo.event.remove();
+    // }
+  };
+
+  const handleDelete = () => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete the event '${detailContents.event.title}'`
+      )
+    ) {
+      axiosDelete(parseInt(detailContents.event.id));
+      detailContents.event.remove();
+      setOpenDetail((prev) => !prev);
+    }
+  };
+
+  console.log("?", detailContents);
 
   const renderEventContent = (eventInfo) => {
     return (
@@ -157,6 +394,7 @@ function Calendar() {
   };
 
   const renderSidebarEvent = (event) => {
+    // console.log("here", event);
     return (
       <li key={event.id}>
         <b>
@@ -170,6 +408,8 @@ function Calendar() {
       </li>
     );
   };
+
+  // console.log("나좀보세", detailContents);
 
   return (
     <div>
@@ -187,20 +427,20 @@ function Calendar() {
         selectMirror={true}
         dayMaxEvents={true}
         weekends={state.weekendsVisible}
-        events={EVENTSTEST}
+        events={originData}
         select={handleDateSelect}
         eventContent={renderEventContent} // custom render function
-        // eventClick={handleEventClick}
-        // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
+        eventClick={handleEventClick}
+        eventsSet={handleEvents} // called after events are initialized/added/changed/removed
         // below different
         dateClick={handleDateClick}
-        /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}
-            */
+        //  you can update a remote database when these fire:
+        // eventAdd={console.log("add")}
+        // eventChange={console.log("change")}
+        // eventRemove={console.log("remove")}
       />
-      {/* <Paper
+
+      <Paper
         elevation={5}
         sx={
           openDetail
@@ -220,7 +460,7 @@ function Calendar() {
         }
       >
         <Box
-          bgcolor={detailContents[0] && detailContents[0].color}
+          bgcolor={detailContents && detailContents.color}
           position='absolute'
           top={0}
           left={0}
@@ -232,27 +472,31 @@ function Calendar() {
           alignItems='center'
         >
           <Typography>
-            일정 이름 : {detailContents[0] && detailContents[0].title}
+            일정 이름 : {detailContents.event && detailContents.event.title}
           </Typography>
           <Box>
-            <DeleteIcon />
+            <DeleteIcon onClick={handleDelete} />
             <EditIcon />
             <CloseIcon onClick={() => setOpenDetail((prev) => !prev)} />
           </Box>
         </Box>
 
         <Typography>
-          시작일:{detailContents[0] && detailContents[0].start}
+          시작일:
+          {detailContents.event &&
+            detailContents.event.start.toLocaleString("ko-KR")}
         </Typography>
         <Typography>
-          종료일:{detailContents[0] && detailContents[0].end}
+          종료일:
+          {detailContents.event &&
+            detailContents.event.end.toLocaleString("ko-KR")}
         </Typography>
         <Typography>
           카테고리:
-          {detailContents[0] && detailContents[0].color}
+          {detailContents.event && detailContents.color}
         </Typography>
-      </Paper> */}
-      {/* <React.Fragment>
+      </Paper>
+      <React.Fragment>
         <Modal
           open={open}
           onClose={handleClose}
@@ -305,11 +549,7 @@ function Calendar() {
             </Box>
           </Box>
         </Modal>
-      </React.Fragment> */}
-      <div className='demo-app-sidebar-section'>
-        <h2>All Events ({state.currentEvents.length})</h2>
-        <ul>{state.currentEvents.map(renderSidebarEvent)}</ul>
-      </div>
+      </React.Fragment>
     </div>
   );
 }

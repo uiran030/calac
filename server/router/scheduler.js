@@ -16,21 +16,10 @@ router.get("/", (req, res) => {
 router.post("/insert", (req, res) => {
   const event = req.body.event;
   const sqlQuery =
-    "INSERT INTO event_list(event_id,scheduler_no,title,start,end,color,locale,description,reminder,reminderMethod) VALUES(?,?,?,?,?,?,?,?,?,?);";
+    "INSERT INTO event_list(id,title,start,end) VALUES(?,?,?,?);";
   db.query(
     sqlQuery,
-    [
-      event.event_id,
-      event.scheduler_no,
-      event.title,
-      event.start,
-      event.end,
-      event.color,
-      event.locale,
-      event.description,
-      event.reminder,
-      event.reminderMethod,
-    ],
+    [event.id, event.title, event.start, event.end],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -46,20 +35,10 @@ router.post("/insert", (req, res) => {
 router.post("/edit", (req, res) => {
   const event = req.body.event;
   const sqlQuery =
-    "UPDATE event_list SET title=?,start=?,end=?,color=?,locale=?,description=?,reminder=?,reminderMethod=? WHERE event_id = ?;";
+    "UPDATE event_list SET title=?, start=?, end=? WHERE id = ?;";
   db.query(
     sqlQuery,
-    [
-      event.title,
-      event.start,
-      event.end,
-      event.color,
-      event.locale,
-      event.description,
-      event.remainder,
-      event.remainderMethod,
-      event.event_id,
-    ],
+    [event.title, event.start, event.end, event.id],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -73,8 +52,8 @@ router.post("/edit", (req, res) => {
 });
 //==============================================
 router.post("/delete", (req, res) => {
-  const deletedId = req.body.deletedId;
-  const sqlQuery = `DELETE FROM event_list WHERE event_id = ${deletedId};`;
+  const deletedEventId = req.body.deletedEventId;
+  const sqlQuery = `DELETE FROM event_list WHERE id = ${deletedEventId};`;
   db.query(sqlQuery, (err, result) => {
     if (err) {
       console.log(err);
