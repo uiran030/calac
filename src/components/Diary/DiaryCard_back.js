@@ -17,7 +17,6 @@ const DiaryCard = () => {
   const [image, setImage] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
-  const [newPosts, setNewPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState([]);
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
@@ -41,32 +40,12 @@ const DiaryCard = () => {
     });
   },[commentCnt])
   //======================================================
-  let offset = 0;
-  const loadDairy = () => {
-    // axios.get(`http://localhost:5000/dairy?limit=3&offset=${offset}`)
-    axios.get('http://localhost:5000/dairy',{
-      params : {
-        limit : 3,
-        offset : offset
-      }
-    })
-    .then(res=>{
-      setNewPosts(res.data);
-      setPosts(oldPosts => [...oldPosts, ...newPosts]);
-    });
-    offset += 3;
-  }
-  //======================================================
-  const handleScroll = (e) => {
-    if (window.innerHeight + e.target.documentElement.scrollTop + 1 >= e.target.documentElement.scrollHeight) {
-      loadDairy();
-    }
-  }
-  //======================================================
   useEffect(()=>{
-    loadDairy();
-    window.addEventListener('scroll', handleScroll);
-  },[])
+    axios.get('http://localhost:5000/dairy?limit=3')
+    .then(res=>{
+      setPosts(res.data)
+    });
+  },[posts])
   //======================================================
   return (
     <Box>
