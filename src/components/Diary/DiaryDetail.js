@@ -88,10 +88,12 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
         aria-labelledby="customized-dialog-title"
       >
         <DialogBox>
-          <Avatar alt="Remy Sharp" src="/images/avatar.png">
-            <UserTypography>{id}</UserTypography>
-          </Avatar>
-          <DialogTitle>{title}</DialogTitle>
+          <TitleBox>
+            <Avatar alt="Remy Sharp" src="/images/avatar.png">
+              <UserTypography>{id}</UserTypography>
+            </Avatar>
+            <DialogTitle>{title}</DialogTitle>
+          </TitleBox>
           <DateTypography>{createdAt}</DateTypography>
           <MyDialogContent dividers>
             <DetailBox>
@@ -157,12 +159,20 @@ const DialogBox = styled(Box)({
   padding: 20,
   overflowY :'hidden',
 })
+const TitleBox = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '15px 15px 0',
+})
 const UserTypography = styled(Typography)({
+  padding: 0,
+  marginLeft: 13,
 })
 const DateTypography = styled(Typography)({
   fontSize: 15,
   color: '#07553B',
-  textAlign: 'right'
+  textAlign: 'right',
+  marginBottom: 10,
 })
 const MyDialogContent = styled(DialogContent)({
   height: '50vh',
