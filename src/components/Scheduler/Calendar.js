@@ -52,11 +52,11 @@ function Calendar() {
   //========
   // const [mock, setMock] = useState(EVENTSTEST);
 
-  const [doSubmit, setDoSubmit] = useState(false);
-  const handleSubmit = () => {
-    setDoSubmit(true);
-    setOpen(false);
-  };
+  // const [doSubmit, setDoSubmit] = useState(false);
+  // const handleSubmit = () => {
+  //   setDoSubmit(true);
+  //   setOpen(false);
+  // };
   //========
 
   // const [modalOn, setModalOn] = useState(false);
@@ -89,26 +89,74 @@ function Calendar() {
   //   }));
   // };
   const [data, setData] = useState({ title: "", start: "", end: "" });
-
+  const [result, setResult] = useState({});
+  const [save, setSave] = useState(false);
+  // /여기부터 살려요
   const handleDateSelect = (selectInfo) => {
     setOpen(true);
-    setData({ title: "", start: selectInfo.startStr, end: selectInfo.endStr });
-    // let title = prompt("Please enter a new title for your event");
     let calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); // clear date selection
+    console.log("중간점검", data);
 
-    if (data.title) {
+    if (!save) {
+      // result 변수가 모두 존재할 때만 이벤트를 추가합니다
       calendarApi.addEvent({
         id: createEventId(),
-        title: data.title,
-        start: data.start,
-        end: data.end,
-        // allDay: selectInfo.allDay,
+        title: result.title,
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        color: result.color || "red", // color와 locale은 기본값으로 설정됩니다
+        locale: result.locale || "en",
       });
     }
-    // setDoSubmit(false);
   };
+  // 여기까지 살려요
+
+  // const handleDateSelect = async (selectInfo) => {
+  //   setOpen(true);
+  //   await setData((prevData) => ({
+  //     ...prevData,
+  //     title: "",
+  //     start: selectInfo.startStr,
+  //     end: selectInfo.endStr,
+  //   }));
+
+  //   let test = "간나쉑";
+  //   let calendarApi = selectInfo.view.calendar;
+  //   calendarApi.unselect(); // clear date selection
+
+  //   console.log("중간점검", data);
+
+  //   if (test) {
+  //     calendarApi.addEvent({
+  //       id: createEventId(),
+  //       title: test,
+  //       start: selectInfo.startStr,
+  //       end: selectInfo.endStr,
+  //       color: "red",
+  //     });
+  //   }
+  // };
+  // useEffect(() => {}, [data]);
+
+  // //지피티====
+  // const handleDateSelect = async (selectInfo) => {
+  //   setOpen(true);
+  //   setData((prevData) => ({
+  //     ...prevData,
+  //     title: "",
+  //     start: selectInfo.startStr,
+  //     end: selectInfo.endStr,
+  //   }));
+
+  //   console.log({
+  //     ...data,
+  //     start: selectInfo.startStr,
+  //     end: selectInfo.endStr,
+  //   });
+  // };
+  // //====
 
   // 여기도!!
   // const handleEventClick = (event) => {
@@ -118,11 +166,11 @@ function Calendar() {
   //   });
   //   setOpenDetail((prev) => !prev);
 
-  //   setDetailContents(
+  //   setData(
   //     mock.filter((item) => item.id === parseInt(event.event._def.publicId))
   //   );
 
-  // console.log(mock.filter((item) => item.id === detailContents.id));
+  // console.log(mock.filter((item) => item.id === data.id));
   // };
 
   // const handleEventClick = (clickInfo) => {
@@ -322,11 +370,11 @@ function Calendar() {
   //   });
   //   setOpenDetail((prev) => !prev);
 
-  //   setDetailContents(
+  //   setData(
   //     mock.filter((item) => item.id === parseInt(event.event._def.publicId))
   //   );
 
-  // console.log(mock.filter((item) => item.id === detailContents.id));
+  // console.log(mock.filter((item) => item.id === data.id));
   // };
 
   const [openDetail, setOpenDetail] = useState(false);
@@ -334,13 +382,13 @@ function Calendar() {
     x: 0,
     y: 0,
   });
-  const [detailContents, setDetailContents] = useState({
-    id: "",
-    title: "",
-    start: "",
-    end: "",
-    // color: "",
-  });
+  // const [data, setData] = useState({
+  //   id: "",
+  //   title: "",
+  //   start: "",
+  //   end: "",
+  //   // color: "",
+  // });
 
   const handleEventClick = (clickInfo) => {
     console.log("hi", clickInfo);
@@ -350,7 +398,7 @@ function Calendar() {
     });
     setOpenDetail((prev) => !prev);
 
-    setDetailContents(
+    setData(
       clickInfo /* {
       id: clickInfo.event.id,
       title: clickInfo.event.title,
@@ -373,16 +421,16 @@ function Calendar() {
   const handleDelete = () => {
     if (
       window.confirm(
-        `Are you sure you want to delete the event '${detailContents.event.title}'`
+        `Are you sure you want to delete the event '${data.event.title}'`
       )
     ) {
-      axiosDelete(parseInt(detailContents.event.id));
-      detailContents.event.remove();
+      axiosDelete(parseInt(data.event.id));
+      data.event.remove();
       setOpenDetail((prev) => !prev);
     }
   };
 
-  console.log("?", detailContents);
+  // console.log("?", data);
 
   const renderEventContent = (eventInfo) => {
     return (
@@ -409,7 +457,36 @@ function Calendar() {
     );
   };
 
-  // console.log("나좀보세", detailContents);
+  // console.log("나좀보세", data);
+
+  const [formData, setFormData] = useState({
+    title: "",
+    color: "",
+    locale: "",
+  });
+
+  console.log("진행과정", formData);
+
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // form 데이터를 변수에 담는다
+    const { title, color, locale } = formData;
+    console.log(`title: ${title}, color: ${color}, locale: ${locale}`);
+    // 결과를 result 변수에 저장한다
+    setResult({
+      title: title,
+      color: color,
+      locale: locale,
+    });
+    setSave(true);
+  };
 
   return (
     <div>
@@ -460,7 +537,7 @@ function Calendar() {
         }
       >
         <Box
-          bgcolor={detailContents && detailContents.color}
+          bgcolor={data && data.color}
           position='absolute'
           top={0}
           left={0}
@@ -471,9 +548,7 @@ function Calendar() {
           justifyContent='space-between'
           alignItems='center'
         >
-          <Typography>
-            일정 이름 : {detailContents.event && detailContents.event.title}
-          </Typography>
+          <Typography>일정 이름 : {data.event && data.event.title}</Typography>
           <Box>
             <DeleteIcon onClick={handleDelete} />
             <EditIcon />
@@ -483,17 +558,15 @@ function Calendar() {
 
         <Typography>
           시작일:
-          {detailContents.event &&
-            detailContents.event.start.toLocaleString("ko-KR")}
+          {data.event && data.event.start.toLocaleString("ko-KR")}
         </Typography>
         <Typography>
           종료일:
-          {detailContents.event &&
-            detailContents.event.end.toLocaleString("ko-KR")}
+          {data.event && data.event.end.toLocaleString("ko-KR")}
         </Typography>
         <Typography>
           카테고리:
-          {detailContents.event && detailContents.color}
+          {data.event && data.color}
         </Typography>
       </Paper>
       <React.Fragment>
@@ -503,51 +576,75 @@ function Calendar() {
           aria-labelledby='child-modal-title'
           aria-describedby='child-modal-description'
         >
-          <Box
-            sx={{ ...style, width: 500 }}
-            display='flex'
-            flexDirection='column'
-            gap={3}
-          >
-            <Typography color='primary' fontSize={30}>
-              일정 추가
-            </Typography>
-            <Box display='flex' flexDirection='column' gap={2}>
-              <Typography color='primary'>선택한 날짜 및 시간</Typography>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateTimePicker
-                  label='Start Date&Time'
-                  disabled
-                  value={data && data.start && dayjs(data.start)}
-                  // onChange={handleChange}
-                  // renderInput={(params) => <TextField {...params} />}
+          <form onSubmit={handleSubmit}>
+            <Box
+              sx={{ ...style, width: 500 }}
+              display='flex'
+              flexDirection='column'
+              gap={3}
+            >
+              <Typography color='primary' fontSize={30}>
+                일정 추가
+              </Typography>
+              <Box display='flex' flexDirection='column' gap={2}>
+                <Typography color='primary'>선택한 날짜 및 시간</Typography>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    label='Start Date&Time'
+                    disabled
+                    value={data && data.start && dayjs(data.start)}
+                    // onChange={handleChange}
+                    // renderInput={(params) => <TextField {...params} />}
+                  />
+                  <DateTimePicker
+                    label='End Date&Time'
+                    disabled
+                    value={data && data.end && dayjs(data.end)}
+                    // onChange={handleChange}
+                    // renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </Box>
+              <Box display='flex' flexDirection='column' gap={2}>
+                <Typography color='primary'>일정 제목 입력</Typography>
+                <TextField
+                  id='outlined-basic'
+                  color='primary'
+                  label='title'
+                  name='title'
+                  value={formData.title}
+                  variant='outlined'
+                  onChange={handleChange}
                 />
-                <DateTimePicker
-                  label='End Date&Time'
-                  disabled
-                  value={data && data.end && dayjs(data.end)}
-                  // onChange={handleChange}
-                  // renderInput={(params) => <TextField {...params} />}
+                <Typography color='primary'>색상</Typography>
+                <TextField
+                  id='outlined-basic'
+                  color='primary'
+                  label='color'
+                  name='color'
+                  value={formData.color}
+                  variant='outlined'
+                  onChange={handleChange}
                 />
-              </LocalizationProvider>
+                <Typography color='primary'>장소</Typography>
+                <TextField
+                  id='outlined-basic'
+                  color='primary'
+                  label='locale'
+                  name='locale'
+                  value={formData.locale}
+                  variant='outlined'
+                  onChange={handleChange}
+                />
+              </Box>
+              <Box>
+                <Button onClick={handleClose}>Close</Button>
+                <Button type='submit' onClick={handleSubmit}>
+                  Submit
+                </Button>
+              </Box>
             </Box>
-            <Box display='flex' flexDirection='column' gap={2}>
-              <Typography color='primary'>일정 제목 입력</Typography>
-              <TextField
-                id='outlined-basic'
-                color='primary'
-                label='title'
-                variant='outlined'
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, title: e.target.value }))
-                }
-              />
-            </Box>
-            <Box>
-              <Button onClick={handleClose}>Close</Button>
-              <Button onClick={handleSubmit}>Submit</Button>
-            </Box>
-          </Box>
+          </form>
         </Modal>
       </React.Fragment>
     </div>
