@@ -5,39 +5,30 @@ import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from 'axios';
-import { ExpandOutlined } from '@mui/icons-material';
 
 const FinalncialLedgerDonut = () => {
-
-  const [ledgerAllData, setLedgerAllData] = useState(false);
-  const [expenseList, setExpenseList] = useState(false);
-
+  const [monthlyAllData, setMonthlyAllData] = useState([]);
+  //======================================================
   useEffect(() => {
     axios.get('http://localhost:5000/ledger')
     .then((res) => {
-      console.log('res', res.data);
-      setLedgerAllData(res.data[0]);
+      console.log(res.data)
+      setMonthlyAllData(res.data);
     })
   }, []);
-
-
+  //=====================================================
   return (
     <DountWrap className="donut">
       <DountGraph>
         <DountTitle>이번달 지출 현황</DountTitle>
         <Box style={{ width: '100%', height: '600px', margin: '0 auto' }}>
-        {/* nivo로 만든 도넛차트 */}
+        {/* nivo로 만든 도넛차트 */}          
           <ResponsivePie
-            data={[
-                { id: '식비', value: 234800 },
-                { id: '통신비', value: 49000 },
-                { id: '쇼핑', value: 346000 },
-                { id: '보험비', value: 159800 },
-                { id: '병원/약국', value: 6000 },
-                { id: '간식비', value: 8500 },
-                { id: '반려묘/견', value: 156200 },
-                { id: '추가 카테고리', value: 123456 },
-            ]}
+            data = {
+              monthlyAllData.map((data) => (
+                {id : data.ledger_category, value : data.sum_count}
+              ))
+            }
             margin={{ top: 40, right: 80, bottom: 80, left: 0 }}
             innerRadius={0.65}
             padAngle={1}
