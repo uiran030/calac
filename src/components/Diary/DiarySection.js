@@ -14,10 +14,12 @@ const FeedSection = () => {
   },[])
   return (
     <MyBox>
-      <MyTypography>Diary</MyTypography>
-      <WriteBox>
-        <WriteDiary/>
-      </WriteBox>
+      <Title>
+        <MyTypography>Diary</MyTypography>
+        <WriteBox>
+          <WriteDiary/>
+        </WriteBox>
+      </Title>
       <DiaryBox>
         <DiaryCard/>
       </DiaryBox>
@@ -28,23 +30,24 @@ const FeedSection = () => {
 const MyBox = styled(Box)({
   height: '100vh',
   margin: '0 auto',
-  // overflow: 'scroll',
 });
+const Title = styled(Box)({
+  display:'flex',
+  justifyContent:'space-between',
+  alignItems:'center',
+  height:'7%',
+  padding:'0 13vh'
+})
 const MyTypography = styled(Box)({
   fontSize: 30,
-  color: '#07553B',
-  paddingTop: 20,
-  paddingLeft: '13vh',
+  color: '#07553B'
 });
+const WriteBox = styled(Box)({});
 const DiaryBox = styled(Box)({
   margin: '0 auto',
   display: 'flex',
-  flexWrap: 'wrap'
-});
-const WriteBox = styled(Box)({
-  display: 'flex',
-  justifyContent: 'end',
-  paddingRight: '13vh',
+  flexWrap: 'wrap',
+  height:'93%'
 });
 //======================================================
 export default FeedSection;
