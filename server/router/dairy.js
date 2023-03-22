@@ -13,9 +13,7 @@ connectDB.open(db);
 router.get('/',(req,res) => {
   const limit = req.query.limit;
   const offset = req.query.offset;
-  console.log(limit, offset)
-  // const selectQuery = `SELECT * FROM dairy ORDER BY dairy_no DESC LIMIT ${limit}`;
-  const selectQuery = `SELECT * FROM dairy ORDERS LIMIT ${limit} OFFSET ${offset}`;
+  const selectQuery = `SELECT * FROM dairy ORDER BY dairy_no DESC LIMIT ${limit} OFFSET ${offset}`;
   db.query(selectQuery, (err, result) => {
     if(err) console.log("err",err);
     else {res.send(result)}
