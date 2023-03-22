@@ -7,10 +7,19 @@ connectDB.open(db);
 //==============================================
 // ledger page의 show data
 router.get('/', (req, res) => {
-  const selectQuery = "SELECT * FROM ledger;"
+  const monthlyDataQuery = "SELECT ledger_category, SUM(ledger_count) AS sum_count FROM ledger WHERE ledger_createdAt LIKE '2023-03%' GROUP BY ledger_category;"
+  db.query( monthlyDataQuery, (err, result) => {
+    res.send(result);
+    console.log('result', result);
+  })
+});
+
+// ledger page의 show total data
+router.get('/total', (req, res) => {
+  const monthlyTotalQuery = "SELECT ledger_type, SUM(ledger_count) AS sum_count FROM ledger GROUP BY ledger_type;"
   const expenseQuery = "SELECT * from ledger WHERE ledger_type='expense' order BY ledger_createdAt desc LIMIT 3;"
   const incomeQuery = "SELECT * from ledger WHERE ledger_type='income' order BY ledger_createdAt DESC LIMIT 3;"
-  db.query(selectQuery + expenseQuery + incomeQuery, (err, result) => {
+  db.query(monthlyTotalQuery + expenseQuery + incomeQuery, (err, result) => {
     res.send(result);
     console.log('result', result);
   })

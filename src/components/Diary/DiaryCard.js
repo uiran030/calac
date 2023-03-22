@@ -146,17 +146,19 @@ const DiaryCard = () => {
 };
 //style=================================================
 const CardBox = styled(Box)({
+  height:'100%'
 });
 const CardList = styled(List)({
   display: 'flex',
   flexWrap: 'wrap',
   justifyContent: 'center',
-  // overflow: 'auto'
+  height:'100%',
+  overflowY:'scroll'
 });
 const CardListItem = styled(ListItem)({
   width: `45vh`,
   border: `1px solid #ebebec`,
-  margin: `20px 10px 15px 20px`,
+  margin: `20px 10px 15px 20px`
 });
 const MyCardHeader = styled(CardHeader)({
   fontSize: 25,
