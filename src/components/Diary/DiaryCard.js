@@ -14,69 +14,58 @@ const DiaryCard = () => {
   const [id, setId] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [image, setImage] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState ({comment: ''})
+  const [commentCnt, setCommentCnt] = useState([]);
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
     setOpenMoreButton(!openMoreButton);
   }
   //======================================================
-  const openDetailModal = (id,title,content,createdAt) => {
+  const openDetailModal = (id,title,content,image,createdAt) => {
     setIsDetailOpen(true);
     setId(id);
     setTitle(title);
     setContent(content);
-    setCreatedAt(createdAt)
-    axios.post('http://localhost:5000/comments', {
-      dairy_no : id
-    })
+    setCreatedAt(new Date(createdAt).toLocaleString())
+    setImage(image);
+  }
+  //======================================================
+  useEffect(()=>{
+    axios.get('http://localhost:5000/comments/count')
     .then(res=>{
-      setComments(res.data[0])
-      console.log("comment",res.data[0])
+      setCommentCnt(res.data)
     });
+  },[commentCnt])
+  //======================================================
+  let offset = 0;
+  const loadDairy = () => {
+    axios.get(`http://localhost:5000/dairy?limit=3&offset=${offset}`)
+    .then(res=>{
+      setPosts(oldPosts => [...oldPosts, ...res.data]);
+    });
+    offset += 3;
   }
   //======================================================
-  const commentHandle = (e) => {
-    const data = e.target.value;
-    setNewComment({
-      ...newComment,
-      comment : data
-    })
-  }
-  //======================================================
-  const submitComment = (id) => {
-    axios.post('http://localhost:5000/comments/insert',{
-      dairy_no : id,
-      comment : newComment.comment
-    })
-    .then(()=>{
-      alert('댓글이 등록되었습니다 :)');
-      onReset();
-    })
-  }
-  const onReset = () => {setNewComment({comment: ''});}
-  //======================================================
-  const commentDelete = (id) => {
-    if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
-      axios.post('http://localhost:5000/comments/delete' , {
-        comment_no : id
-      })
-      .then(()=>alert("삭제되었습니다 :)"))
-    } else {
-      alert("취소되었습니다 :)")
+  const handleScroll = (e) => {
+    console.log("win",window.innerHeight);
+    console.log("top",e.target.documentElement.scrollTop);
+    console.log("height",e.target.documentElement.scrollHeight);
+    if (window.innerHeight + e.target.documentElement.scrollTop + 1 >= e.target.documentElement.scrollHeight) {
+      console.log("bottom")
+      loadDairy();
     }
   }
   //======================================================
   useEffect(()=>{
-    axios.get('http://localhost:5000/dairy')
-    .then(res=>setPosts(res.data));
-  },[posts])
+    loadDairy();
+    window.addEventListener('scroll', handleScroll);
+  },[posts.dairy_no])
   //======================================================
   return (
-    <Box>
+    <CardBox>
       <CardList>
         {posts.map((list,idx)=>{
           return(
@@ -99,92 +88,70 @@ const DiaryCard = () => {
                 title={list.title}
                 disableTypography
               />
-              <DateTypography>{list.createdAt.substring(0,10)}</DateTypography>
-              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.createdAt)}>
-                <MyCardMedia
-                  component="img"
-                  width="40vh"
-                  height="194"
-                  src="/images/diary/img01.jpeg"
-                  alt="이미지"
-                />
+              <DateTypography>{new Date(list.createdAt).toLocaleString()}</DateTypography>
+              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.image,list.createdAt)}>
+                {list.image !== "NULL" ? (
+                  <MyCardMedia
+                    component="img"
+                    width="40vh"
+                    height="194"
+                    src={`http://localhost:5000/images/dairy/${list.image}`}
+                    alt="이미지"
+                  />
+                  ):(
+                    <MyCardMedia
+                    component="img"
+                    width="40vh"
+                    height="194"
+                    src="/images/logo.png"
+                    alt="이미지"
+                  />
+                  )
+                }
               </Button>
-              <CardContent>
-                <BodyTypography variant="body2" color="text.secondary">
-                  {ReactHtmlParser(list.content)}
-                </BodyTypography>
-                <CountCommentTypography>댓글 1개</CountCommentTypography>
-              </CardContent>
+              
+              <MyCardContent>
+                <ContentBox variant="body2" color="text.secondary">
+                  {ReactHtmlParser((list.content_parse).substring(0,list.content_parse.indexOf('</')))}
+                </ContentBox>
+              </MyCardContent>
+              <CommentBox>
+              {commentCnt.length !== 0 && (
+                commentCnt.map((count,idx) => {
+                  return(
+                    list.dairy_no === count.dairy_no && (
+                      <CountCommentTypography key={idx}>댓글 {count.cnt}개</CountCommentTypography>
+                    )
+                  )
+                })
+              )}
+              </CommentBox>
             </Box>
           </CardListItem>
         )})}
       </CardList>
-      {/* MUI Modal은 ref와 함께 자식 컴포넌트로 전달? 함수형 컴포넌트에서 사용불가..? */}
       {isDetailOpen && (
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            open={isDetailOpen}
-            onClose={()=>setIsDetailOpen(false)}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-          <Fade in={isDetailOpen}>
-            <ModalBox>
-              <TitleTypography>{title}</TitleTypography>
-              <ModalDateTypography>{createdAt.substring(0,10)}</ModalDateTypography>
-              <Divider/>
-              <DetailBox>
-                  <CardMedia
-                    component="img"
-                    width="210"
-                    height="194"
-                    image="/images/diary/img01.jpeg"
-                    alt="이미지"
-                  />
-                  <ContentTypography>
-                    {ReactHtmlParser(content)}
-                  </ContentTypography>
-              </DetailBox>
-              <DetailDivider/>
-              <CommentBox>
-                <CommentTextField 
-                  id="outlined-basic" 
-                  variant="outlined" 
-                  label="댓글달기" 
-                  size="small" 
-                  onChange={commentHandle}
-                  />
-                <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
-                <List>
-                  {comments.map(list => {
-                    return (
-                      <ListItem>
-                        <ListItemText
-                          primary={`${list.comment} (${list.user_id} ${(list.createdAt).substring(0,10)})`}
-                        />
-                      <CommentUpdate>수정</CommentUpdate>
-                      <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
-                      </ListItem>
-                    )
-                  })}
-                </List>
-              </CommentBox>
-            </ModalBox>
-          </Fade>
-        </Modal>
+        <DiaryDetail
+          isDetailOpen={isDetailOpen}
+          setIsDetailOpen={setIsDetailOpen}
+          id={id}
+          title={title}
+          content={content}
+          image={image}
+          createdAt={createdAt}
+        />
       )}
-    </Box>
+    </CardBox>
   );
 };
 //style=================================================
+const CardBox = styled(Box)({
+});
 const CardList = styled(List)({
   display: 'flex',
   flexWrap: 'wrap',
   justifyContent: 'center',
+  // overflow: 'auto'
 });
 const CardListItem = styled(ListItem)({
   width: `45vh`,
@@ -198,74 +165,29 @@ const MyCardHeader = styled(CardHeader)({
 const DateTypography = styled(Typography)({
   display: 'flex',
   justifyContent: 'end',
-  marginRight: 16
+  marginRight: '3vh'
 });
 const MyCardMedia = styled(CardMedia)({
-  width : '40vh'
+  width : '40vh',
+  objectFit : 'contain'
 });
 const MyIconButton = styled(IconButton)({
-  
 });
-const BodyTypography = styled(Typography)({
+const MyCardContent = styled(CardContent)({
+  paddingTop: 16,
+});
+const ContentBox = styled(Box)({
   width: '40vh',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   wordWrap: 'break-word',
 });
+const CommentBox = styled(Box)({
+});
 const CountCommentTypography = styled(Typography)({
   color: 'rgba(0, 0, 0, 0.6)',
   fontSize: '0.875rem'
-});
-//======================================================
-const ModalBox = styled(Box)({
-  position: 'absolute',
-  top: '50%',
-  left: '57%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  height: '60vh',
-  backgroundColor: '#fff',
-  border: '3px solid #07553B',
-  boxShadow: 24,
-  padding: 20,
-  overflowY: 'auto',
-});
-const DetailBox = styled(Box)({
-  padding: 20,
-});
-const TitleTypography = styled(Typography)({
-  fontSize: 30,
-  color: '#07553B',
-  textAlign: 'center'
-});
-const ModalDateTypography = styled(Typography)({
-  fontSize: 15,
-  color: '#07553B',
-  textAlign: 'right'
-});
-const ContentTypography = styled(Typography)({
-  fontSize: 20,
-  textAlign: 'center',
-  paddingTop: 30,
-});
-const DetailDivider = styled(Divider)({
-});
-const CommentBox = styled(Box)({
-  paddingTop: 20,
-  height:30
-});
-const CommentTextField = styled(TextField)({
-  width: '80%',
-});
-const CommentButton = styled(Button)({
-  left: 26,
-});
-const CommentUpdate = styled(Button)({
-  left: 26,
-});
-const CommentDelete = styled(Button)({
-  left: 26,
 });
 //======================================================
 export default DiaryCard;

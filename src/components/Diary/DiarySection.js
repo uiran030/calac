@@ -7,14 +7,10 @@ import axios from 'axios';
 
 const FeedSection = () => {
   useEffect(()=>{
-    axios.get('http://localhost:5000/ledger')
-    .then(res=>console.log("ledger",res.data))
-    axios.get('http://localhost:5000/scheduler')
-    .then(res=>console.log("scheduler",res.data))
-    axios.get('http://localhost:5000/users')
-    .then(res=>console.log("users",res.data))
     axios.get('http://localhost:5000/dairy')
-    .then(res=>console.log("dairy",res.data))
+    .then(res=>{
+      console.log("dairy",res.data)
+    })
   },[])
   return (
     <MyBox>
@@ -32,6 +28,7 @@ const FeedSection = () => {
 const MyBox = styled(Box)({
   height: '100vh',
   margin: '0 auto',
+  // overflow: 'scroll',
 });
 const MyTypography = styled(Box)({
   fontSize: 30,

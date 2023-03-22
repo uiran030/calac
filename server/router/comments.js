@@ -9,12 +9,15 @@ connectDB.open(db);
 
 router.post('/',(req,res) => {
   const dairy_no = req.body.dairy_no;
-  const selectQuery = `SELECT * FROM comments LEFT JOIN users on comments.user_no=users.user_no WHERE comments.user_no=1 AND comments.dairy_no=${dairy_no};`;
+  const selectQuery = `SELECT comments.comment_no, comments.dairy_no, comments.user_no, comments.comment, comments.createdAt, comments.updatedAt, users.user_id FROM comments LEFT JOIN users on comments.user_no=users.user_no WHERE comments.user_no=1 AND comments.dairy_no=${dairy_no};`;
   const countQuery = `SELECT COUNT(*) as cnt FROM comments WHERE dairy_no=${dairy_no};`
   db.query(selectQuery + countQuery, (err, result) => {
-    // console.log("dairy_no",dairy_no);
-    res.send(result);
-    // console.log('result', result);
+    if(err) console.log("err",err);
+    else{
+      // console.log("dairy_no",dairy_no);
+      res.send(result);
+      // console.log('result', result);
+    }
   })
 });
 //==============================================
@@ -23,9 +26,12 @@ router.post('/insert', (req,res) => {
   const comment = req.body.comment;
   const insertQuery = `INSERT INTO comments (dairy_no, user_no, comment) VALUES ('${dairy_no}', '1', '${comment}');`
   db.query(insertQuery, (err,result) => {
-    // console.log("dairy_no",dairy_no);
-    res.send(result);
-    // console.log('result', result);
+    if(err) console.log("err",err);
+    else {
+      // console.log("dairy_no",dairy_no);
+      res.send(result);
+      // console.log('result', result);
+    }
   })
 })
 //==============================================
@@ -34,9 +40,34 @@ router.post('/delete',(req,res)=>{
   const comment_no = req.body.comment_no;
   const deleteQuery = `DELETE FROM comments WHERE comment_no=${comment_no};`
   db.query(deleteQuery, (err,result)=>{
-    console.log("comment_no",comment_no);
-    res.send(result);
-    console.log('result',result);
+    if(err) console.log("err",err);
+    else{
+      console.log("comment_no",comment_no);
+      res.send(result);
+      console.log('result',result);
+    }
+  })
+})
+//==============================================
+
+router.get('/count',(req,res)=>{
+  const countQuery = `SELECT dairy_no, COUNT(*) as cnt FROM comments GROUP BY dairy_no;`
+  db.query(countQuery, (err,result)=>{
+    if(err) console.log("err",err);
+    else{
+      res.send(result);
+    }
+  })
+})
+//==============================================
+
+router.post('/update', (req,res) => {
+  const updateComment = req.body.updateComment;
+  const comment_no = req.body.comment_no;
+  const updateQuery = `UPDATE comments SET comment = '${updateComment}', updatedAt=now() WHERE comment_no = ${comment_no};`
+  db.query(updateQuery, (err,result) => {
+    if(err) console.log("err",err);
+    else res.send(result);
   })
 })
 //==============================================
