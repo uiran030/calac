@@ -6,6 +6,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import axios from 'axios';
 
 const DiaryMoreButton = (posts) => {
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   //======================================================
   const onDelete = (id) => {
     if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
@@ -21,7 +22,7 @@ const DiaryMoreButton = (posts) => {
   return (
     <TabBox>
       <List>
-        <ListItem disablePadding>
+        <ListItem disablePadding onClick={()=>setIsUpdateOpen(!isUpdateOpen)}>
           <ListItemButtonIcon>
             <AutoFixNormalIcon />
             <ListItemText primary="modify"/>
