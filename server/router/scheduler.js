@@ -17,14 +17,24 @@ router.post("/insert", (req, res) => {
   const title = req.body.title;
   const start = req.body.start;
   const end = req.body.end;
-  const sqlQuery = "INSERT INTO event_list(title,start,end) VALUES(?,?,?);";
-  db.query(sqlQuery, [title, start, end], (err, result) => {
+  const color = req.body.color;
+  const locale = req.body.locale;
+  const sqlQuery =
+    "INSERT INTO event_list(title,start,end,color,locale) VALUES(?,?,?,?,?);";
+  db.query(sqlQuery, [title, start, end, color, locale], (err, result) => {
     if (err) {
       console.log(err);
     } else {
-      res.send(req.body);
-      console.log("result", result);
-      console.log("req.body", req.body);
+      const newEvent = {
+        id: result.insertId, // Get the newly inserted id
+        title,
+        start,
+        end,
+        color,
+        locale,
+      };
+      res.send(newEvent);
+      console.log("과연 아이디를 받아올 수 있을 것인가", result.insertId);
     }
   });
 });
@@ -33,10 +43,12 @@ router.put("/edit/:id", (req, res) => {
   const title = req.body.title;
   const start = req.body.start;
   const end = req.body.end;
+  const color = req.body.color;
+  const locale = req.body.locale;
   const id = req.params.id;
   const sqlQuery =
-    "UPDATE event_list SET title=?, start=?, end=? WHERE id = ?;";
-  db.query(sqlQuery, [title, start, end, id], (err, result) => {
+    "UPDATE event_list SET title=?, start=?, end=?, color=?, locale=? WHERE id = ?;";
+  db.query(sqlQuery, [title, start, end, color, locale, id], (err, result) => {
     if (err) {
       console.log(err);
     } else {
