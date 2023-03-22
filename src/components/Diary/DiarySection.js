@@ -28,6 +28,7 @@ const FeedSection = () => {
 const MyBox = styled(Box)({
   height: '100vh',
   margin: '0 auto',
+  // overflow: 'scroll',
 });
 const MyTypography = styled(Box)({
   fontSize: 30,

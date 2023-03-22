@@ -17,7 +17,6 @@ const DiaryCard = () => {
   const [image, setImage] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
-  const [newPosts, setNewPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState([]);
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
@@ -43,22 +42,19 @@ const DiaryCard = () => {
   //======================================================
   let offset = 0;
   const loadDairy = () => {
-    // axios.get(`http://localhost:5000/dairy?limit=3&offset=${offset}`)
-    axios.get('http://localhost:5000/dairy',{
-      params : {
-        limit : 3,
-        offset : offset
-      }
-    })
+    axios.get(`http://localhost:5000/dairy?limit=3&offset=${offset}`)
     .then(res=>{
-      setNewPosts(res.data);
-      setPosts(oldPosts => [...oldPosts, ...newPosts]);
+      setPosts(oldPosts => [...oldPosts, ...res.data]);
     });
     offset += 3;
   }
   //======================================================
   const handleScroll = (e) => {
+    console.log("win",window.innerHeight);
+    console.log("top",e.target.documentElement.scrollTop);
+    console.log("height",e.target.documentElement.scrollHeight);
     if (window.innerHeight + e.target.documentElement.scrollTop + 1 >= e.target.documentElement.scrollHeight) {
+      console.log("bottom")
       loadDairy();
     }
   }
@@ -66,10 +62,10 @@ const DiaryCard = () => {
   useEffect(()=>{
     loadDairy();
     window.addEventListener('scroll', handleScroll);
-  },[])
+  },[posts.dairy_no])
   //======================================================
   return (
-    <Box>
+    <CardBox>
       <CardList>
         {posts.map((list,idx)=>{
           return(
@@ -145,14 +141,17 @@ const DiaryCard = () => {
           createdAt={createdAt}
         />
       )}
-    </Box>
+    </CardBox>
   );
 };
 //style=================================================
+const CardBox = styled(Box)({
+});
 const CardList = styled(List)({
   display: 'flex',
   flexWrap: 'wrap',
   justifyContent: 'center',
+  // overflow: 'auto'
 });
 const CardListItem = styled(ListItem)({
   width: `45vh`,
