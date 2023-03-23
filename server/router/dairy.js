@@ -13,7 +13,12 @@ connectDB.open(db);
 router.get('/',(req,res) => {
   const limit = req.query.limit;
   const offset = req.query.offset;
-  const selectQuery = `SELECT * FROM dairy ORDER BY dairy_no DESC LIMIT ${limit} OFFSET ${offset}`;
+  let selectQuery = '';
+  if(limit !== undefined || offset !== undefined) {
+    selectQuery = `SELECT * FROM dairy ORDER BY dairy_no DESC LIMIT ${limit} OFFSET ${offset}`;
+  } else {
+    selectQuery = `SELECT * FROM dairy ORDER BY dairy_no DESC`;
+  }
   db.query(selectQuery, (err, result) => {
     if(err) console.log("err",err);
     else {res.send(result)}
@@ -75,7 +80,7 @@ const upload = multer({
       callback(null, true);
     else callback(new Error("해당 파일의 형식을 지원하지 않습니다."), false);
   },
-  limits : {fileSize : 1024 * 1024 * 5}
+  limits : {fileSize : 1024 * 1024 * 50}
 });
 
 router.post('/upload', upload.single("file"), (req,res) => {

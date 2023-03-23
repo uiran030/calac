@@ -30,6 +30,7 @@ const FeedSection = () => {
 const MyBox = styled(Box)({
   height: '100vh',
   margin: '0 auto',
+  overflow:'auto'
 });
 const Title = styled(Box)({
   display:'flex',
