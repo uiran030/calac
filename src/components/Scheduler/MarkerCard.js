@@ -2,15 +2,17 @@ import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import RoomIcon from "@mui/icons-material/Room";
 
-export default function MarkerCard({ marker, setSelectedMarker, onClose }) {
+export default function MarkerCard({ marker, setNewEvent, onClose }) {
   return (
     <Box
       display='flex'
       justifyContent='space-between'
       alignItems='center'
-      sx={{ backgroundColor: "rgba( 255, 255, 255, 0.8)" }}
-      marginY={1}
+      sx={{ backgroundColor: "rgba( 255, 255, 255, 0.7)" }}
+      marginBottom={1}
       padding={1}
+      borderRadius={2}
+      marginRight={0.5}
     >
       <RoomIcon color='primary' onClick={onClose} />
       <Typography fontSize={12} sx={{ flex: 1 }}>
@@ -19,9 +21,10 @@ export default function MarkerCard({ marker, setSelectedMarker, onClose }) {
       <Button
         size='small'
         variant='contained'
+        sx={{ marginLeft: "10px" }}
         onClick={() => {
-          setSelectedMarker("");
-          // onClose(); 어떻게 해야 선택했을 떄 끌 수 있을깐
+          setNewEvent((prev) => ({ ...prev, locale: marker.content }));
+          onClose();
         }}
       >
         선택

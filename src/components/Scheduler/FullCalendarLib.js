@@ -117,7 +117,7 @@ export default function DemoApp() {
         parsingCategory = "생일 및 기념일";
         break;
       default:
-        parsingCategory = "카테고리가 없습니다.";
+        parsingCategory = "카테고리 정보 없음";
     }
     console.log("파싱맨", parsingCategory);
     {
@@ -144,9 +144,18 @@ export default function DemoApp() {
   }
 
   function handleModalSubmit() {
-    setOpen(false);
     const { title, start, end, color, locale } = newEvent;
     // Send POST request to server to add new event
+    if (!title && !color) {
+      alert("일정 이름과 카테고리를 입력해주세요.");
+      return;
+    } else if (!title) {
+      alert("일정 이름을 읿력해주세요.");
+      return;
+    } else if (!color) {
+      alert("카테고리를 입력해주세요.");
+      return;
+    }
     axios
       .post("http://localhost:5000/scheduler/insert", {
         title,
@@ -177,13 +186,7 @@ export default function DemoApp() {
         alert("등록실패");
       })
       .finally(() => {
-        setNewEvent({
-          title: "",
-          start: "",
-          end: "",
-          color: "",
-          locale: "",
-        });
+        handleClose();
       });
   }
   // 중간에 나가면 데이터 지워지는 것도 잊지 말아야겠는걸?
@@ -195,24 +198,43 @@ export default function DemoApp() {
   const calendarRef = useRef(null);
 
   function handleEventChange(changeInfo) {
-    console.log(changeInfo);
-    // axios
-    //   .put(`http://localhost:5000/scheduler/edit/${changeInfo.event.id}`, {
-    //     title: "아직 미구현1",
-    //     start: changeInfo.event.startStr,
-    //     end: changeInfo.event.endStr,
-    //     color: "이직 미구현3",
-    //     locale: "아직 미구현2",
-    //     // allDay: changeInfo.event.allDay,
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //     changeInfo.event.setDates(response.data.start, response.data.end);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    console.log("첸지첸지", changeInfo);
+    axios
+      .put(`http://localhost:5000/scheduler/edit/${changeInfo.event.id}`, {
+        title: changeInfo.event.title,
+        start: changeInfo.event.startStr,
+        end: changeInfo.event.endStr,
+        color: changeInfo.event.backgroundColor,
+        locale: changeInfo.event.extendedProps.locale,
+        // allDay: changeInfo.event.allDay,
+      })
+      .then((response) => {
+        console.log(response);
+        changeInfo.event.setDates(response.data.start, response.data.end);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
+
+  // function handleUpdate(){
+  //   axios
+  //     .put(`http://localhost:5000/scheduler/edit/${changeInfo.event.id}`, {
+  //       title: changeInfo.event.title,
+  //       start: changeInfo.event.startStr,
+  //       end: changeInfo.event.endStr,
+  //       color: changeInfo.event.backgroundColor,
+  //       locale: changeInfo.event.extendedProps.locale,
+  //       // allDay: changeInfo.event.allDay,
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //       changeInfo.event.setDates(response.data.start, response.data.end);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }
 
   useEffect(() => {
     const calendar = calendarRef.current;
@@ -251,9 +273,18 @@ export default function DemoApp() {
     transform: "translate(-50%, -50%)",
     width: 400,
     bgcolor: "background.paper",
-    border: "2px solid #000",
+    // border: "2px solid #000",
+    borderRadius: "10px",
     boxShadow: 24,
     p: 4,
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    // focus 스타일 설정
+    "&:focus": {
+      border: "none",
+      outline: "none",
+    },
   };
 
   const [open, setOpen] = useState(false);
@@ -346,19 +377,21 @@ export default function DemoApp() {
           console.error(error);
         })
         .finally(() => {
-          setUpdatedEvent({
-            title: "",
-            start: "",
-            end: "",
-            color: "",
-            locale: "",
-          });
+          handleCloseDetail();
         });
     }
   };
   // for
 
-  console.log(newEvent);
+  console.log("새 이벤", newEvent);
+  console.log("업뎃", updatedEvent);
+
+  const categoryList = [
+    { id: 1, value: "#9DC08B", label: "개인" },
+    { id: 2, value: "#40513B", label: "직장" },
+    { id: 3, value: "#609966", label: "가족" },
+    { id: 4, value: "#719192", label: "생일 및 기념일" },
+  ];
 
   return (
     <div className='demo-app'>
@@ -424,31 +457,47 @@ export default function DemoApp() {
       >
         <Box sx={style}>
           <Typography
-            fontSize={30}
+            fontSize={10}
             id='modal-modal-title'
             variant='h6'
             component='h2'
             marginBottom={2}
+            marginY={-0.5}
+            marginLeft={0.5}
           >
-            ADD EVENT
+            ADD EVNET
           </Typography>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            Title
+          <Typography
+            fontSize={25}
+            id='modal-modal-title'
+            variant='h6'
+            component='h2'
+            marginBottom={2}
+            marginY={-1}
+            color='primary'
+          >
+            일정 추가하기
           </Typography>
+          {/* <Typography id='modal-modal-title' variant='h6' component='h2'>
+            일정이름
+          </Typography> */}
           <TextField
             fullWidth
             id='outlined-basic'
             label='Title'
-            variant='outlined'
             name='title'
             onChange={handleChange}
             sx={{ mt: 1 }}
+            error={!newEvent.title ? true : false}
+            helperText={!newEvent.title ? '"Title" is required.' : "Great!"}
+            required
+            variant='standard'
           />
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            Category
-          </Typography>
-          <FormControl fullWidth sx={{ mt: 1 }}>
-            <InputLabel id='demo-multiple-name-label'>Category</InputLabel>
+          {/* <Typography id='modal-modal-title' variant='h6' component='h2'>
+            범주
+          </Typography> */}
+          {/* <FormControl fullWidth sx={{ mt: 1 }}>  // 왜씀이건?
+            <InputLabel id='demo-multiple-name-label'>Category * </InputLabel>
             <Select
               labelId='demo-simple-select-label'
               id='demo-simple-select'
@@ -456,60 +505,92 @@ export default function DemoApp() {
               value={newEvent.color}
               label='Category'
               name='color'
+              required
               onChange={handleChange}
+              error={!newEvent.title ? true : false}
             >
               <MenuItem value={"#9DC08B"}>개인</MenuItem>
               <MenuItem value={"#40513B"}>직장</MenuItem>
               <MenuItem value={"#609966"}>가족</MenuItem>
               <MenuItem value={"#719192"}>생일 및 기념일</MenuItem>
             </Select>
-          </FormControl>
-          <Typography
+          </FormControl> */}
+          <TextField
+            id='outlined-select-currency'
+            select
+            label='Category'
+            defaultValue='EUR'
+            fullWidth
+            required
+            error={!newEvent.color ? true : false}
+            helperText={!newEvent.color ? '"Category" is required.' : "Great!"}
+            value={newEvent.color}
+            name='color'
+            onChange={handleChange}
+            variant='standard'
+          >
+            {categoryList.map((option) => (
+              <MenuItem key={option.id} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          {/* <Typography
             id='modal-modal-description'
             sx={{ mt: 2, fontSize: "21px" }}
           >
-            Start
-          </Typography>
+            시작일시
+          </Typography> */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimeField
               value={newEvent.start && dayjs(newEvent.start)}
               fullWidth
               disabled
+              label='start'
+              helperText='Start time can only be modified on the calendar page.'
+              variant='standard'
             />
-            <Typography
+            {/* <Typography
               id='modal-modal-description'
               sx={{ mt: 2, fontSize: "21px" }}
             >
-              End
-            </Typography>
+              종료일시
+            </Typography> */}
             <DateTimeField
               value={newEvent.end && dayjs(newEvent.end)}
               fullWidth
               disabled
+              label='end'
+              helperText='End time can only be modified on the calendar page.'
+              variant='standard'
             />
           </LocalizationProvider>
-          <Typography
+          {/* <Typography
             id='modal-modal-title'
             variant='h6'
             component='h2'
             sx={{ mt: 2 }}
           >
-            Locale
-          </Typography>
+            장소
+          </Typography> */}
           <Box
             display='flex'
-            alignItems='center'
+            alignItems='end'
             justifyContent='space-between'
             marginTop={1}
           >
             <TextField
               id='outlined-basic'
               label='Locale'
-              variant='outlined'
               name='locale'
+              value={newEvent.locale}
+              // value={newEvent.locale || ""}
               onChange={handleChange}
+              // InputLabelProps={{ shrink: true }}
+              variant='standard'
+              sx={{ width: "230px" }}
             />
-            <MapSearch />
+            <MapSearch setNewEvent={setNewEvent} />
           </Box>
           <Box sx={{ mt: 5 }}>
             <Button onClick={handleClose}>Close</Button>
@@ -520,7 +601,7 @@ export default function DemoApp() {
         </Box>
       </Modal>
       {/*========================================================== */}
-      {/* 이벤트 추가 모달 ========================================= */}
+      {/* 이벤트 보기 모달 ========================================= */}
       <Paper
         elevation={5}
         sx={
@@ -552,8 +633,8 @@ export default function DemoApp() {
           justifyContent='space-between'
           alignItems='center'
         >
-          <Typography>
-            일정 이름 : {updatedEvent.title && updatedEvent.title}
+          <Typography color='secondary'>
+            {updatedEvent.title && updatedEvent.title}
           </Typography>
           <Box>
             <DeleteIcon onClick={handleEventDelete} id='ttt' />
@@ -563,20 +644,20 @@ export default function DemoApp() {
         </Box>
 
         <Typography>
-          시작일:
+          시&nbsp;&nbsp;작&nbsp;&nbsp;일 :&nbsp;
           {updatedEvent.start && updatedEvent.start.toLocaleString("ko-KR")}
         </Typography>
         <Typography>
-          종료일:
+          종&nbsp;&nbsp;료&nbsp;&nbsp;일 : &nbsp;
           {updatedEvent.end && updatedEvent.end.toLocaleString("ko-KR")}
         </Typography>
         <Typography>
-          카테고리:
+          카테고리 : &nbsp;
           {updatedEvent.category && updatedEvent.category}
         </Typography>
         <Typography>
-          장소:
-          {updatedEvent.locale && updatedEvent.locale}
+          장&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;소 : &nbsp;
+          {updatedEvent.locale ? updatedEvent.locale : "장소 정보 없음"}
         </Typography>
       </Paper>
       {/*========================================================== */}

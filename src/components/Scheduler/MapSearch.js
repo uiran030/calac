@@ -7,6 +7,7 @@ import { Grid, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import KakaoMap from "./KakaoMap";
 import MarkerCard from "./MarkerCard";
+import "../../assets/css/App.css";
 
 const style = {
   position: "absolute",
@@ -16,13 +17,13 @@ const style = {
   width: "870px",
   height: "700px",
   bgcolor: "background.paper",
-  // border: "2px solid #000",
   borderRadius: "5px",
   boxShadow: 24,
   p: 4,
+  outline: "none",
 };
 
-export default function MapSearch({ selectedMarker, setSelectedMaker }) {
+export default function MapSearch({ setNewEvent }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -31,18 +32,18 @@ export default function MapSearch({ selectedMarker, setSelectedMaker }) {
   };
   const [keyword, setKeyword] = useState("");
   const [markerList, setMarkerList] = useState("");
-  // const [selectedMarker, setSelectedMaker] = React.useState();
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
   };
 
-  // console.log(markerList);
-  // console.log(selectedMarker);
-
   return (
     <div>
-      <Button onClick={handleOpen} variant='outlined'>
+      <Button
+        onClick={handleOpen}
+        variant='outlined'
+        sx={{ marginLeft: "10px" }}
+      >
         지도 검색
       </Button>
       <Modal
@@ -60,7 +61,14 @@ export default function MapSearch({ selectedMarker, setSelectedMaker }) {
           </Box>
           <Box position='relative' height='600px'>
             <KakaoMap keyword={keyword} setMarkerList={setMarkerList} />
-            <Box position='absolute' top={0} right={0} zIndex={10} padding={2}>
+            <Box
+              position='absolute'
+              top={0}
+              right={0}
+              zIndex={10}
+              padding={2}
+              width='300px'
+            >
               <TextField
                 id='outlined-basic'
                 label='키워드 또는 주소를 입력하세요.'
@@ -70,17 +78,18 @@ export default function MapSearch({ selectedMarker, setSelectedMaker }) {
                 onChange={handleKeywordChange}
                 color='primary'
                 sx={{
-                  backgroundColor: "rgba( 255, 255, 255, 0.7 )",
+                  backgroundColor: "rgba( 255, 255, 255, 0.9 )",
                   borderRadius: "5px",
+                  marginBottom: "10px",
                 }}
               />
-              <Box height='520px' sx={{ overflowY: "auto" }}>
+              <Box className='mapScrollBar'>
                 {markerList &&
                   markerList.map((marker, index) => (
                     <MarkerCard
                       key={index}
                       marker={marker}
-                      setSelectedMarker={setSelectedMaker}
+                      setNewEvent={setNewEvent}
                       onClose={handleClose}
                     />
                   ))}
