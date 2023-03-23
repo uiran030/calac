@@ -40,29 +40,31 @@ const DiaryCard = () => {
     });
   },[commentCnt])
   //======================================================
-  let offset = 0;
-  const loadDairy = () => {
-    axios.get(`http://localhost:5000/dairy?limit=3&offset=${offset}`)
-    .then(res=>{
-      setPosts(oldPosts => [...oldPosts, ...res.data]);
-    });
-    offset += 3;
-  }
+  // let offset = 0;
+  // const loadDairy = () => {
+  //   axios.get(`http://localhost:5000/dairy?limit=10&offset=${offset}`)
+  //   .then(res=>{
+  //     setPosts(oldPosts => [...oldPosts, ...res.data]);
+  //   });
+  //   offset += 10;
+  // }
   //======================================================
   const handleScroll = (e) => {
-    console.log("win",window.innerHeight);
+    console.log("win",document.body.innerHeight);
     console.log("top",e.target.documentElement.scrollTop);
     console.log("height",e.target.documentElement.scrollHeight);
     if (window.innerHeight + e.target.documentElement.scrollTop + 1 >= e.target.documentElement.scrollHeight) {
       console.log("bottom")
-      loadDairy();
+      // loadDairy();
     }
   }
   //======================================================
   useEffect(()=>{
-    loadDairy();
-    window.addEventListener('scroll', handleScroll);
-  },[posts.dairy_no])
+    axios.get('http://localhost:5000/dairy')
+    .then(res=>setPosts(res.data));
+    // loadDairy();
+    document.body.addEventListener('scroll', handleScroll);
+  },[posts])
   //======================================================
   return (
     <CardBox>
@@ -146,17 +148,19 @@ const DiaryCard = () => {
 };
 //style=================================================
 const CardBox = styled(Box)({
+  height:'100%'
 });
 const CardList = styled(List)({
   display: 'flex',
   flexWrap: 'wrap',
   justifyContent: 'center',
-  // overflow: 'auto'
+  height:'100%',
+  // overflow:'auto'
 });
 const CardListItem = styled(ListItem)({
   width: `45vh`,
   border: `1px solid #ebebec`,
-  margin: `20px 10px 15px 20px`,
+  margin: `20px 10px 15px 20px`
 });
 const MyCardHeader = styled(CardHeader)({
   fontSize: 25,

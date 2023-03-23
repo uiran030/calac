@@ -5,24 +5,28 @@ import OpenModalBtn from '../common/OpenModalBtn';
 import axios from 'axios';
 
 const LedgerTotal = () => {
-
   const [tabValue, setTabValue] = useState('expense');
+  // const [monthlyTotal, setMonthlyTotal] = useState([]);
   const [expenseList, setExpenseList] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
-
+  const [totalIncome, setTotalIncome] = useState(false);
+  const [totalExpense, setTotalExpense] = useState(false);
+  //======================================================
   const handleTabValue = (event, value) => { 
     if (value !== null ) { setTabValue(value); }
   };
-
+  //======================================================
   useEffect(() => {
-    axios.get('http://localhost:5000/ledger')
+    axios.get('http://localhost:5000/ledger/total')
     .then((res) => {
       console.log('res', res.data);
       setExpenseList(res.data[1])
       setIncomeList(res.data[2])
+      setTotalIncome(res.data[0][0]['sum_count'])
+      setTotalExpense(res.data[0][1]['sum_count'])
     })
   }, []);
-
+  //======================================================
   return (
   <AddInfoArea>
     <UpperText>
@@ -47,7 +51,7 @@ const LedgerTotal = () => {
           <ShowTotal>
             <TotalText>수입 전액</TotalText>
             <TotalCount>
-              nnn원
+              {totalExpense}
             </TotalCount>
           </ShowTotal>
           <ShowRecent>
@@ -82,7 +86,7 @@ const LedgerTotal = () => {
           <ShowTotal>
             <TotalText>지출 전액</TotalText>
             <TotalCount>
-              nnn원
+              {totalIncome}
             </TotalCount>
           </ShowTotal>
           <ShowRecent>
