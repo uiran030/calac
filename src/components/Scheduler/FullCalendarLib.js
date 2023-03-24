@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { formatDate } from "@fullcalendar/core";
+// import { formatDate } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -27,6 +27,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import MapSearch from "./MapSearch";
+import { Calendar } from "@fullcalendar/core";
+import listPlugin from "@fullcalendar/list";
+import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "../../assets/css/App.css";
 //===
 
 export default function DemoApp() {
@@ -44,26 +50,27 @@ export default function DemoApp() {
       });
   }, []);
 
-  function renderSidebarEvent(event) {
-    return (
-      <li key={event.id}>
-        <b>
-          {formatDate(event.start, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
-        </b>
-        <i>{event.title}</i>
-      </li>
-    );
-  }
+  // function renderSidebarEvent(event) {
+  //   return (
+  //     <li key={event.id}>
+  //       <b>
+  //         {formatDate(event.start, {
+  //           year: "numeric",
+  //           month: "short",
+  //           day: "numeric",
+  //         })}
+  //       </b>
+  //       <i>{event.title}</i>
+  //     </li>
+  //   );
+  // }
 
   function handleWeekendsToggle() {
     setWeekendsVisible(!weekendsVisible);
   }
 
   function handleDateSelect(selectInfo) {
+    console.log("셀렉트", typeof selectInfo.startStr, selectInfo.endStr);
     setNewEvent({
       ...newEvent,
       start: selectInfo.startStr,
@@ -134,8 +141,8 @@ export default function DemoApp() {
     setUpdatedEvent({
       id: clickInfo.event.id,
       title: clickInfo.event.title,
-      start: clickInfo.event.start,
-      end: clickInfo.event.end,
+      start: clickInfo.event.startStr,
+      end: clickInfo.event.endStr,
       color: clickInfo.event.backgroundColor,
       category: parsingCategory && parsingCategory,
       locale: clickInfo.event.extendedProps.locale,
@@ -192,11 +199,10 @@ export default function DemoApp() {
   // 중간에 나가면 데이터 지워지는 것도 잊지 말아야겠는걸?
 
   console.log("id가 비어있을 것이다.", currentEvents);
-
-  // 추가하자마자 수정했을 때, DB에 저장은 안되는 버그 있음.
   const [calendarApi, setCalendarApi] = useState(null);
   const calendarRef = useRef(null);
-
+  // EDIT===============================================================================
+  // 추가하자마자 수정했을 때, DB에 저장은 안되는 버그 있음. 잡음
   function handleEventChange(changeInfo) {
     console.log("첸지첸지", changeInfo);
     axios
@@ -210,11 +216,36 @@ export default function DemoApp() {
       })
       .then((response) => {
         console.log(response);
-        changeInfo.event.setDates(response.data.start, response.data.end);
+        changeInfo.event.setDates(response.data.startStr, response.data.endStr);
       })
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  const [openEdit, setOpenEdit] = useState(false);
+  const handleOpenEdit = () => {
+    setOpenDetail(false);
+    setOpenEdit(true);
+  };
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+    setUpdatedEvent({
+      id: "",
+      title: "",
+      start: "",
+      end: "",
+      color: "",
+      locale: "",
+    });
+  };
+
+  function handleEditChange(event) {
+    // console.log(event);
+    setUpdatedEvent({
+      ...updatedEvent,
+      [event.target.name]: event.target.value,
+    });
   }
 
   // function handleUpdate(){
@@ -235,6 +266,58 @@ export default function DemoApp() {
   //       console.error(error);
   //     });
   // }
+
+  function handleEditModalSubmit() {
+    const { title, start, end, color, locale } = updatedEvent;
+    // Send POST request to server to add new event
+    if (!title && !color) {
+      alert("일정 이름과 카테고리를 입력해주세요.");
+      return;
+    } else if (!title) {
+      alert("일정 이름을 읿력해주세요.");
+      return;
+    } else if (!color) {
+      alert("카테고리를 입력해주세요.");
+      return;
+    }
+    axios
+      .put(`http://localhost:5000/scheduler/edit/${updatedEvent.id}`, {
+        title: title,
+        start: start,
+        end: end,
+        color: color,
+        locale: locale,
+        // allDay: changeInfo.event.allDay,
+      })
+      .then((response) => {
+        setOpenEdit(false);
+        setOpenDetail(false);
+
+        console.log("하..", response);
+        const test = currentEvents.filter(
+          (item) => item.id !== parseInt(updatedEvent.id)
+          // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
+        );
+        // console.log("또 비동기냐 설마", test);
+
+        setCurrentEvents(() => [
+          ...test,
+          {
+            id: response.data.id,
+            title: response.data.title,
+            start: response.data.start,
+            end: response.data.end,
+            color: response.data.color,
+            locale: response.data.locale,
+            // allDay: false,
+          },
+        ]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  // 중간에 나가면 데이터 지워지는 것도 잊지 말아야겠는걸?
 
   useEffect(() => {
     const calendar = calendarRef.current;
@@ -322,6 +405,7 @@ export default function DemoApp() {
   });
   const [openDetail, setOpenDetail] = useState(false);
   const [updatedEvent, setUpdatedEvent] = useState({
+    id: "",
     title: "",
     start: "",
     end: "",
@@ -332,6 +416,7 @@ export default function DemoApp() {
   const handleCloseDetail = () => {
     setOpenDetail(false);
     setUpdatedEvent({
+      id: "",
       title: "",
       start: "",
       end: "",
@@ -422,17 +507,46 @@ export default function DemoApp() {
       <div className='demo-app-main'>
         <FullCalendar
           height='90vh'
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          plugins={[
+            dayGridPlugin,
+            timeGridPlugin,
+            interactionPlugin,
+            listPlugin,
+            bootstrap5Plugin,
+          ]}
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
           }}
           initialView='dayGridMonth'
           editable={true}
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
+          // locale={"ko"}
+          eventTimeFormat={{
+            hour: "numeric",
+            minute: "2-digit",
+            meridiem: false,
+          }}
+          themeSystem='bootstrap5'
+          buttonClassNames={{
+            prev: "btn btn-primary",
+            next: "btn btn-primary",
+            today: "btn btn-primary",
+            dayGridMonth: "btn btn-primary",
+            dayGridWeek: "btn btn-primary",
+            dayGridDay: "btn btn-primary",
+          }}
+          // buttonText={{
+          //   today: "today",
+          //   month: "month",
+          //   week: "week",
+          //   day: "day",
+          //   list: " list ",
+          // }}
+          // displayEventEnd={true}
           weekends={weekendsVisible}
           // initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
           events={currentEvents}
@@ -478,9 +592,6 @@ export default function DemoApp() {
           >
             일정 추가하기
           </Typography>
-          {/* <Typography id='modal-modal-title' variant='h6' component='h2'>
-            일정이름
-          </Typography> */}
           <TextField
             fullWidth
             id='outlined-basic'
@@ -493,28 +604,6 @@ export default function DemoApp() {
             required
             variant='standard'
           />
-          {/* <Typography id='modal-modal-title' variant='h6' component='h2'>
-            범주
-          </Typography> */}
-          {/* <FormControl fullWidth sx={{ mt: 1 }}>  // 왜씀이건?
-            <InputLabel id='demo-multiple-name-label'>Category * </InputLabel>
-            <Select
-              labelId='demo-simple-select-label'
-              id='demo-simple-select'
-              // input={<OutlinedInput label='category' />} ? 넌 뭐냐그럼
-              value={newEvent.color}
-              label='Category'
-              name='color'
-              required
-              onChange={handleChange}
-              error={!newEvent.title ? true : false}
-            >
-              <MenuItem value={"#9DC08B"}>개인</MenuItem>
-              <MenuItem value={"#40513B"}>직장</MenuItem>
-              <MenuItem value={"#609966"}>가족</MenuItem>
-              <MenuItem value={"#719192"}>생일 및 기념일</MenuItem>
-            </Select>
-          </FormControl> */}
           <TextField
             id='outlined-select-currency'
             select
@@ -535,44 +624,26 @@ export default function DemoApp() {
               </MenuItem>
             ))}
           </TextField>
-          {/* <Typography
-            id='modal-modal-description'
-            sx={{ mt: 2, fontSize: "21px" }}
-          >
-            시작일시
-          </Typography> */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimeField
               value={newEvent.start && dayjs(newEvent.start)}
               fullWidth
               disabled
+              name='start'
               label='start'
               helperText='Start time can only be modified on the calendar page.'
               variant='standard'
             />
-            {/* <Typography
-              id='modal-modal-description'
-              sx={{ mt: 2, fontSize: "21px" }}
-            >
-              종료일시
-            </Typography> */}
             <DateTimeField
               value={newEvent.end && dayjs(newEvent.end)}
               fullWidth
               disabled
+              name='end'
               label='end'
               helperText='End time can only be modified on the calendar page.'
               variant='standard'
             />
           </LocalizationProvider>
-          {/* <Typography
-            id='modal-modal-title'
-            variant='h6'
-            component='h2'
-            sx={{ mt: 2 }}
-          >
-            장소
-          </Typography> */}
           <Box
             display='flex'
             alignItems='end'
@@ -586,7 +657,6 @@ export default function DemoApp() {
               value={newEvent.locale}
               // value={newEvent.locale || ""}
               onChange={handleChange}
-              // InputLabelProps={{ shrink: true }}
               variant='standard'
               sx={{ width: "230px" }}
             />
@@ -637,19 +707,21 @@ export default function DemoApp() {
             {updatedEvent.title && updatedEvent.title}
           </Typography>
           <Box>
-            <DeleteIcon onClick={handleEventDelete} id='ttt' />
-            <EditIcon />
+            <DeleteIcon onClick={handleEventDelete} />
+            <EditIcon onClick={handleOpenEdit} />
             <CloseIcon onClick={handleCloseDetail} />
           </Box>
         </Box>
 
         <Typography>
-          시&nbsp;&nbsp;작&nbsp;&nbsp;일 :&nbsp;
-          {updatedEvent.start && updatedEvent.start.toLocaleString("ko-KR")}
+          시작일시 : &nbsp;
+          {updatedEvent.start && updatedEvent.start.slice(0, 10)}&nbsp;&nbsp;
+          {updatedEvent.start && updatedEvent.start.slice(11, 16)}
         </Typography>
         <Typography>
-          종&nbsp;&nbsp;료&nbsp;&nbsp;일 : &nbsp;
-          {updatedEvent.end && updatedEvent.end.toLocaleString("ko-KR")}
+          종료일시 : &nbsp;
+          {updatedEvent.end && updatedEvent.end.slice(0, 10)}&nbsp;&nbsp;
+          {updatedEvent.end && updatedEvent.end.slice(11, 16)}
         </Typography>
         <Typography>
           카테고리 : &nbsp;
@@ -660,6 +732,116 @@ export default function DemoApp() {
           {updatedEvent.locale ? updatedEvent.locale : "장소 정보 없음"}
         </Typography>
       </Paper>
+      {/*========================================================== */}
+      {/* 이벤트 수정 모달 ========================================== */}
+      <Modal
+        open={openEdit}
+        onClose={handleCloseEdit}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <Box sx={style}>
+          <Typography
+            fontSize={10}
+            id='modal-modal-title'
+            variant='h6'
+            component='h2'
+            marginBottom={2}
+            marginY={-0.5}
+            marginLeft={0.5}
+          >
+            EDIT EVNET
+          </Typography>
+          <Typography
+            fontSize={25}
+            id='modal-modal-title'
+            variant='h6'
+            component='h2'
+            marginBottom={2}
+            marginY={-1}
+            color='primary'
+          >
+            일정 수정하기
+          </Typography>
+          <TextField
+            fullWidth
+            id='outlined-basic'
+            label='Title'
+            name='title'
+            onChange={handleEditChange}
+            sx={{ mt: 1 }}
+            error={!updatedEvent.title ? true : false}
+            helperText={!updatedEvent.title ? '"Title" is required.' : "Great!"}
+            required
+            variant='standard'
+            value={updatedEvent.title && updatedEvent.title}
+          />
+          <TextField
+            id='outlined-select-currency'
+            select
+            label='Category'
+            defaultValue='EUR'
+            fullWidth
+            required
+            error={!updatedEvent.color ? true : false} // 불안
+            helperText={!newEvent.color ? '"Category" is required.' : "Great!"}
+            name='color'
+            onChange={handleEditChange}
+            variant='standard'
+            value={updatedEvent.color && updatedEvent.color} // 불안
+          >
+            {categoryList.map((option) => (
+              <MenuItem key={option.id} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimeField
+              value={updatedEvent.start && dayjs(updatedEvent.start)}
+              name='start'
+              fullWidth
+              disabled
+              label='start'
+              helperText='Start time can only be modified on the calendar page.'
+              variant='standard'
+            />
+            <DateTimeField
+              value={updatedEvent.end && dayjs(updatedEvent.end)}
+              name='end'
+              fullWidth
+              disabled
+              label='end'
+              helperText='End time can only be modified on the calendar page.'
+              variant='standard'
+            />
+          </LocalizationProvider>
+          <Box
+            display='flex'
+            alignItems='end'
+            justifyContent='space-between'
+            marginTop={1}
+          >
+            <TextField
+              id='outlined-basic'
+              label='Locale'
+              name='locale'
+              value={updatedEvent.locale && updatedEvent.locale}
+              // value={newEvent.locale || ""}
+              onChange={handleEditChange}
+              variant='standard'
+              sx={{ width: "230px" }}
+            />
+            <MapSearch setNewEvent={setUpdatedEvent} />
+          </Box>
+          <Box sx={{ mt: 5 }}>
+            <Button onClick={handleCloseEdit}>Close</Button>
+            <Button type='submit' onClick={handleEditModalSubmit}>
+              Submit
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
       {/*========================================================== */}
     </div>
   );

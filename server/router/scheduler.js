@@ -52,9 +52,17 @@ router.put("/edit/:id", (req, res) => {
     if (err) {
       console.log(err);
     } else {
-      res.send(res.body);
-      console.log("result", result);
-      console.log("req.body", req.body);
+      const updatedEvent = {
+        id: req.params.id,
+        title,
+        start,
+        end,
+        color,
+        locale,
+      };
+      // console.log("result", req);
+      // console.log("req.body", req.body);
+      res.send(updatedEvent);
     }
   });
 });
