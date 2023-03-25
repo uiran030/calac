@@ -4,6 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import axios from "axios";
 //mui===
 import {
@@ -18,11 +19,13 @@ import {
   MenuItem,
   OutlinedInput,
   InputLabel,
+  Avatar,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
@@ -33,22 +36,48 @@ import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../../assets/css/App.css";
+import SettingsIcon from "@mui/icons-material/Settings";
+import AlarmIcon from "@mui/icons-material/Alarm";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import colorPicker from "../../assets/images/colorPicker.png";
+import { SketchPicker } from "react-color";
 //===
 
 export default function DemoApp() {
   const [weekendsVisible, setWeekendsVisible] = useState(true);
   const [currentEvents, setCurrentEvents] = useState([]);
-
+  const [categoryList, setCategoryList] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState("");
+  const [colorPickerVisible, setColorPickerVisible] = useState([]);
+  const [addColorPickerVisible, setAddColorPickerVisible] = useState(false);
   useEffect(() => {
     axios
-      .get("http://localhost:5000/scheduler")
+      .get("http://localhost:5000/scheduler/category")
       .then((response) => {
-        setCurrentEvents(response.data);
+        setCategoryList(response.data);
+        setCurrentCategory(response.data[0].value); // ok
+        setColorPickerVisible(response.data.slice(1).map(() => false));
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/scheduler")
+      .then((response) => {
+        const filterdEvent = response.data.filter(
+          (event) => event.color === currentCategory
+        );
+        if (categoryList[0] && currentCategory === categoryList[0].value) {
+          setCurrentEvents(response.data);
+        } else setCurrentEvents(filterdEvent);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [currentCategory]);
 
   // function renderSidebarEvent(event) {
   //   return (
@@ -65,12 +94,12 @@ export default function DemoApp() {
   //   );
   // }
 
-  function handleWeekendsToggle() {
-    setWeekendsVisible(!weekendsVisible);
-  }
+  // function handleWeekendsToggle() {
+  //   setWeekendsVisible(!weekendsVisible);
+  // }
 
   function handleDateSelect(selectInfo) {
-    console.log("셀렉트", typeof selectInfo.startStr, selectInfo.endStr);
+    // console.log("셀렉트", typeof selectInfo.startStr, selectInfo.endStr);
     setNewEvent({
       ...newEvent,
       start: selectInfo.startStr,
@@ -108,7 +137,7 @@ export default function DemoApp() {
   }
 
   function handleEventClick(clickInfo) {
-    console.log(clickInfo);
+    // console.log(clickInfo);
     let parsingCategory;
     switch (clickInfo.event.backgroundColor) {
       case "#9DC08B":
@@ -126,7 +155,7 @@ export default function DemoApp() {
       default:
         parsingCategory = "카테고리 정보 없음";
     }
-    console.log("파싱맨", parsingCategory);
+    // console.log("파싱맨", parsingCategory);
     {
       /* <MenuItem value={"#9DC08B"}>개인</MenuItem>
               <MenuItem value={"#40513B"}>직장</MenuItem>
@@ -173,7 +202,7 @@ export default function DemoApp() {
         // allDay: false,
       })
       .then((response) => {
-        console.log("잠시 검문있겠슙니다", response.data);
+        // console.log("잠시 검문있겠슙니다", response.data);
         alert("등록성공!");
         // Add newly created event to calendar
         setCurrentEvents((currentEvents) => [
@@ -198,15 +227,15 @@ export default function DemoApp() {
   }
   // 중간에 나가면 데이터 지워지는 것도 잊지 말아야겠는걸?
 
-  console.log("id가 비어있을 것이다.", currentEvents);
+  // console.log("id가 비어있을 것이다.", currentEvents);
   const [calendarApi, setCalendarApi] = useState(null);
   const calendarRef = useRef(null);
   // EDIT===============================================================================
   // 추가하자마자 수정했을 때, DB에 저장은 안되는 버그 있음. 잡음
   function handleEventChange(changeInfo) {
-    console.log("첸지첸지", changeInfo);
+    // console.log("첸지첸지", changeInfo);
     axios
-      .put(`http://localhost:5000/scheduler/edit/${changeInfo.event.id}`, {
+      .put(`http://localhost:5000/scheduler/update/${changeInfo.event.id}`, {
         title: changeInfo.event.title,
         start: changeInfo.event.startStr,
         end: changeInfo.event.endStr,
@@ -215,7 +244,7 @@ export default function DemoApp() {
         // allDay: changeInfo.event.allDay,
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         changeInfo.event.setDates(response.data.startStr, response.data.endStr);
       })
       .catch((error) => {
@@ -281,7 +310,7 @@ export default function DemoApp() {
       return;
     }
     axios
-      .put(`http://localhost:5000/scheduler/edit/${updatedEvent.id}`, {
+      .put(`http://localhost:5000/scheduler/update/${updatedEvent.id}`, {
         title: title,
         start: start,
         end: end,
@@ -293,7 +322,7 @@ export default function DemoApp() {
         setOpenEdit(false);
         setOpenDetail(false);
 
-        console.log("하..", response);
+        // console.log("하..", response);
         const test = currentEvents.filter(
           (item) => item.id !== parseInt(updatedEvent.id)
           // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
@@ -425,7 +454,7 @@ export default function DemoApp() {
     });
   };
   const handleEventDelete = () => {
-    console.log("니가 삭제하게될 아이디다!!", updatedEvent.id);
+    // console.log("니가 삭제하게될 아이디다!!", updatedEvent.id);
     if (
       window.confirm(
         `Are you sure you want to delete the event '${updatedEvent.title}'`
@@ -443,7 +472,7 @@ export default function DemoApp() {
             (item) => item.id !== parseInt(updatedEvent.id)
             // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
           );
-          console.log("또 비동기냐 설마", test);
+          // console.log("또 비동기냐 설마", test);
           setCurrentEvents(test);
           // setCurrentEvents((currentEvents) => [
           //   ...currentEvents,
@@ -468,314 +497,494 @@ export default function DemoApp() {
   };
   // for
 
-  console.log("새 이벤", newEvent);
-  console.log("업뎃", updatedEvent);
+  const handleAddCategory = () => {
+    axios
+      .post("http://localhost:5000/scheduler/category/insert", {
+        value: pickedColor,
+        label: categoryText,
+      })
+      .then((response) => {
+        // console.log("잠시 검문있겠슙니다", response.data);
+        alert("등록성공!");
+        // Add newly created event to calendar
+        setCategoryList((prev) => [
+          ...prev,
+          {
+            id: response.data.id,
+            value: response.data.value,
+            label: response.data.label,
+          },
+        ]);
+      })
+      .catch(() => {
+        alert("등록실패");
+      })
+      .finally(() => {
+        handleClose();
+        setCategoryText("");
+        setPickedColor("");
+      });
+  };
 
-  const categoryList = [
-    { id: 1, value: "#9DC08B", label: "개인" },
-    { id: 2, value: "#40513B", label: "직장" },
-    { id: 3, value: "#609966", label: "가족" },
-    { id: 4, value: "#719192", label: "생일 및 기념일" },
-  ];
+  // console.log("새 이벤", newEvent);
+  // console.log("업뎃", updatedEvent);
+  // console.log("뒤저볼?", colorPickerVisible);
+  // console.log(addC);
+  //category============================================
+  const [categoryText, setCategoryText] = useState("");
+  const [openCategory, setOpenCategory] = useState(false);
+  const handleOpenCategory = () => setOpenCategory(true);
+  const handleCloseCategory = () => setOpenCategory(false);
+  // const [colorPickerVisible, setColorPickerVisible] = useState(false);
+  const [tempColor, setTempColor] = useState("#fff");
+  const [pickedColor, setPickedColor] = useState("");
+  const handleChangeComplete = (e) => {
+    // console.log(e.hex);
+    setPickedColor(e.hex);
+  };
+  const updateColor = (option) => {
+    // console.log("받아와지지롱", option);
+    axios
+      .put(`http://localhost:5000/scheduler/category/update/${option.id}`, {
+        value: pickedColor,
+        label: option.label,
+        // allDay: changeInfo.event.allDay,
+      })
+      .then((response) => {
+        // setOpenDetail(false);
+        // console.log("하..", response);
+        const test = categoryList.filter(
+          (item) => item.id !== parseInt(option.id)
+          // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
+        );
+        //새로만드는 개념이므로 맨뒤로가버림. 새로 고침하면 돌아옴.
+        setCategoryList(() => [
+          ...test,
+          {
+            id: response.data.id,
+            value: response.data.value,
+            label: response.data.label,
+          },
+        ]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
+    const url = `http://localhost:5000/scheduler/event/color/update/${encodeURIComponent(
+      option.value
+    )}`;
+    axios
+      .put(url, {
+        color: pickedColor,
+        currentEvents: currentEvents,
+      })
+      .then((response) => {
+        // setOpenEdit(false);
+        // setOpenDetail(false);
+
+        // console.log("하..", response);
+        // const test = currentEvents.filter(
+        //   (item) => item.id !== parseInt(updatedEvent.id)
+        // );
+        // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
+        // console.log("또 비동기냐 설마", test);
+
+        // const updatedEvents = currentEvents.map((event) => {
+        //   if (event.value === option.value) {
+        //     return (event.value = pickedColor);
+        //   } else {
+        //     return event;
+        //   }
+        // });
+        // console.log("당신뭐여", updatedEvents);
+
+        // currentEvents.map((event) => {
+        //   console.log("원", event.color);
+        //   console.log("투", option.value);
+        // });
+
+        setCurrentEvents(
+          currentEvents.map((event) => {
+            if (event.color === option.value) {
+              return { ...event, color: pickedColor };
+            } else {
+              return event;
+            }
+          })
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  // useEffect(() => {
+  //   // console.log("쌕쌍", currentEvents);
+  // }, [currentEvents]);
+
+  // console.log("현카", currentCategory);
+  // console.log("입력중..", categoryText);
+  // console.log("반영됐는가", categoryList);
+  // console.log("외않되", colorPickerVisible);
+  //category============================================
   return (
-    <div className='demo-app'>
-      {/* <div className='demo-app-sidebar'>
-        <div className='demo-app-sidebar-section'>
-          <h2>Instructions</h2>
-          <ul>
-            <li>Select dates and you will be prompted to create a new event</li>
-            <li>Drag, drop, and resize events</li>
-            <li>Click an event to delete it</li>
-          </ul>
-        </div>
-        <div className='demo-app-sidebar-section'>
-          <label>
-            <input
-              type='checkbox'
-              checked={weekendsVisible}
-              onChange={handleWeekendsToggle}
-            ></input>
-            toggle weekends
-          </label>
-        </div>
-        <div className='demo-app-sidebar-section'>
-          <h2>All Events ({currentEvents.length})</h2>
-          <ul>{currentEvents.map(renderSidebarEvent)}</ul>
-        </div>
-      </div> */}
-      <div className='demo-app-main'>
-        <FullCalendar
-          height='90vh'
-          plugins={[
-            dayGridPlugin,
-            timeGridPlugin,
-            interactionPlugin,
-            listPlugin,
-            bootstrap5Plugin,
-          ]}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-          }}
-          initialView='dayGridMonth'
-          editable={true}
-          selectable={true}
-          selectMirror={true}
-          dayMaxEvents={true}
-          // locale={"ko"}
-          eventTimeFormat={{
-            hour: "numeric",
-            minute: "2-digit",
-            meridiem: false,
-          }}
-          themeSystem='bootstrap5'
-          buttonClassNames={{
-            prev: "btn btn-primary",
-            next: "btn btn-primary",
-            today: "btn btn-primary",
-            dayGridMonth: "btn btn-primary",
-            dayGridWeek: "btn btn-primary",
-            dayGridDay: "btn btn-primary",
-          }}
-          // buttonText={{
-          //   today: "today",
-          //   month: "month",
-          //   week: "week",
-          //   day: "day",
-          //   list: " list ",
-          // }}
-          // displayEventEnd={true}
-          weekends={weekendsVisible}
-          // initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
-          events={currentEvents}
-          select={handleDateSelect}
-          eventContent={renderEventContent} // custom render function
-          eventClick={handleEventClick}
-          eventChange={handleEventChange}
-          eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-          /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}
-            */
-        />
-      </div>
-      {/* 이벤트 추가 모달 ========================================== */}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <Box sx={style}>
-          <Typography
-            fontSize={10}
-            id='modal-modal-title'
-            variant='h6'
-            component='h2'
-            marginBottom={2}
-            marginY={-0.5}
-            marginLeft={0.5}
-          >
-            ADD EVNET
-          </Typography>
-          <Typography
-            fontSize={25}
-            id='modal-modal-title'
-            variant='h6'
-            component='h2'
-            marginBottom={2}
-            marginY={-1}
-            color='primary'
-          >
-            일정 추가하기
-          </Typography>
-          <TextField
-            fullWidth
-            id='outlined-basic'
-            label='Title'
-            name='title'
-            onChange={handleChange}
-            sx={{ mt: 1 }}
-            error={!newEvent.title ? true : false}
-            helperText={!newEvent.title ? '"Title" is required.' : "Great!"}
-            required
-            variant='standard'
+    <Box position='relative'>
+      <div className='demo-app'>
+        <div className='demo-app-main'>
+          <FullCalendar
+            height='90vh'
+            plugins={[
+              dayGridPlugin,
+              timeGridPlugin,
+              interactionPlugin,
+              listPlugin,
+              bootstrap5Plugin,
+            ]}
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+            }}
+            initialView='dayGridMonth'
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
+            // locale={"ko"}
+            eventTimeFormat={{
+              hour: "numeric",
+              minute: "2-digit",
+              meridiem: false,
+            }}
+            themeSystem='bootstrap5'
+            buttonClassNames={{
+              prev: "btn btn-primary",
+              next: "btn btn-primary",
+              today: "btn btn-primary",
+              dayGridMonth: "btn btn-primary",
+              dayGridWeek: "btn btn-primary",
+              dayGridDay: "btn btn-primary",
+            }}
+            buttonText={{
+              today: "TODAY",
+              month: "MONTH",
+              week: "WEEK",
+              day: "DAY",
+              list: "LIST",
+            }}
+            weekends={weekendsVisible}
+            events={currentEvents}
+            select={handleDateSelect}
+            eventContent={renderEventContent}
+            eventClick={handleEventClick}
+            eventChange={handleEventChange}
+            eventsSet={handleEvents}
           />
-          <TextField
-            id='outlined-select-currency'
-            select
-            label='Category'
-            defaultValue='EUR'
-            fullWidth
-            required
-            error={!newEvent.color ? true : false}
-            helperText={!newEvent.color ? '"Category" is required.' : "Great!"}
-            value={newEvent.color}
-            name='color'
-            onChange={handleChange}
-            variant='standard'
-          >
-            {categoryList.map((option) => (
-              <MenuItem key={option.id} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimeField
-              value={newEvent.start && dayjs(newEvent.start)}
-              fullWidth
-              disabled
-              name='start'
-              label='start'
-              helperText='Start time can only be modified on the calendar page.'
-              variant='standard'
-            />
-            <DateTimeField
-              value={newEvent.end && dayjs(newEvent.end)}
-              fullWidth
-              disabled
-              name='end'
-              label='end'
-              helperText='End time can only be modified on the calendar page.'
-              variant='standard'
-            />
-          </LocalizationProvider>
-          <Box
-            display='flex'
-            alignItems='end'
-            justifyContent='space-between'
-            marginTop={1}
-          >
+        </div>
+        {/* 이벤트 추가 모달 ========================================== */}
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={style}>
+            <Typography
+              fontSize={10}
+              id='modal-modal-title'
+              variant='h6'
+              component='h2'
+              marginBottom={2}
+              marginY={-0.5}
+              marginLeft={0.5}
+            >
+              ADD EVNET
+            </Typography>
+            <Typography
+              fontSize={25}
+              id='modal-modal-title'
+              variant='h6'
+              component='h2'
+              marginBottom={2}
+              marginY={-1}
+              color='primary'
+            >
+              일정 추가하기
+            </Typography>
             <TextField
+              fullWidth
               id='outlined-basic'
-              label='Locale'
-              name='locale'
-              value={newEvent.locale}
-              // value={newEvent.locale || ""}
+              label='Title'
+              name='title'
+              onChange={handleChange}
+              sx={{ mt: 1 }}
+              error={!newEvent.title ? true : false}
+              helperText={!newEvent.title ? '"Title" is required.' : "Great!"}
+              required
+              variant='standard'
+            />
+            <TextField
+              id='outlined-select-currency'
+              select
+              label='Category'
+              defaultValue='EUR'
+              fullWidth
+              required
+              error={!newEvent.color ? true : false}
+              helperText={
+                !newEvent.color ? '"Category" is required.' : "Great!"
+              }
+              value={newEvent.color}
+              name='color'
               onChange={handleChange}
               variant='standard'
-              sx={{ width: "230px" }}
-            />
-            <MapSearch setNewEvent={setNewEvent} />
+            >
+              {categoryList[0] ? (
+                categoryList.map((option, index) => (
+                  <MenuItem key={index} value={option.value && option.value}>
+                    {option.label && option.label}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem>카테고리 로딩 오류</MenuItem>
+              )}
+            </TextField>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimeField
+                value={newEvent.start && dayjs(newEvent.start)}
+                fullWidth
+                disabled
+                name='start'
+                label='start'
+                helperText='Start time can only be modified on the calendar page.'
+                variant='standard'
+              />
+              <DateTimeField
+                value={newEvent.end && dayjs(newEvent.end)}
+                fullWidth
+                disabled
+                name='end'
+                label='end'
+                helperText='End time can only be modified on the calendar page.'
+                variant='standard'
+              />
+            </LocalizationProvider>
+            <Box
+              display='flex'
+              alignItems='end'
+              justifyContent='space-between'
+              marginTop={1}
+            >
+              <TextField
+                id='outlined-basic'
+                label='Locale'
+                name='locale'
+                value={newEvent.locale}
+                // value={newEvent.locale || ""}
+                onChange={handleChange}
+                variant='standard'
+                sx={{ width: "230px" }}
+              />
+              <MapSearch setNewEvent={setNewEvent} />
+            </Box>
+            <Box sx={{ mt: 5 }}>
+              <Button onClick={handleClose}>Close</Button>
+              <Button type='submit' onClick={handleModalSubmit}>
+                Submit
+              </Button>
+            </Box>
           </Box>
-          <Box sx={{ mt: 5 }}>
-            <Button onClick={handleClose}>Close</Button>
-            <Button type='submit' onClick={handleModalSubmit}>
-              Submit
-            </Button>
+        </Modal>
+        {/*========================================================== */}
+        {/* 이벤트 보기 모달 ========================================= */}
+        <Paper
+          elevation={5}
+          sx={
+            openDetail
+              ? {
+                  position: "fixed",
+                  top: detailLocation.y,
+                  left: detailLocation.x,
+                  width: "300px",
+                  zIndex: 99,
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  padding: "50px 10px 10px 10px",
+                }
+              : { display: "none" }
+          }
+        >
+          <Box
+            bgcolor={updatedEvent && updatedEvent.color}
+            position='absolute'
+            top={0}
+            left={0}
+            height='40px'
+            width='100%'
+            padding={1}
+            display='flex'
+            justifyContent='space-between'
+            alignItems='center'
+          >
+            <Typography color='secondary'>
+              {updatedEvent.title && updatedEvent.title}
+            </Typography>
+            <Box>
+              <DeleteIcon onClick={handleEventDelete} />
+              <EditIcon onClick={handleOpenEdit} />
+              <CloseIcon onClick={handleCloseDetail} />
+            </Box>
           </Box>
-        </Box>
-      </Modal>
-      {/*========================================================== */}
-      {/* 이벤트 보기 모달 ========================================= */}
-      <Paper
-        elevation={5}
-        sx={
-          openDetail
-            ? {
-                position: "fixed",
-                top: detailLocation.y,
-                left: detailLocation.x,
-                width: "300px",
-                zIndex: 99,
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                padding: "50px 10px 10px 10px",
+
+          <Typography>
+            시작일시 : &nbsp;
+            {updatedEvent.start && updatedEvent.start.slice(0, 10)}&nbsp;&nbsp;
+            {updatedEvent.start && updatedEvent.start.slice(11, 16)}
+          </Typography>
+          <Typography>
+            종료일시 : &nbsp;
+            {updatedEvent.end && updatedEvent.end.slice(0, 10)}&nbsp;&nbsp;
+            {updatedEvent.end && updatedEvent.end.slice(11, 16)}
+          </Typography>
+          <Typography>
+            카테고리 : &nbsp;
+            {updatedEvent.category && updatedEvent.category}
+          </Typography>
+          <Typography>
+            장&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;소 : &nbsp;
+            {updatedEvent.locale ? updatedEvent.locale : "장소 정보 없음"}
+          </Typography>
+        </Paper>
+        {/*========================================================== */}
+        {/* 이벤트 수정 모달 ========================================== */}
+        <Modal
+          open={openEdit}
+          onClose={handleCloseEdit}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={style}>
+            <Typography
+              fontSize={10}
+              id='modal-modal-title'
+              variant='h6'
+              component='h2'
+              marginBottom={2}
+              marginY={-0.5}
+              marginLeft={0.5}
+            >
+              EDIT EVNET
+            </Typography>
+            <Typography
+              fontSize={25}
+              id='modal-modal-title'
+              variant='h6'
+              component='h2'
+              marginBottom={2}
+              marginY={-1}
+              color='primary'
+            >
+              일정 수정하기
+            </Typography>
+            <TextField
+              fullWidth
+              id='outlined-basic'
+              label='Title'
+              name='title'
+              onChange={handleEditChange}
+              sx={{ mt: 1 }}
+              error={!updatedEvent.title ? true : false}
+              helperText={
+                !updatedEvent.title ? '"Title" is required.' : "Great!"
               }
-            : { display: "none" }
-        }
-      >
+              required
+              variant='standard'
+              value={updatedEvent.title && updatedEvent.title}
+            />
+            <TextField
+              id='outlined-select-currency'
+              select
+              label='Category'
+              defaultValue='EUR'
+              fullWidth
+              required
+              error={!updatedEvent.color ? true : false} // 불안
+              helperText={
+                !newEvent.color ? '"Category" is required.' : "Great!"
+              }
+              name='color'
+              onChange={handleEditChange}
+              variant='standard'
+              value={updatedEvent.color && updatedEvent.color} // 불안
+            >
+              {categoryList[0] ? (
+                categoryList.map((option, index) => (
+                  <MenuItem key={index} value={option.value && option.value}>
+                    {option.label && option.label}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem>카테고리 로딩 오류</MenuItem>
+              )}
+            </TextField>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimeField
+                value={updatedEvent.start && dayjs(updatedEvent.start)}
+                name='start'
+                fullWidth
+                disabled
+                label='start'
+                helperText='Start time can only be modified on the calendar page.'
+                variant='standard'
+              />
+              <DateTimeField
+                value={updatedEvent.end && dayjs(updatedEvent.end)}
+                name='end'
+                fullWidth
+                disabled
+                label='end'
+                helperText='End time can only be modified on the calendar page.'
+                variant='standard'
+              />
+            </LocalizationProvider>
+            <Box
+              display='flex'
+              alignItems='end'
+              justifyContent='space-between'
+              marginTop={1}
+            >
+              <TextField
+                id='outlined-basic'
+                label='Locale'
+                name='locale'
+                value={updatedEvent.locale && updatedEvent.locale}
+                // value={newEvent.locale || ""}
+                onChange={handleEditChange}
+                variant='standard'
+                sx={{ width: "230px" }}
+              />
+              <MapSearch setNewEvent={setUpdatedEvent} />
+            </Box>
+            <Box sx={{ mt: 5 }}>
+              <Button onClick={handleCloseEdit}>Close</Button>
+              <Button type='submit' onClick={handleEditModalSubmit}>
+                Submit
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+        {/*========================================================== */}
+        {/* 카테고리 선택 및 추가,제거================================= */}
         <Box
-          bgcolor={updatedEvent && updatedEvent.color}
           position='absolute'
           top={0}
-          left={0}
-          height='40px'
-          width='100%'
-          padding={1}
+          left='183px'
           display='flex'
-          justifyContent='space-between'
           alignItems='center'
         >
-          <Typography color='secondary'>
-            {updatedEvent.title && updatedEvent.title}
-          </Typography>
-          <Box>
-            <DeleteIcon onClick={handleEventDelete} />
-            <EditIcon onClick={handleOpenEdit} />
-            <CloseIcon onClick={handleCloseDetail} />
-          </Box>
-        </Box>
-
-        <Typography>
-          시작일시 : &nbsp;
-          {updatedEvent.start && updatedEvent.start.slice(0, 10)}&nbsp;&nbsp;
-          {updatedEvent.start && updatedEvent.start.slice(11, 16)}
-        </Typography>
-        <Typography>
-          종료일시 : &nbsp;
-          {updatedEvent.end && updatedEvent.end.slice(0, 10)}&nbsp;&nbsp;
-          {updatedEvent.end && updatedEvent.end.slice(11, 16)}
-        </Typography>
-        <Typography>
-          카테고리 : &nbsp;
-          {updatedEvent.category && updatedEvent.category}
-        </Typography>
-        <Typography>
-          장&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;소 : &nbsp;
-          {updatedEvent.locale ? updatedEvent.locale : "장소 정보 없음"}
-        </Typography>
-      </Paper>
-      {/*========================================================== */}
-      {/* 이벤트 수정 모달 ========================================== */}
-      <Modal
-        open={openEdit}
-        onClose={handleCloseEdit}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <Box sx={style}>
-          <Typography
-            fontSize={10}
-            id='modal-modal-title'
-            variant='h6'
-            component='h2'
-            marginBottom={2}
-            marginY={-0.5}
-            marginLeft={0.5}
-          >
-            EDIT EVNET
-          </Typography>
-          <Typography
-            fontSize={25}
-            id='modal-modal-title'
-            variant='h6'
-            component='h2'
-            marginBottom={2}
-            marginY={-1}
-            color='primary'
-          >
-            일정 수정하기
-          </Typography>
-          <TextField
-            fullWidth
-            id='outlined-basic'
-            label='Title'
-            name='title'
-            onChange={handleEditChange}
-            sx={{ mt: 1 }}
-            error={!updatedEvent.title ? true : false}
-            helperText={!updatedEvent.title ? '"Title" is required.' : "Great!"}
-            required
-            variant='standard'
-            value={updatedEvent.title && updatedEvent.title}
-          />
           <TextField
             id='outlined-select-currency'
             select
@@ -783,66 +992,302 @@ export default function DemoApp() {
             defaultValue='EUR'
             fullWidth
             required
-            error={!updatedEvent.color ? true : false} // 불안
-            helperText={!newEvent.color ? '"Category" is required.' : "Great!"}
+            // helperText={!newEvent.color ? '"Category" is required.' : "Great!"}
             name='color'
-            onChange={handleEditChange}
-            variant='standard'
-            value={updatedEvent.color && updatedEvent.color} // 불안
+            onChange={(e) => setCurrentCategory(e.target.value)}
+            // variant='standard'
+            variant='outlined'
+            size='small'
+            value={currentCategory && currentCategory} // 필요 없는듯,..?
+            sx={{ width: "200px" }}
           >
-            {categoryList.map((option) => (
-              <MenuItem key={option.id} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
+            {categoryList[0] ? (
+              categoryList.map((option, index) => (
+                <MenuItem key={index} value={option.value && option.value}>
+                  <Box display='flex' alignItems='center'>
+                    <Paper
+                      sx={{
+                        width: "10px",
+                        height: "10px",
+                        backgroundColor: option.value && option.value,
+                      }}
+                    ></Paper>
+                    <Typography>
+                      &nbsp;&nbsp;{option.label && option.label}
+                    </Typography>
+                  </Box>
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem>카테고리 로딩 오류</MenuItem>
+            )}
           </TextField>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimeField
-              value={updatedEvent.start && dayjs(updatedEvent.start)}
-              name='start'
-              fullWidth
-              disabled
-              label='start'
-              helperText='Start time can only be modified on the calendar page.'
-              variant='standard'
-            />
-            <DateTimeField
-              value={updatedEvent.end && dayjs(updatedEvent.end)}
-              name='end'
-              fullWidth
-              disabled
-              label='end'
-              helperText='End time can only be modified on the calendar page.'
-              variant='standard'
-            />
-          </LocalizationProvider>
-          <Box
-            display='flex'
-            alignItems='end'
-            justifyContent='space-between'
-            marginTop={1}
+          <SettingsIcon
+            onClick={handleOpenCategory}
+            sx={{
+              marginLeft: "10px",
+              cursor: "pointer",
+              "&:hover": {
+                transform: "rotate(20deg)",
+                // outline: "none",
+              },
+            }}
+          />
+          {/* //========= */}
+          <Modal
+            open={openCategory}
+            onClose={handleCloseCategory}
+            aria-labelledby='modal-modal-title'
+            aria-describedby='modal-modal-description'
           >
-            <TextField
-              id='outlined-basic'
-              label='Locale'
-              name='locale'
-              value={updatedEvent.locale && updatedEvent.locale}
-              // value={newEvent.locale || ""}
-              onChange={handleEditChange}
-              variant='standard'
-              sx={{ width: "230px" }}
-            />
-            <MapSearch setNewEvent={setUpdatedEvent} />
-          </Box>
-          <Box sx={{ mt: 5 }}>
-            <Button onClick={handleCloseEdit}>Close</Button>
-            <Button type='submit' onClick={handleEditModalSubmit}>
-              Submit
-            </Button>
-          </Box>
+            <Box sx={style}>
+              <Box display='flex' justifyContent='space-between'>
+                <Typography
+                  id='modal-modal-title'
+                  variant='h6'
+                  component='h2'
+                  color='primary'
+                >
+                  카테고리 편집
+                </Typography>
+                <CloseIcon
+                  onClick={handleCloseCategory}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                      // outline: "none",
+                    },
+                  }}
+                />
+              </Box>
+              <Box
+                display='flex'
+                alignItems='center'
+                color='red'
+                marginBottom={2}
+              >
+                <WarningAmberIcon fontSize='12px' />
+                <Typography fontSize='12px'>
+                  &nbsp;카테고리를 삭제 시, 포함된 이벤트들도 일괄 삭제됩니다.
+                </Typography>
+              </Box>
+              <Box
+                display='flex'
+                flexDirection='column'
+                gap={2}
+                width='95%'
+                margin='auto'
+              >
+                {categoryList[0] &&
+                  categoryList.slice(1).map((option, index) => (
+                    <Box key={index} value={option.value && option.value}>
+                      <Box
+                        display='flex'
+                        alignItems='center'
+                        justifyContent='space-between'
+                      >
+                        <Paper
+                          sx={{
+                            width: "10px",
+                            height: "10px",
+                            backgroundColor: option.value && option.value,
+                          }}
+                        ></Paper>
+                        <Typography sx={{ flex: 1 }}>
+                          &nbsp;&nbsp;{option.label && option.label}
+                        </Typography>
+                        <Box
+                          position='relative'
+                          display='flex'
+                          alignItems='center'
+                        >
+                          <Avatar
+                            alt='colorPicker'
+                            src={colorPicker}
+                            sx={{
+                              height: "20px",
+                              width: "20px",
+                              cursor: "pointer",
+                              "&:hover": {
+                                transform: "scale(1.2)",
+                              },
+                              // position: "absolute",
+                              top: "0",
+                              left: "0",
+                            }}
+                            onClick={() => {
+                              const newVisible = [...colorPickerVisible];
+                              newVisible[index] = !newVisible[index];
+                              setColorPickerVisible(newVisible);
+                            }}
+                          />
+                          <Box
+                            className={
+                              colorPickerVisible[index]
+                                ? "colorPickerVisible"
+                                : "colorPickerInvisible"
+                            }
+                          >
+                            <CloseIcon
+                              sx={{
+                                position: "absolute",
+                                right: "0",
+                                top: "-30px",
+                                cursor: "pointer",
+                                "&:hover": {
+                                  transform: "scale(1.2)",
+                                  // outline: "none",
+                                },
+                              }}
+                              onClick={() => {
+                                const newVisible = [...colorPickerVisible];
+                                newVisible[index] = !newVisible[index];
+                                setColorPickerVisible(newVisible);
+                              }}
+                            />
+                            <SketchPicker
+                              color={tempColor}
+                              onChange={(e) => setTempColor(e.hex)}
+                              onChangeComplete={handleChangeComplete}
+                            />
+                            <Paper
+                              sx={{
+                                position: "absolute",
+                                bottom: "-40px",
+                                right: 0,
+                                width: "60px",
+                                borderRadius: "20px",
+                                textAlign: "center",
+                                fontSize: "12px",
+                                backgroundColor: "#07553B",
+                                color: "#fff",
+                                padding: "5px 10px",
+                                cursor: "pointer",
+                                "&:hover": {
+                                  filter: "brightness(0.8)",
+                                  // outline: "none",
+                                },
+                              }}
+                              onClick={() => {
+                                // console.log("컬아뒤", option);
+                                updateColor(option);
+                                const newVisible = [...colorPickerVisible];
+                                newVisible[index] = !newVisible[index];
+                                setColorPickerVisible(newVisible);
+                              }}
+                            >
+                              확인
+                            </Paper>
+                          </Box>
+                          <DeleteIcon
+                            sx={{
+                              color: "darkGrey",
+                              marginLeft: "10px",
+                              cursor: "pointer",
+                              "&:hover": {
+                                transform: "scale(1.2)",
+                                // outline: "none",
+                              },
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    </Box>
+                  ))}
+              </Box>
+              <Box display='flex' alignItems='center' marginTop={2}>
+                <AddIcon />
+                <TextField
+                  fullWidth
+                  variant='standard'
+                  value={categoryText}
+                  onChange={(e) => setCategoryText(e.target.value)}
+                  sx={{ marginX: "10px" }}
+                ></TextField>
+                {/* //===================================== */}
+                <Box position='relative' marginX={2}>
+                  <Avatar
+                    alt='colorPicker'
+                    src={colorPicker}
+                    sx={{
+                      height: "20px",
+                      width: "20px",
+                      cursor: "pointer",
+                      "&:hover": {
+                        transform: "scale(1.2)",
+                      },
+                      // position: "absolute",
+                      top: "0",
+                      left: "0",
+                    }}
+                    onClick={() => {
+                      setAddColorPickerVisible((prev) => !prev);
+                    }}
+                  />
+                  <Box
+                    className={
+                      addColorPickerVisible
+                        ? "colorPickerVisible"
+                        : "colorPickerInvisible"
+                    }
+                  >
+                    <CloseIcon
+                      sx={{
+                        position: "absolute",
+                        right: "0",
+                        top: "-30px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          transform: "scale(1.2)",
+                          // outline: "none",
+                        },
+                      }}
+                      onClick={() => {
+                        setAddColorPickerVisible((prev) => !prev);
+                      }}
+                    />
+                    <SketchPicker
+                      color={tempColor}
+                      onChange={(e) => setTempColor(e.hex)}
+                      onChangeComplete={handleChangeComplete}
+                    />
+                    <Paper
+                      sx={{
+                        position: "absolute",
+                        bottom: "-40px",
+                        right: 0,
+                        width: "60px",
+                        borderRadius: "20px",
+                        textAlign: "center",
+                        fontSize: "12px",
+                        backgroundColor: "#07553B",
+                        color: "#fff",
+                        padding: "5px 10px",
+                        cursor: "pointer",
+                        "&:hover": {
+                          filter: "brightness(0.8)",
+                          // outline: "none",
+                        },
+                      }}
+                      onClick={() => {
+                        setAddColorPickerVisible(false);
+                      }}
+                    >
+                      확인
+                    </Paper>
+                  </Box>
+                </Box>
+                {/* //===================================== */}
+                <Button variant='contained' onClick={handleAddCategory}>
+                  추가
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
         </Box>
-      </Modal>
-      {/*========================================================== */}
-    </div>
+        {/*========================================================== */}
+      </div>
+    </Box>
   );
 }

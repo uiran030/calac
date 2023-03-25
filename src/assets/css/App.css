@@ -121,3 +121,15 @@ div.ck.ck-reset.ck-editor.ck-rounded-corners
   color: #fff;
 }
 /*=================--========================*/
+.colorPickerVisible {
+  display: block;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+.colorPickerInvisible {
+  display: none;
+  /* background-color: #07553b; */
+  /* transform: scale(2); */
+}
