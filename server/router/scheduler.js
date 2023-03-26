@@ -163,20 +163,41 @@ router.put("/event/color/update/:value", (req, res) => {
     if (err) {
       console.log(err);
     } else {
-      // const updatedEvent = {
-      //   id: req.params.id,
-      //   title,
-      //   start,
-      //   end,
-      //   color,
-      //   locale,
-      // };
-      console.log("호호결과", result);
-      console.log("고고바디", req.body);
       res.send({ message: "Updated successfully" });
-      console.log("흠 들어오긴하나", prevalue, newvalue);
     }
   });
 });
+
+//====================================
+
+router.delete("/event/color/delete/:value", (req, res) => {
+  // const currentEvents = req.body.currentEvents;
+  const prevalue = req.params.value;
+  const sqlQuery = `DELETE FROM event_list WHERE color = ?;`;
+  db.query(sqlQuery, [prevalue], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send({ message: "Deleted successfully" });
+    }
+  });
+});
+
+//====================================
+// router.delete("/delete/:id", (req, res) => {
+//   // console.log("함보여줘라!", req.params.id);
+//   const id = req.params.id;
+//   // const deletedEventId = req.body.deletedEventId;
+//   const sqlQuery = `DELETE FROM event_list WHERE id = ${id};`;
+//   db.query(sqlQuery, (err, result) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       res.send("success!");
+//       console.log("result", result);
+//       console.log("req.body", req.body);
+//     }
+//   });
+// });
 
 module.exports = router;

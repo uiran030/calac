@@ -498,13 +498,22 @@ export default function DemoApp() {
   // for
 
   const handleAddCategory = () => {
+    if (!categoryText) {
+      alert("카테고리명을 입력해주세요.");
+      return;
+    }
+    if (!pickedAddColor) {
+      alert("색상을 선택해주세요.");
+      return;
+    }
+
     axios
       .post("http://localhost:5000/scheduler/category/insert", {
-        value: pickedColor,
+        value: pickedAddColor,
         label: categoryText,
       })
       .then((response) => {
-        // console.log("잠시 검문있겠슙니다", response.data);
+        console.log("잠시 검문있겠슙니다", response);
         alert("등록성공!");
         // Add newly created event to calendar
         setCategoryList((prev) => [
@@ -522,14 +531,58 @@ export default function DemoApp() {
       .finally(() => {
         handleClose();
         setCategoryText("");
-        setPickedColor("");
+        setPickedAddColor("");
       });
   };
 
-  // console.log("새 이벤", newEvent);
-  // console.log("업뎃", updatedEvent);
-  // console.log("뒤저볼?", colorPickerVisible);
-  // console.log(addC);
+  //===============
+  const handleDeleteCategory = (option) => {
+    console.log("이건몰까", option);
+    if (
+      window.confirm(
+        `Are you sure you want to delete the Category '${option.label}'`
+      )
+    ) {
+      axios
+        .delete(`http://localhost:5000/scheduler/category/delete/${option.id}`)
+        .then(() => {
+          // Remove event from calendar
+          const test = categoryList.filter(
+            (item) => item.id !== parseInt(option.id)
+            // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
+          );
+          setCategoryList(test);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          handleCloseDetail();
+        });
+
+      const url = `http://localhost:5000/scheduler/event/color/delete/${encodeURIComponent(
+        option.value
+      )}`;
+
+      axios
+        .delete(url)
+        .then(() => {
+          // Remove event from calendar
+          const test = currentEvents.filter(
+            (item) => item.color !== option.value
+            // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
+          );
+          setCurrentEvents(test);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          handleCloseDetail();
+        });
+    }
+  };
+
   //category============================================
   const [categoryText, setCategoryText] = useState("");
   const [openCategory, setOpenCategory] = useState(false);
@@ -538,10 +591,15 @@ export default function DemoApp() {
   // const [colorPickerVisible, setColorPickerVisible] = useState(false);
   const [tempColor, setTempColor] = useState("#fff");
   const [pickedColor, setPickedColor] = useState("");
-  const handleChangeComplete = (e) => {
-    // console.log(e.hex);
-    setPickedColor(e.hex);
-  };
+  const [pickedAddColor, setPickedAddColor] = useState("");
+  // const handleChangeComplete = (e) => {
+  //   // console.log(e.hex);
+  //   setPickedColor(e.hex);
+  // };
+
+  console.log("컬러드", pickedColor);
+  console.log("컬러드애드", pickedAddColor);
+
   const updateColor = (option) => {
     // console.log("받아와지지롱", option);
     axios
@@ -576,8 +634,7 @@ export default function DemoApp() {
     )}`;
     axios
       .put(url, {
-        color: pickedColor,
-        currentEvents: currentEvents,
+        color: pickedAddColor,
       })
       .then((response) => {
         // setOpenEdit(false);
@@ -607,7 +664,7 @@ export default function DemoApp() {
         setCurrentEvents(
           currentEvents.map((event) => {
             if (event.color === option.value) {
-              return { ...event, color: pickedColor };
+              return { ...event, color: pickedAddColor };
             } else {
               return event;
             }
@@ -616,7 +673,8 @@ export default function DemoApp() {
       })
       .catch((error) => {
         console.error(error);
-      });
+      })
+      .finally(() => setPickedAddColor(""));
   };
 
   // useEffect(() => {
@@ -741,7 +799,7 @@ export default function DemoApp() {
               variant='standard'
             >
               {categoryList[0] ? (
-                categoryList.map((option, index) => (
+                categoryList.slice(1).map((option, index) => (
                   <MenuItem key={index} value={option.value && option.value}>
                     {option.label && option.label}
                   </MenuItem>
@@ -832,10 +890,35 @@ export default function DemoApp() {
             <Typography color='secondary'>
               {updatedEvent.title && updatedEvent.title}
             </Typography>
-            <Box>
-              <DeleteIcon onClick={handleEventDelete} />
-              <EditIcon onClick={handleOpenEdit} />
-              <CloseIcon onClick={handleCloseDetail} />
+            <Box color='#fff'>
+              <DeleteIcon
+                onClick={handleEventDelete}
+                sx={{
+                  marginRight: "5px",
+                  cursor: "pointer",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+              />
+              <EditIcon
+                onClick={handleOpenEdit}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+              />
+              <CloseIcon
+                onClick={handleCloseDetail}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+              />
             </Box>
           </Box>
 
@@ -921,7 +1004,7 @@ export default function DemoApp() {
               value={updatedEvent.color && updatedEvent.color} // 불안
             >
               {categoryList[0] ? (
-                categoryList.map((option, index) => (
+                categoryList.slice(1).map((option, index) => (
                   <MenuItem key={index} value={option.value && option.value}>
                     {option.label && option.label}
                   </MenuItem>
@@ -1047,6 +1130,7 @@ export default function DemoApp() {
                   variant='h6'
                   component='h2'
                   color='primary'
+                  fontWeight={700}
                 >
                   카테고리 편집
                 </Typography>
@@ -1064,7 +1148,7 @@ export default function DemoApp() {
               <Box
                 display='flex'
                 alignItems='center'
-                color='red'
+                color='#D10505'
                 marginBottom={2}
               >
                 <WarningAmberIcon fontSize='12px' />
@@ -1144,12 +1228,13 @@ export default function DemoApp() {
                                 const newVisible = [...colorPickerVisible];
                                 newVisible[index] = !newVisible[index];
                                 setColorPickerVisible(newVisible);
+                                setPickedColor("");
                               }}
                             />
                             <SketchPicker
                               color={tempColor}
                               onChange={(e) => setTempColor(e.hex)}
-                              onChangeComplete={handleChangeComplete}
+                              onChangeComplete={(e) => setPickedColor(e.hex)}
                             />
                             <Paper
                               sx={{
@@ -1182,7 +1267,7 @@ export default function DemoApp() {
                           </Box>
                           <DeleteIcon
                             sx={{
-                              color: "darkGrey",
+                              color: "#5A5353",
                               marginLeft: "10px",
                               cursor: "pointer",
                               "&:hover": {
@@ -1190,23 +1275,36 @@ export default function DemoApp() {
                                 // outline: "none",
                               },
                             }}
+                            onClick={() => handleDeleteCategory(option)}
                           />
                         </Box>
                       </Box>
                     </Box>
                   ))}
               </Box>
-              <Box display='flex' alignItems='center' marginTop={2}>
-                <AddIcon />
+              <Box display='flex' alignItems='center' marginTop={2} gap={2}>
+                <AddIcon marginRight='10px' color='#5A5353' />
+                <Box>
+                  <Paper
+                    sx={{
+                      width: "10px",
+                      height: "10px",
+                      // backgroundColor: "red",
+                      backgroundColor: pickedAddColor ? pickedAddColor : "#fff",
+                    }}
+                  ></Paper>
+                </Box>
                 <TextField
                   fullWidth
                   variant='standard'
+                  label='Category Name'
                   value={categoryText}
                   onChange={(e) => setCategoryText(e.target.value)}
-                  sx={{ marginX: "10px" }}
+                  size='small'
+                  sx={{ marginBottom: "10px" }}
                 ></TextField>
                 {/* //===================================== */}
-                <Box position='relative' marginX={2}>
+                <Box position='relative'>
                   <Avatar
                     alt='colorPicker'
                     src={colorPicker}
@@ -1223,6 +1321,7 @@ export default function DemoApp() {
                     }}
                     onClick={() => {
                       setAddColorPickerVisible((prev) => !prev);
+                      setPickedAddColor("");
                     }}
                   />
                   <Box
@@ -1245,12 +1344,13 @@ export default function DemoApp() {
                       }}
                       onClick={() => {
                         setAddColorPickerVisible((prev) => !prev);
+                        setPickedAddColor("");
                       }}
                     />
                     <SketchPicker
                       color={tempColor}
                       onChange={(e) => setTempColor(e.hex)}
-                      onChangeComplete={handleChangeComplete}
+                      onChangeComplete={(e) => setPickedAddColor(e.hex)}
                     />
                     <Paper
                       sx={{
