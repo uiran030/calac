@@ -6,24 +6,25 @@ import axios from 'axios';
 
 const LedgerTotal = () => {
   const [tabValue, setTabValue] = useState('expense');
-  // const [monthlyTotal, setMonthlyTotal] = useState([]);
   const [expenseList, setExpenseList] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
-  const [totalIncome, setTotalIncome] = useState(false);
-  const [totalExpense, setTotalExpense] = useState(false);
+  const [totalIncome, setTotalIncome] = useState('');
+  const [totalExpense, setTotalExpense] = useState('');
   //======================================================
   const handleTabValue = (event, value) => { 
     if (value !== null ) { setTabValue(value); }
   };
+  const CHANGE_INCOME = totalIncome.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  const CHANGE_EXPENSE = totalExpense.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   //======================================================
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/total')
     .then((res) => {
-      console.log('res', res.data);
+      console.log('resTotal', res.data);
+      setTotalExpense(res.data[0][0]['sum_count'])
+      setTotalIncome(res.data[0][1]['sum_count'])
       setExpenseList(res.data[1])
       setIncomeList(res.data[2])
-      setTotalIncome(res.data[0][0]['sum_count'])
-      setTotalExpense(res.data[0][1]['sum_count'])
     })
   }, []);
   //======================================================
@@ -51,7 +52,7 @@ const LedgerTotal = () => {
           <ShowTotal>
             <TotalText>수입 전액</TotalText>
             <TotalCount>
-              {totalExpense}
+              {CHANGE_INCOME}
             </TotalCount>
           </ShowTotal>
           <ShowRecent>
@@ -61,7 +62,12 @@ const LedgerTotal = () => {
                   <RecentList>
                     <ListItemText
                       key={list.ledger_no}
-                      primary={list.ledger_description}
+                      primary={
+                        <Box>
+                          {list.ledger_description}
+                          <CategoryText>{list.ledger_category}</CategoryText>
+                        </Box>
+                      }
                       secondary={
                         <Box>
                           <RecentPrice
@@ -86,7 +92,7 @@ const LedgerTotal = () => {
           <ShowTotal>
             <TotalText>지출 전액</TotalText>
             <TotalCount>
-              {totalIncome}
+              {CHANGE_EXPENSE}
             </TotalCount>
           </ShowTotal>
           <ShowRecent>
@@ -96,7 +102,12 @@ const LedgerTotal = () => {
                     <RecentList>
                       <ListItemText
                         key={list.ledger_no}
-                        primary={list.ledger_description}
+                        primary={
+                          <Box>
+                            {list.ledger_description}
+                            {/* {list.ledger_category} */}
+                          </Box>
+                        }
                         secondary={
                           <Box>
                             <RecentPrice
@@ -163,6 +174,11 @@ const RecentList = styled(ListItem)({
   textAlign:'right',
   padding:0,
   height:'33.3333%',
+});
+const CategoryText = styled('span')({
+  fontSize:'10px',
+  color:'#7d7d7d',
+  marginLeft:'10px'
 });
 const RecentPrice = styled(Typography)({
   fontSize:'20px'
