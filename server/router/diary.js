@@ -15,9 +15,9 @@ router.get('/',(req,res) => {
   const offset = req.query.offset;
   let selectQuery = '';
   if(limit !== undefined || offset !== undefined) {
-    selectQuery = `SELECT * FROM dairy ORDER BY dairy_no DESC LIMIT ${limit} OFFSET ${offset}`;
+    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset}`;
   } else {
-    selectQuery = `SELECT * FROM dairy ORDER BY dairy_no DESC`;
+    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC`;
   }
   db.query(selectQuery, (err, result) => {
     if(err) console.log("err",err);
@@ -46,7 +46,7 @@ router.post('/insert',(req,res) => {
   });
   //=============================================
   const image = req.body.image ? req.body.image : 'NULL';
-  const insertQuery = `INSERT INTO dairy (user_no, title, content, content_parse, image) VALUES (1, '${title}', '${content}', '${contentResult}', '${image}');`
+  const insertQuery = `INSERT INTO diary (user_no, title, content, content_parse, image) VALUES (1, '${title}', '${content}', '${contentResult}', '${image}');`
   db.query(insertQuery, (err, result) => {
     if(err) console.log("err",err);
     else {res.send(result)}
@@ -57,7 +57,7 @@ router.post('/insert',(req,res) => {
 router.post('/delete', (req,res) => {
   const id = req.body.id;
   console.log("id",id)
-  const deleteQuery = `DELETE FROM dairy WHERE dairy_no=${id}`;
+  const deleteQuery = `DELETE FROM diary WHERE diary_no=${id}`;
   db.query(deleteQuery, (err, result) => {
     if(err) console.log("err",err);
     else {res.send("삭제완료")}
@@ -66,7 +66,7 @@ router.post('/delete', (req,res) => {
 // 이미지 업로드 ==================================
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, './images/dairy/');
+    callback(null, './images/diary/');
   },
   filename: (req, file, callback) => {
     callback(null, `${uuid()}.${mime.extension(file.mimetype)}`);

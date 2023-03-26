@@ -30,7 +30,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
   const submitComment = (id) => {
     if(newComment.comment.length > 0){
       axios.post('http://localhost:5000/comments/insert',{
-        dairy_no : id,
+        diary_no : id,
         comment : newComment.comment
       })
       .then(()=>alert('댓글이 등록되었습니다 :)'))
@@ -75,7 +75,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
   //======================================================
   useEffect(()=>{
     axios.post('http://localhost:5000/comments', {
-      dairy_no : id
+      diary_no : id
     })
     .then(res=>{setComments(res.data[0])});
   },[comments])
@@ -129,7 +129,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
                         <CommentTextField 
                           id="outlined-basic" 
                           variant="outlined" 
-                          label="댓글수정" 
+                          label={list.comment}
                           size="small" 
                           onChange={commentHandle}
                         />

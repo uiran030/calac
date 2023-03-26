@@ -40,48 +40,43 @@ const DiaryCard = () => {
     });
   },[commentCnt])
   //======================================================
-  // let offset = 0;
-  // const loadDairy = () => {
-  //   axios.get(`http://localhost:5000/dairy?limit=10&offset=${offset}`)
-  //   .then(res=>{
-  //     setPosts(oldPosts => [...oldPosts, ...res.data]);
-  //   });
-  //   offset += 10;
-  // }
-  //======================================================
-  const handleScroll = (e) => {
-    console.log("win",document.body.innerHeight);
-    console.log("top",e.target.documentElement.scrollTop);
-    console.log("height",e.target.documentElement.scrollHeight);
-    if (window.innerHeight + e.target.documentElement.scrollTop + 1 >= e.target.documentElement.scrollHeight) {
-      console.log("bottom")
-      // loadDairy();
-    }
+  let offset = 0;
+  const loaddiary = () => {
+    axios.get(`http://localhost:5000/diary?limit=10&offset=${offset}`)
+    .then(res=>{
+      setPosts(oldPosts => [...oldPosts, ...res.data]);
+    });
+    offset += 10;
   }
   //======================================================
+  const handleScroll = (e) => {
+    if (window.innerHeight + document.getElementById("postList").scrollTop + 1 >= document.getElementById("postList").scrollHeight) {
+        loaddiary();
+      }
+    }
+  //======================================================
   useEffect(()=>{
-    axios.get('http://localhost:5000/dairy')
-    .then(res=>setPosts(res.data));
-    // loadDairy();
-    document.body.addEventListener('scroll', handleScroll);
-  },[posts])
+    loaddiary();
+    let listRange = document.getElementById("postList");
+    listRange.addEventListener("scroll", handleScroll);
+  },[])
   //======================================================
   return (
     <CardBox>
-      <CardList>
+      <CardList id="postList">
         {posts.map((list,idx)=>{
           return(
           <CardListItem key={idx}>
             <Box>
               <MyCardHeader
                 action={
-                  <MyIconButton aria-label="settings" onClick={(e)=>handleOpenMoreButton(e,list.dairy_no)}>
+                  <MyIconButton aria-label="settings" onClick={(e)=>handleOpenMoreButton(e,list.diary_no)}>
                     <MoreVertIcon />
-                    {countIndex === list.dairy_no && (
+                    {countIndex === list.diary_no && (
                       openMoreButton && (
                         <DiaryMoreButton 
                           posts={posts} 
-                          id={list.dairy_no}
+                          id={list.diary_no}
                         />
                       )
                     )}
@@ -91,13 +86,13 @@ const DiaryCard = () => {
                 disableTypography
               />
               <DateTypography>{new Date(list.createdAt).toLocaleString()}</DateTypography>
-              <Button onClick={()=>openDetailModal(list.dairy_no,list.title, list.content,list.image,list.createdAt)}>
+              <Button onClick={()=>openDetailModal(list.diary_no,list.title, list.content,list.image,list.createdAt)}>
                 {list.image !== "NULL" ? (
                   <MyCardMedia
                     component="img"
                     width="40vh"
                     height="194"
-                    src={`http://localhost:5000/images/dairy/${list.image}`}
+                    src={`http://localhost:5000/images/diary/${list.image}`}
                     alt="이미지"
                   />
                   ):(
@@ -121,7 +116,7 @@ const DiaryCard = () => {
               {commentCnt.length !== 0 && (
                 commentCnt.map((count,idx) => {
                   return(
-                    list.dairy_no === count.dairy_no && (
+                    list.diary_no === count.diary_no && (
                       <CountCommentTypography key={idx}>댓글 {count.cnt}개</CountCommentTypography>
                     )
                   )
@@ -155,12 +150,12 @@ const CardList = styled(List)({
   flexWrap: 'wrap',
   justifyContent: 'center',
   height:'100%',
-  // overflow:'auto'
+  overflow:'auto'
 });
 const CardListItem = styled(ListItem)({
   width: `45vh`,
   border: `1px solid #ebebec`,
-  margin: `20px 10px 15px 20px`
+  margin: `20px 30px 37px 20px`
 });
 const MyCardHeader = styled(CardHeader)({
   fontSize: 25,
