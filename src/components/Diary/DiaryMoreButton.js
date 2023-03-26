@@ -1,12 +1,22 @@
-import React, {useState} from 'react'
+import React, {useState,useEffect} from 'react'
 import { styled } from "@mui/material/styles";
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText  } from "@mui/material";
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import axios from 'axios';
+import DiaryModify from './DiaryModify';
 
 const DiaryMoreButton = (posts) => {
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [isModifyOpen, setIsModifyOpen] = useState(false);
+  const [postId, setPostId] = useState('');
+  //======================================================
+  const onModify = (id) => {
+    console.log("id",id)
+    setIsModifyOpen(true);
+    setPostId(id);
+  }
+  console.log("isModifyOpen",isModifyOpen)
+  console.log("postId",postId)
   //======================================================
   const onDelete = (id) => {
     if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
@@ -22,7 +32,7 @@ const DiaryMoreButton = (posts) => {
   return (
     <TabBox>
       <List>
-        <ListItem disablePadding onClick={()=>setIsUpdateOpen(!isUpdateOpen)}>
+        <ListItem disablePadding onClick={()=>onModify(posts.id)}>
           <ListItemButtonIcon>
             <AutoFixNormalIcon />
             <ListItemText primary="modify"/>
@@ -35,6 +45,13 @@ const DiaryMoreButton = (posts) => {
           </ListItemButtonIcon>
         </ListItem>
       </List>
+      {isModifyOpen && (
+        <DiaryModify
+          isModifyOpen={isModifyOpen}
+          setIsModifyOpen={setIsModifyOpen}
+          postId={postId}
+        />
+      )}
     </TabBox>
   )
 };
