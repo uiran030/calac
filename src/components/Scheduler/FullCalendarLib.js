@@ -41,15 +41,20 @@ import AlarmIcon from "@mui/icons-material/Alarm";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import colorPicker from "../../assets/images/colorPicker.png";
 import { SketchPicker } from "react-color";
+import AlertModal from "./AlertModal";
 //===
 
 export default function DemoApp() {
-  const [weekendsVisible, setWeekendsVisible] = useState(true);
-  const [currentEvents, setCurrentEvents] = useState([]);
-  const [categoryList, setCategoryList] = useState([]);
-  const [currentCategory, setCurrentCategory] = useState("");
-  const [colorPickerVisible, setColorPickerVisible] = useState([]);
-  const [addColorPickerVisible, setAddColorPickerVisible] = useState(false);
+  // 상태관리 변수 ===============================================================================
+  const [currentEvents, setCurrentEvents] = useState([]); // 현재 모든 이벤트둘
+  const [categoryList, setCategoryList] = useState([]); // 카테고리 목록
+  const [currentCategory, setCurrentCategory] = useState(""); // 현재 선택된 카테고리
+  const [colorPickerVisible, setColorPickerVisible] = useState([]); // 컬리픽커 보이기 토글 (수정용)
+  const [addColorPickerVisible, setAddColorPickerVisible] = useState(false); // 컬리픽커 보이기 토글 (삽입용)
+  const [alertEvents, setAlertEvents] = useState([]); // 알림이 설정되어 있는 이벤트들
+  // [데이터 불러오기] #################################################################################
+
+  // 카테고리 목록을 불러옴.
   useEffect(() => {
     axios
       .get("http://localhost:5000/scheduler/category")
@@ -63,10 +68,15 @@ export default function DemoApp() {
       });
   }, []);
 
+  // 이벤트 목록을 불러옴.
   useEffect(() => {
     axios
       .get("http://localhost:5000/scheduler")
       .then((response) => {
+        // 알람이 설정된 이벤트들만 골라내기.
+        const alertEvent = response.data; // 추후 filter돌릴 예정
+        setAlertEvents(alertEvent);
+        // 현재 카테고리와 일치하는 이벤트들만 골라내기.
         const filterdEvent = response.data.filter(
           (event) => event.color === currentCategory
         );
@@ -79,109 +89,26 @@ export default function DemoApp() {
       });
   }, [currentCategory]);
 
-  // function renderSidebarEvent(event) {
-  //   return (
-  //     <li key={event.id}>
-  //       <b>
-  //         {formatDate(event.start, {
-  //           year: "numeric",
-  //           month: "short",
-  //           day: "numeric",
-  //         })}
-  //       </b>
-  //       <i>{event.title}</i>
-  //     </li>
-  //   );
-  // }
+  // [데이터 삽입] #################################################################################
 
-  // function handleWeekendsToggle() {
-  //   setWeekendsVisible(!weekendsVisible);
-  // }
-
+  // 날짜 드래그 시 음영으로 선택됨.=============================================
   function handleDateSelect(selectInfo) {
-    // console.log("셀렉트", typeof selectInfo.startStr, selectInfo.endStr);
     setNewEvent({
+      // 선택된 기간의 시작과 끝 시간 저장
       ...newEvent,
       start: selectInfo.startStr,
       end: selectInfo.endStr,
     });
-    handleOpen();
-    // let title = prompt("Please enter a new title for your event");
-    selectInfo.view.calendar.unselect(); // clear date selection
+    handleOpen(); // 새 이벤트 추가 모달 열기
 
-    // if (title) {
-    //   // Send POST request to server to add new event
-    //   axios
-    //     .post("http://localhost:5000/scheduler/insert", {
-    //       title,
-    //       start: selectInfo.startStr,
-    //       end: selectInfo.endStr,
-    //       allDay: selectInfo.allDay,
-    //     })
-    //     .then((response) => {
-    //       console.log(response);
-    //       alert("등록성공!");
-    //       // Add newly created event to calendar
-    //       calendarApi.addEvent({
-    //         id: response.data.id,
-    //         title,
-    //         start: response.data.start,
-    //         end: response.data.end,
-    //         allDay: response.data.allDay,
-    //       });
-    //     })
-    //     .catch(() => {
-    //       alert("등록실패");
-    //     });
-    // }
+    selectInfo.view.calendar.unselect(); // 선택된 기간 음영 해제
   }
 
-  function handleEventClick(clickInfo) {
-    // console.log(clickInfo);
-    let parsingCategory;
-    switch (clickInfo.event.backgroundColor) {
-      case "#9DC08B":
-        parsingCategory = "개인";
-        break;
-      case "#40513B":
-        parsingCategory = "직장";
-        break;
-      case "#609966":
-        parsingCategory = "가족";
-        break;
-      case "#719192":
-        parsingCategory = "생일 및 기념일";
-        break;
-      default:
-        parsingCategory = "카테고리 정보 없음";
-    }
-    // console.log("파싱맨", parsingCategory);
-    {
-      /* <MenuItem value={"#9DC08B"}>개인</MenuItem>
-              <MenuItem value={"#40513B"}>직장</MenuItem>
-              <MenuItem value={"#609966"}>가족</MenuItem>
-              <MenuItem value={"#719192"}>생일 및 기념일</MenuItem> */
-    }
-
-    setDetailLocation({
-      x: clickInfo.jsEvent.clientX,
-      y: clickInfo.jsEvent.clientY,
-    });
-    setUpdatedEvent({
-      id: clickInfo.event.id,
-      title: clickInfo.event.title,
-      start: clickInfo.event.startStr,
-      end: clickInfo.event.endStr,
-      color: clickInfo.event.backgroundColor,
-      category: parsingCategory && parsingCategory,
-      locale: clickInfo.event.extendedProps.locale,
-    });
-    handleOpenDetail();
-  }
-
+  // 새 이벤트 저장 =============================================================
   function handleModalSubmit() {
     const { title, start, end, color, locale } = newEvent;
     // Send POST request to server to add new event
+    // 필수 입력사항 미입력시 경고.
     if (!title && !color) {
       alert("일정 이름과 카테고리를 입력해주세요.");
       return;
@@ -192,20 +119,22 @@ export default function DemoApp() {
       alert("카테고리를 입력해주세요.");
       return;
     }
+
+    // 새 이벤트 DB에 INSERT ======================================================
     axios
       .post("http://localhost:5000/scheduler/insert", {
+        // (주의) id값 전송안함. DB 저장시 바로 생성
         title,
         start,
         end,
         color,
         locale,
-        // allDay: false,
       })
       .then((response) => {
-        // console.log("잠시 검문있겠슙니다", response.data);
         alert("등록성공!");
         // Add newly created event to calendar
         setCurrentEvents((currentEvents) => [
+          // 성공시 UI에도 바로 반영
           ...currentEvents,
           {
             id: response.data.id,
@@ -222,29 +151,68 @@ export default function DemoApp() {
         alert("등록실패");
       })
       .finally(() => {
-        handleClose();
+        handleClose(); // 새 이벤트 추가 모달 닫기
       });
   }
   // 중간에 나가면 데이터 지워지는 것도 잊지 말아야겠는걸?
 
-  // console.log("id가 비어있을 것이다.", currentEvents);
-  const [calendarApi, setCalendarApi] = useState(null);
-  const calendarRef = useRef(null);
-  // EDIT===============================================================================
-  // 추가하자마자 수정했을 때, DB에 저장은 안되는 버그 있음. 잡음
+  // [데이터 조회] #################################################################################
+  // 이벤트를 클릭했을 때 동작 =================================================
+  function handleEventClick(clickInfo) {
+    /** 이벤트는 카테고리라는 키를 가지고 있지 않다. color라는 키에 색상코드를 저장하고 있을 뿐이다.
+     * 이벤트를 클릭했을 때는 clickInfo.event.backgroundColor 로 접근하면 해당 color값을 받아올 수 있다.
+     * UI 글씨를 보여주기 위해서는, 색상코드를 글씨로 파싱해주어야한다.
+     */
+    let parsingCategory; // 아 시바 수정요망 (색상 수정가능하니까 ㅠㅠ) 카테고리 객체에서 찾으면 될듯.
+    switch (clickInfo.event.backgroundColor) {
+      case "#9DC08B":
+        parsingCategory = "개인";
+        break;
+      case "#40513B":
+        parsingCategory = "직장";
+        break;
+      case "#609966":
+        parsingCategory = "가족";
+        break;
+      case "#719192":
+        parsingCategory = "생일 및 기념일";
+        break;
+      default:
+        parsingCategory = "카테고리 정보 없음";
+    }
+
+    setDetailLocation({
+      // 클릭한 부분의 좌표를 저장
+      x: clickInfo.jsEvent.clientX,
+      y: clickInfo.jsEvent.clientY,
+    });
+
+    setUpdatedEvent({
+      // 클릭이벤트에서 받아온 정보들로, 동적으로 데이터 출력
+      id: clickInfo.event.id,
+      title: clickInfo.event.title,
+      start: clickInfo.event.startStr,
+      end: clickInfo.event.endStr,
+      color: clickInfo.event.backgroundColor,
+      category: parsingCategory && parsingCategory,
+      locale: clickInfo.event.extendedProps.locale,
+    });
+    handleOpenDetail(); // 이벤트 조회 모달 열기
+  }
+
+  // [데이터 수정] #################################################################################
+  // 이벤트의 날짜가 수정되었을 때, 저장 =========================================
   function handleEventChange(changeInfo) {
-    // console.log("첸지첸지", changeInfo);
-    axios
+    axios // 새 이벤트 DB에 UPDATE
       .put(`http://localhost:5000/scheduler/update/${changeInfo.event.id}`, {
         title: changeInfo.event.title,
         start: changeInfo.event.startStr,
         end: changeInfo.event.endStr,
         color: changeInfo.event.backgroundColor,
         locale: changeInfo.event.extendedProps.locale,
-        // allDay: changeInfo.event.allDay,
       })
       .then((response) => {
-        // console.log(response);
+        // 성공시 UI에도 바로 반영
         changeInfo.event.setDates(response.data.startStr, response.data.endStr);
       })
       .catch((error) => {
@@ -252,23 +220,15 @@ export default function DemoApp() {
       });
   }
 
+  // 이벤트의 내용 편집 모달 열기 (연필버튼 눌리면 작동) ============================
   const [openEdit, setOpenEdit] = useState(false);
+
   const handleOpenEdit = () => {
-    setOpenDetail(false);
-    setOpenEdit(true);
-  };
-  const handleCloseEdit = () => {
-    setOpenEdit(false);
-    setUpdatedEvent({
-      id: "",
-      title: "",
-      start: "",
-      end: "",
-      color: "",
-      locale: "",
-    });
+    setOpenDetail(false); // 조회 모달 닫기
+    setOpenEdit(true); // 편집 모달 열기
   };
 
+  // 입력되는 모든 변경사항 즉시 상태 관리 ============================================
   function handleEditChange(event) {
     // console.log(event);
     setUpdatedEvent({
@@ -277,28 +237,11 @@ export default function DemoApp() {
     });
   }
 
-  // function handleUpdate(){
-  //   axios
-  //     .put(`http://localhost:5000/scheduler/edit/${changeInfo.event.id}`, {
-  //       title: changeInfo.event.title,
-  //       start: changeInfo.event.startStr,
-  //       end: changeInfo.event.endStr,
-  //       color: changeInfo.event.backgroundColor,
-  //       locale: changeInfo.event.extendedProps.locale,
-  //       // allDay: changeInfo.event.allDay,
-  //     })
-  //     .then((response) => {
-  //       console.log(response);
-  //       changeInfo.event.setDates(response.data.start, response.data.end);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }
-
+  // 변경된 이벤트 저장 ==============================================================
   function handleEditModalSubmit() {
     const { title, start, end, color, locale } = updatedEvent;
     // Send POST request to server to add new event
+    // 필수 입력사항 미입력시 경고.
     if (!title && !color) {
       alert("일정 이름과 카테고리를 입력해주세요.");
       return;
@@ -309,27 +252,26 @@ export default function DemoApp() {
       alert("카테고리를 입력해주세요.");
       return;
     }
-    axios
+    axios // 새 이벤트 DB에 UPDATE
       .put(`http://localhost:5000/scheduler/update/${updatedEvent.id}`, {
         title: title,
         start: start,
         end: end,
         color: color,
         locale: locale,
-        // allDay: changeInfo.event.allDay,
       })
       .then((response) => {
-        setOpenEdit(false);
-        setOpenDetail(false);
+        // 성공시 UI에도 바로 반영
+        setOpenEdit(false); // 일단 편집모달 닫기
 
-        // console.log("하..", response);
         const test = currentEvents.filter(
+          // 업데이트 하려하는 기존 데이터 삭제
           (item) => item.id !== parseInt(updatedEvent.id)
           // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
         );
-        // console.log("또 비동기냐 설마", test);
 
         setCurrentEvents(() => [
+          // 업데이트된 정보로 재생성
           ...test,
           {
             id: response.data.id,
@@ -348,6 +290,28 @@ export default function DemoApp() {
   }
   // 중간에 나가면 데이터 지워지는 것도 잊지 말아야겠는걸?
 
+  // 편집모달 닫기
+  const handleCloseEdit = () => {
+    setOpenEdit(false); // 편진모달 닫기
+    setUpdatedEvent({
+      // 업데이트용 상태 데이터 초기화
+      id: "",
+      title: "",
+      start: "",
+      end: "",
+      color: "",
+      locale: "",
+    });
+  };
+
+  // [데이터 삭제] =============================================================================
+
+  // EDIT===============================================================================
+
+  // 뭐지이거?
+  const [calendarApi, setCalendarApi] = useState(null);
+  const calendarRef = useRef(null);
+
   useEffect(() => {
     const calendar = calendarRef.current;
     if (calendar) {
@@ -363,19 +327,6 @@ export default function DemoApp() {
       };
     }
   }, [calendarApi]);
-
-  function handleEvents(events) {
-    // setCurrentEvents(events);
-  }
-
-  function renderEventContent(eventInfo) {
-    return (
-      <>
-        <b>{eventInfo.timeText}</b>
-        <i>{eventInfo.event.title}</i>
-      </>
-    );
-  }
 
   // for modal ====
   const style = {
@@ -454,15 +405,11 @@ export default function DemoApp() {
     });
   };
   const handleEventDelete = () => {
-    // console.log("니가 삭제하게될 아이디다!!", updatedEvent.id);
     if (
       window.confirm(
         `Are you sure you want to delete the event '${updatedEvent.title}'`
       )
     ) {
-      // let calendarApi = clickInfo.view.calendar;
-
-      // Send DELETE request to server to remove event
       axios
         .delete(`http://localhost:5000/scheduler/delete/${updatedEvent.id}`)
         .then(() => {
@@ -474,18 +421,6 @@ export default function DemoApp() {
           );
           // console.log("또 비동기냐 설마", test);
           setCurrentEvents(test);
-          // setCurrentEvents((currentEvents) => [
-          //   ...currentEvents,
-          //   {
-          //     id: response.data.id,
-          //     title: response.data.title,
-          //     start: response.data.start,
-          //     end: response.data.end,
-          //     color: response.data.color,
-          //     locale: response.data.locale,
-          //     allDay: false,
-          //   },
-          // ]);
         })
         .catch((error) => {
           console.error(error);
@@ -495,7 +430,6 @@ export default function DemoApp() {
         });
     }
   };
-  // for
 
   const handleAddCategory = () => {
     if (!categoryText) {
@@ -588,29 +522,21 @@ export default function DemoApp() {
   const [openCategory, setOpenCategory] = useState(false);
   const handleOpenCategory = () => setOpenCategory(true);
   const handleCloseCategory = () => setOpenCategory(false);
-  // const [colorPickerVisible, setColorPickerVisible] = useState(false);
+
   const [tempColor, setTempColor] = useState("#fff");
   const [pickedColor, setPickedColor] = useState("");
   const [pickedAddColor, setPickedAddColor] = useState("");
-  // const handleChangeComplete = (e) => {
-  //   // console.log(e.hex);
-  //   setPickedColor(e.hex);
-  // };
 
   console.log("컬러드", pickedColor);
   console.log("컬러드애드", pickedAddColor);
 
   const updateColor = (option) => {
-    // console.log("받아와지지롱", option);
     axios
       .put(`http://localhost:5000/scheduler/category/update/${option.id}`, {
         value: pickedColor,
         label: option.label,
-        // allDay: changeInfo.event.allDay,
       })
       .then((response) => {
-        // setOpenDetail(false);
-        // console.log("하..", response);
         const test = categoryList.filter(
           (item) => item.id !== parseInt(option.id)
           // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
@@ -634,37 +560,13 @@ export default function DemoApp() {
     )}`;
     axios
       .put(url, {
-        color: pickedAddColor,
+        color: pickedColor,
       })
-      .then((response) => {
-        // setOpenEdit(false);
-        // setOpenDetail(false);
-
-        // console.log("하..", response);
-        // const test = currentEvents.filter(
-        //   (item) => item.id !== parseInt(updatedEvent.id)
-        // );
-        // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
-        // console.log("또 비동기냐 설마", test);
-
-        // const updatedEvents = currentEvents.map((event) => {
-        //   if (event.value === option.value) {
-        //     return (event.value = pickedColor);
-        //   } else {
-        //     return event;
-        //   }
-        // });
-        // console.log("당신뭐여", updatedEvents);
-
-        // currentEvents.map((event) => {
-        //   console.log("원", event.color);
-        //   console.log("투", option.value);
-        // });
-
+      .then(() => {
         setCurrentEvents(
           currentEvents.map((event) => {
             if (event.color === option.value) {
-              return { ...event, color: pickedAddColor };
+              return { ...event, color: pickedColor };
             } else {
               return event;
             }
@@ -677,14 +579,6 @@ export default function DemoApp() {
       .finally(() => setPickedAddColor(""));
   };
 
-  // useEffect(() => {
-  //   // console.log("쌕쌍", currentEvents);
-  // }, [currentEvents]);
-
-  // console.log("현카", currentCategory);
-  // console.log("입력중..", categoryText);
-  // console.log("반영됐는가", categoryList);
-  // console.log("외않되", colorPickerVisible);
   //category============================================
   return (
     <Box position='relative'>
@@ -731,13 +625,10 @@ export default function DemoApp() {
               day: "DAY",
               list: "LIST",
             }}
-            weekends={weekendsVisible}
             events={currentEvents}
             select={handleDateSelect}
-            eventContent={renderEventContent}
             eventClick={handleEventClick}
             eventChange={handleEventChange}
-            eventsSet={handleEvents}
           />
         </div>
         {/* 이벤트 추가 모달 ========================================== */}
@@ -1125,15 +1016,28 @@ export default function DemoApp() {
           >
             <Box sx={style}>
               <Box display='flex' justifyContent='space-between'>
-                <Typography
-                  id='modal-modal-title'
-                  variant='h6'
-                  component='h2'
-                  color='primary'
-                  fontWeight={700}
-                >
-                  카테고리 편집
-                </Typography>
+                <Box>
+                  <Typography
+                    fontSize={10}
+                    id='modal-modal-title'
+                    variant='h6'
+                    component='h2'
+                    marginBottom={2}
+                    marginY={-0.5}
+                    marginLeft={0.5}
+                  >
+                    EDIT CATEGORY
+                  </Typography>
+                  <Typography
+                    id='modal-modal-title'
+                    variant='h6'
+                    component='h2'
+                    color='primary'
+                    fontWeight={700}
+                  >
+                    카테고리 편집
+                  </Typography>
+                </Box>
                 <CloseIcon
                   onClick={handleCloseCategory}
                   sx={{
@@ -1388,6 +1292,7 @@ export default function DemoApp() {
         </Box>
         {/*========================================================== */}
       </div>
+      <AlertModal alertEvents={alertEvents} />
     </Box>
   );
 }
