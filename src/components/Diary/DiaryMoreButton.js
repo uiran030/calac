@@ -10,7 +10,7 @@ const DiaryMoreButton = (posts) => {
   //======================================================
   const onDelete = (id) => {
     if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
-      axios.post('http://localhost:5000/dairy/delete' , {
+      axios.post('http://localhost:5000/diary/delete' , {
         id : id
       })
       .then(()=>alert("삭제되었습니다 :)"))

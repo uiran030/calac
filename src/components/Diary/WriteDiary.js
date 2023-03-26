@@ -15,7 +15,7 @@ const WriteDiary = () => {
   });
   const [uploadImg, setUploadImg] = useState('');
   const [flag, setFlag] = useState(false);
-  const imgLink = "http://localhost:5000/images/dairy";
+  const imgLink = "http://localhost:5000/images/diary";
   // ckeditor img upload ==================================
   const customUploadAdapter = (loader) => {
     return {
@@ -26,7 +26,7 @@ const WriteDiary = () => {
             data.append("name", file.name);
             data.append("file", file);
 
-            axios.post('http://localhost:5000/dairy/upload', data)
+            axios.post('http://localhost:5000/diary/upload', data)
             .then((res) => {
               if(!flag){
                 setFlag(true);
@@ -77,7 +77,7 @@ const WriteDiary = () => {
     if (allContent.title.length === 0 || allContent.content.length === 0) {
       alert('제목 또는 내용을 입력해주세요 !')
     } else {
-      axios.post('http://localhost:5000/dairy/insert', {
+      axios.post('http://localhost:5000/diary/insert', {
         title : allContent.title,
         content : allContent.content,
         image : uploadImg

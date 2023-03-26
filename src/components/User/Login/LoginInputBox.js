@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Input,TextField, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from 'react-router-dom';
+import { BorderRight } from '@mui/icons-material';
 
 const ariaLabel = { 'aria-label': 'description' };
 
@@ -13,8 +14,8 @@ const LoginInputBox = () => {
       autoComplete="off"
       sx={{color:'secondary'}}
     >
-      <TextField id="outlined-basic" label="아이디" variant="outlined" color='secondary' sx={{color:'white'}}/>
-      <TextField id="outlined-basic" label="비밀번호" variant="outlined" color='secondary' />
+      <LoginTextField id="outlined-basic" variant="outlined" color='secondary' />
+      <LoginTextField id="outlined-basic" variant="outlined" color='secondary' />
       <LoginBtn>로그인</LoginBtn>
       <MoreBtn>
         <Link to='/login/signup' style={{ textDecoration: "none" }}>
@@ -48,6 +49,11 @@ const LoginBtn = styled(Button)({
 });
 const MoreBtn = styled(Button)({
   marginTop:'20px'
+});
+const LoginTextField = styled(TextField)({
+  marginBottom: 14,
+  border: '1px solid #fff',
+  borderRadius: 4,
 });
 //======================================================
 export default LoginInputBox;
