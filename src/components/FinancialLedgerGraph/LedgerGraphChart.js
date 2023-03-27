@@ -1,48 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button,ButtonGroup,ToggleButtonGroup,ToggleButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ApexCharts from 'react-apexcharts';
 import { Link } from "react-router-dom";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import axios from 'axios';
 
 const LedgerGraphChart = () => {
-
   const [tabValue, setTabValue] = useState('monthly');
+  const [monthlyData, setMonthlyData] = useState([]);
   console.log('tabValue', tabValue);
-
+  //======================================================
   const handleTabValue = (event, value) => { 
     if (value !== null ) { setTabValue(value); }
   };
-  
+  //======================================================
+  useEffect(() => {
+    axios.get('http://localhost:5000/ledger')
+    .then((res) => {
+      console.log(res.data)
+      setMonthlyData(res.data[1]);
+    })
+  }, []);
+  console.log('monthlyData', monthlyData);
+  //======================================================
+  const result = monthlyData.reduce((a, b) => {
+    const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
+    if (categoryIndex === -1) {
+      a.push({name: b.ledger_category, data: [b.monthly_sum_count]});
+    } else {
+      a[categoryIndex].data.push(b.monthly_sum_count);
+    }
+    return a;
+  }, []);
+  console.log('result', result);
+  //======================================================
   const monthlyState = {
     series : [
       {
         name : '식비',
-        data : [234600,98400,40000,50000,78000,100500,30000,230000,98000,23040,50450,324543]
-      },
-      {
-        name : '통신비',
-        data : [39900,39900,39900,39900,39900,39900,39900,39900,39900,39900,39900,39900]
-      },
-      {
-        name : '쇼핑',
-        data : [123000, 280000, 630000, 40000, 50000, 340800, 29000, 40000, 302800, 9000, 29800, 590000]
-      },
-      {
-        name : '보험비',
-        data : [213800,213800,213800,213800,213800,213800,213800,213800,213800,213800,213800,213800]
-      },
-      {
-        name : '병원/약국',
-        data : [4500, 5900, 0, 7400, 20000, 28000, 0, 4300, 25000, 8000, 93800, 0]
-      },
-      {
-        name : '간식비',
-        data : [45000,45000,45000,45000,45000,45000,45000,45000,45000,45000,45000,45000]
-      },
-      {
-        name : '반려묘/견',
-        data : [49500, 0, 79000, 0, 35000, 0, 238800, 0, 310000, 5000, 55000, 0]
+        data : [100,200,300,400]
       }
     ],
     options: {  
@@ -76,6 +73,7 @@ const LedgerGraphChart = () => {
       }
     }
   };
+  //======================================================
   const yearlyState = {
     series : [
       {
@@ -138,7 +136,7 @@ const LedgerGraphChart = () => {
       }
     }
   };
-
+  //======================================================
   return (
     <ChartWrap>
       <ToggleButtonGroup
@@ -159,7 +157,7 @@ const LedgerGraphChart = () => {
         {tabValue === 'monthly' ? (
           <ApexCharts
             options={monthlyState.options}
-            series={monthlyState.series}
+            series={result}
             typs='line'
             width={'100%'}
             height={'80%'}
