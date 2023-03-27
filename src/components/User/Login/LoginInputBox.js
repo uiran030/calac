@@ -13,19 +13,8 @@ const LoginInputBox = () => {
       autoComplete='off'
       sx={{ color: "secondary" }}
     >
-      <TextField
-        id='outlined-basic'
-        label='아이디'
-        variant='outlined'
-        color='secondary'
-        sx={{ color: "white" }}
-      />
-      <TextField
-        id='outlined-basic'
-        label='비밀번호'
-        variant='outlined'
-        color='secondary'
-      />
+      <TextField id="outlined-basic" placeholder="아이디" variant="outlined" color='secondary' sx={{color:'white'}}/>
+      <TextField id="outlined-basic" label="비밀번호" variant="outlined" color='secondary' />
       <LoginBtn>로그인</LoginBtn>
       <MoreBtn>
         <Link to='/login/signup' style={{ textDecoration: "none" }}>

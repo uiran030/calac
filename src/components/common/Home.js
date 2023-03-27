@@ -20,9 +20,8 @@ const Home = () => {
 };
 //style=================================================
 const HomeWrap = styled(Box)({
-  backgroundColor: "#07553B",
-  height: "100vh",
-  // overflow:'hidden',
+  backgroundColor: '#07553B',
+  height: '100vh',
 });
 const MyGrid = styled(Grid)({
   height: "100%",

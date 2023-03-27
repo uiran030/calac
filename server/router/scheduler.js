@@ -77,8 +77,6 @@ router.delete("/delete/:id", (req, res) => {
     }
   });
 });
-//=====================================
-//=====================================
 //==============================================
 router.get("/category", (req, res) => {
   const sqlQuery = "SELECT * FROM category_list";
