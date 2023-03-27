@@ -1,29 +1,39 @@
-import { Button, Paper, Typography } from "@mui/material";
 import React from "react";
+import { Box, Typography, Button } from "@mui/material";
+import RoomIcon from "@mui/icons-material/Room";
 
-export default function MarkerCard({ marker, setSelectedMarker, onClose }) {
+export default function MarkerCard({ marker, setNewEvent, onClose }) {
   return (
-    <Paper
-      elevation={5}
+    <Box
+      display='flex'
+      justifyContent='space-between'
+      alignItems='center'
+      marginBottom={1}
+      padding={1}
+      borderRadius={2}
+      marginRight={0.5}
       sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "5px",
-        margin: "5px",
+        backgroundColor: "rgba( 255, 255, 255, 0.7)",
+        "&:hover": {
+          backgroundColor: "rgba( 255, 255, 255, 1)",
+        },
       }}
     >
-      <Typography>{marker.content}</Typography>
+      <RoomIcon color='primary' onClick={onClose} />
+      <Typography fontSize={12} sx={{ flex: 1 }}>
+        {marker && marker.content && marker.content}
+      </Typography>
       <Button
         size='small'
         variant='contained'
+        sx={{ marginLeft: "10px" }}
         onClick={() => {
-          setSelectedMarker(marker);
+          setNewEvent((prev) => ({ ...prev, locale: marker.content }));
           onClose();
         }}
       >
         선택
       </Button>
-    </Paper>
+    </Box>
   );
 }

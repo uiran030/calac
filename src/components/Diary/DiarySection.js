@@ -7,21 +7,19 @@ import axios from 'axios';
 
 const FeedSection = () => {
   useEffect(()=>{
-    axios.get('http://localhost:5000/ledger')
-    .then(res=>console.log("ledger",res.data))
-    axios.get('http://localhost:5000/scheduler')
-    .then(res=>console.log("scheduler",res.data))
-    axios.get('http://localhost:5000/users')
-    .then(res=>console.log("users",res.data))
     axios.get('http://localhost:5000/dairy')
-    .then(res=>console.log("dairy",res.data))
+    .then(res=>{
+      console.log("dairy",res.data)
+    })
   },[])
   return (
     <MyBox>
-      <MyTypography>Diary</MyTypography>
-      <WriteBox>
-        <WriteDiary/>
-      </WriteBox>
+      <Title>
+        <MyTypography>Diary</MyTypography>
+        <WriteBox>
+          <WriteDiary/>
+        </WriteBox>
+      </Title>
       <DiaryBox>
         <DiaryCard/>
       </DiaryBox>
@@ -33,21 +31,23 @@ const MyBox = styled(Box)({
   height: '100vh',
   margin: '0 auto',
 });
+const Title = styled(Box)({
+  display:'flex',
+  justifyContent:'space-between',
+  alignItems:'center',
+  height:'7%',
+  padding:'0 13vh'
+})
 const MyTypography = styled(Box)({
   fontSize: 30,
-  color: '#07553B',
-  paddingTop: 20,
-  paddingLeft: '13vh',
+  color: '#07553B'
 });
+const WriteBox = styled(Box)({});
 const DiaryBox = styled(Box)({
   margin: '0 auto',
   display: 'flex',
-  flexWrap: 'wrap'
-});
-const WriteBox = styled(Box)({
-  display: 'flex',
-  justifyContent: 'end',
-  paddingRight: '13vh',
+  flexWrap: 'wrap',
+  height:'93%'
 });
 //======================================================
 export default FeedSection;

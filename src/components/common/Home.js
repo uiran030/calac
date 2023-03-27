@@ -20,21 +20,21 @@ const Home = () => {
 };
 //style=================================================
 const HomeWrap = styled(Box)({
-  backgroundColor: '#07553B',
-  height: '100vh',
+  backgroundColor: "#07553B",
+  height: "100vh",
   // overflow:'hidden',
 });
 const MyGrid = styled(Grid)({
-  height: '100%',
-  background: '#07553B',
-  display:'flex',
-  alignItems: 'center'
+  height: "100%",
+  background: "#07553B",
+  display: "flex",
+  alignItems: "center",
 });
 const DashboardGrid = styled(Grid)({
-  background: '#fff',
-  height: '100%',
-  width: '100%',
-  boxSizing: 'border-box',
+  background: "#fff",
+  height: "100%",
+  width: "100%",
+  boxSizing: "border-box",
 });
 //======================================================
 export default Home;

@@ -12,7 +12,7 @@ const DashboardMonthGoal = () => {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:5000/goal')
+    axios.get('http://localhost:5000/dashboard/goal')
     .then((res) => {
       console.log('res', res.data);
       setGoalList(res.data);

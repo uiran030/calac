@@ -6,6 +6,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 
 const BottomLedgerButton = () => {
@@ -145,8 +146,8 @@ const BottomLedgerButton = () => {
               <Tab sx={{padding:'0px'}} label="보험비" value='보험비'/>
               <Tab sx={{padding:'0px'}} label="병원/약국" value='병원/약국'/>
               <Tab sx={{padding:'0px'}} label="간식비" value='간식비'/>
-              <Tab sx={{padding:'0px'}} label="반료묘/견" value='반료묘/견'/>
-              <Tab sx={{padding:'0px'}} label="추가 카테고리" value='추가 카테고리'/>
+              <Tab sx={{padding:'0px'}} label="반려묘/견" value='반려묘/견'/>
+              <Tab sx={{padding:'0px'}} label="+" value='+'/>
             </Tabs>
           </Box>
           <Box sx={{mt:3, textAlign:'right'}}>

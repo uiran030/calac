@@ -13,6 +13,7 @@ export default function KakaoMap({ keyword, setMarkerList }) {
 
   useEffect(() => {
     if (!map) return;
+    if (!keyword) return;
     const ps = new kakao.maps.services.Places();
 
     ps.keywordSearch(keyword, (data, status, _pagination) => {

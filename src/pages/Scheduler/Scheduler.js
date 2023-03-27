@@ -4,7 +4,7 @@ import SchedulerSection from "../../components/Scheduler/SchedulerSection";
 
 const Scheduler = () => {
   return (
-    <Box> 
+    <Box>
       <SchedulerSection />
     </Box>
   );
