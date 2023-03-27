@@ -50,7 +50,7 @@ export default function DemoApp() {
         const alertEvent = response.data; // 추후 filter돌릴 예정
         setAlertEvents(alertEvent);
         // 현재 카테고리와 일치하는 이벤트들만 골라내기.
-        const filterdEvent = response.data.filter(
+        const filterdEvent = alertEvent.filter(
           (event) => event.color === currentCategory
         );
         if (categoryList[0] && currentCategory === categoryList[0].value) {
@@ -683,7 +683,7 @@ export default function DemoApp() {
         />
         {/*========================================================== */}
       </div>
-      <AlertControl alertEvents={alertEvents} />
+      {/* <AlertControl alertEvents={alertEvents} /> */}
     </Box>
   );
 }
