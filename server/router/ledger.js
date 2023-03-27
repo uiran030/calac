@@ -13,8 +13,8 @@ let currentMonth = year+'-'+month;
 //======================================================
 // ledger page의 show data
 router.get('/', (req, res) => {
-  const currentMonthDataQuery = `SELECT ledger_category, SUM(ledger_count) AS sum_count FROM ledger WHERE ledger_createdAt LIKE '${currentMonth}%' GROUP BY ledger_category;`
-  const monthlyCategoryQuery = "SELECT ledger_category, DATE_FORMAT(ledger_createdAt, '%Y-%m') AS current_month, SUM(ledger_count) AS monthly_sum_count FROM ledger GROUP BY current_month, ledger_category ORDER BY current_month ASC;"
+  const currentMonthDataQuery = `SELECT ledger_category, SUM(ledger_count) AS sum_count FROM ledger WHERE ledger_createdAt LIKE '${currentMonth}%' and ledger_type='expense'GROUP BY ledger_category;`
+  const monthlyCategoryQuery = "SELECT ledger_category, DATE_FORMAT(ledger_createdAt, '%Y-%m') AS current_month, SUM(ledger_count) AS monthly_sum_count FROM ledger WHERE ledger_type='expense' GROUP BY current_month, ledger_category ORDER BY current_month ASC;"
   db.query( currentMonthDataQuery + monthlyCategoryQuery, (err, result) => {
     res.send(result);
     console.log('result', result);

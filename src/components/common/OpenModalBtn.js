@@ -69,6 +69,10 @@ const BottomLedgerButton = () => {
     })
   };
   //=================================================================================
+  const addCategory = () => {
+    console.log('click')
+  };
+  //=================================================================================
   const style = {
     position: 'absolute',
     top: '50%',
@@ -81,12 +85,11 @@ const BottomLedgerButton = () => {
     p: 4,
   };
   //=================================================================================
-
   return (
     <BtnWrap>
       <SpeedDial
         ariaLabel="Add count"
-        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+        sx={{ position: 'fixed', bottom: 30, right: 30}}
         icon={<SpeedDialIcon openIcon={<ArrowUpwardIcon />} />}
       >
         {actions.map((action) => (
@@ -147,7 +150,7 @@ const BottomLedgerButton = () => {
               <Tab sx={{padding:'0px'}} label="병원/약국" value='병원/약국'/>
               <Tab sx={{padding:'0px'}} label="간식비" value='간식비'/>
               <Tab sx={{padding:'0px'}} label="반려묘/견" value='반려묘/견'/>
-              <Tab sx={{padding:'0px'}} label="+" value='+'/>
+              <Tab sx={{padding:'0px'}} label="+" value='+' onClick={()=>addCategory()}/>
             </Tabs>
           </Box>
           <Box sx={{mt:3, textAlign:'right'}}>
@@ -161,7 +164,6 @@ const BottomLedgerButton = () => {
               onChange={hadleDescription}
             />
             <FormControl variant="standard" sx={{ mt:3, width:'100px'}}>
-              
               <Input
                 id="money"
                 endAdornment={<InputAdornment position="end">원</InputAdornment>}

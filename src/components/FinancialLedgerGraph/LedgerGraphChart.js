@@ -24,30 +24,16 @@ const LedgerGraphChart = () => {
   }, []);
   console.log('monthlyData', monthlyData);
   //======================================================
-  let categoryDataList = {};
-  monthlyData.map(data =>{
-    const category = data.ledger_category;
-    const date = data.current_month;
-    const sum = data.monthly_sum_count;
-
-    if (categoryDataList[category] == null) {
-      const categoryData = {
-        name : category,
-        data : []
-      };
-      categoryData.data.push({
-        date : date,
-        sum : sum
-      });
-      categoryDataList[category] = categoryData;
+  const result = monthlyData.reduce((a, b) => {
+    const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
+    if (categoryIndex === -1) {
+      a.push({name: b.ledger_category, data: [b.monthly_sum_count]});
     } else {
-      categoryDataList[category].data.push({
-        date : date,
-        sum : sum
-      })
+      a[categoryIndex].data.push(b.monthly_sum_count);
     }
-  });
-  console.log('categoryDataList', categoryDataList);
+    return a;
+  }, []);
+  console.log('result', result);
   //======================================================
   const monthlyState = {
     series : [
@@ -171,7 +157,7 @@ const LedgerGraphChart = () => {
         {tabValue === 'monthly' ? (
           <ApexCharts
             options={monthlyState.options}
-            series={monthlyState.series}
+            series={result}
             typs='line'
             width={'100%'}
             height={'80%'}
