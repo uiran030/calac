@@ -34,7 +34,6 @@ router.post("/insert", (req, res) => {
         locale,
       };
       res.send(newEvent);
-      console.log("과연 아이디를 받아올 수 있을 것인가", result.insertId);
     }
   });
 });
@@ -60,17 +59,13 @@ router.put("/update/:id", (req, res) => {
         color,
         locale,
       };
-      // console.log("result", req);
-      // console.log("req.body", req.body);
       res.send(updatedEvent);
     }
   });
 });
 //==============================================
 router.delete("/delete/:id", (req, res) => {
-  // console.log("함보여줘라!", req.params.id);
   const id = req.params.id;
-  // const deletedEventId = req.body.deletedEventId;
   const sqlQuery = `DELETE FROM event_list WHERE id = ${id};`;
   db.query(sqlQuery, (err, result) => {
     if (err) {
@@ -107,10 +102,6 @@ router.post("/category/insert", (req, res) => {
         label,
       };
       res.send(newCategory);
-      console.log(
-        "과연 카테고리아이디를 받아올 수 있을 것인가",
-        result.insertId
-      );
     }
   });
 });
@@ -129,25 +120,19 @@ router.put("/category/update/:id", (req, res) => {
         value,
         label,
       };
-      // console.log("result", req);
-      // console.log("req.body", req.body);
       res.send(updatedCategory);
     }
   });
 });
 //==============================================
 router.delete("/category/delete/:id", (req, res) => {
-  // console.log("함보여줘라!", req.params.id);
   const id = req.params.id;
-  // const deletedEventId = req.body.deletedEventId;
   const sqlQuery = `DELETE FROM Category_list WHERE id = ${id};`;
   db.query(sqlQuery, (err, result) => {
     if (err) {
       console.log(err);
     } else {
       res.send("success!");
-      // console.log("result", result);
-      // console.log("req.body", req.body);
     }
   });
 });
@@ -155,7 +140,6 @@ router.delete("/category/delete/:id", (req, res) => {
 //=====================================
 
 router.put("/event/color/update/:value", (req, res) => {
-  // const currentEvents = req.body.currentEvents;
   const newvalue = req.body.color;
   const prevalue = req.params.value;
   const sqlQuery = "UPDATE event_list SET color=? WHERE color = ?;";
@@ -171,7 +155,6 @@ router.put("/event/color/update/:value", (req, res) => {
 //====================================
 
 router.delete("/event/color/delete/:value", (req, res) => {
-  // const currentEvents = req.body.currentEvents;
   const prevalue = req.params.value;
   const sqlQuery = `DELETE FROM event_list WHERE color = ?;`;
   db.query(sqlQuery, [prevalue], (err, result) => {
@@ -182,22 +165,5 @@ router.delete("/event/color/delete/:value", (req, res) => {
     }
   });
 });
-
-//====================================
-// router.delete("/delete/:id", (req, res) => {
-//   // console.log("함보여줘라!", req.params.id);
-//   const id = req.params.id;
-//   // const deletedEventId = req.body.deletedEventId;
-//   const sqlQuery = `DELETE FROM event_list WHERE id = ${id};`;
-//   db.query(sqlQuery, (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       res.send("success!");
-//       console.log("result", result);
-//       console.log("req.body", req.body);
-//     }
-//   });
-// });
 
 module.exports = router;

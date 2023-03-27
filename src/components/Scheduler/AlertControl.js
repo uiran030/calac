@@ -8,16 +8,13 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import OutputIcon from "@mui/icons-material/Output";
-import { transition } from "d3";
-import { Translate } from "@mui/icons-material";
 
-export default function AlertModal({ alertEvents }) {
+export default function AlertControl({ alertEvents }) {
   const actions = [
     { icon: <AlarmIcon />, name: "알림", value: "alert" },
     { icon: <QuestionMarkIcon />, name: "도움말", value: "help" },
@@ -105,6 +102,15 @@ export default function AlertModal({ alertEvents }) {
             />
           </Box>
         ))}
+        <Box>
+          <Typography>
+            추후 카카오 알림톡 API와 연계하여, 알림서비스를 구현할 공간입니다.
+          </Typography>
+          <Typography>
+            현재는 전체 일정 목록은 출력하고 있으며 스위치 동작시 이벤트는
+            발생하지 않습니다.
+          </Typography>
+        </Box>
       </Box>
       <SpeedDial
         ariaLabel='Add count'
