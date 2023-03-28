@@ -6,6 +6,7 @@ import Weather from '../Dashboard/Weather';
 const DashboardTopStateBar = () => {
   const pathname = window.location.pathname;
   console.log('pathname', pathname);
+  //======================================================
   return (
     <TopStateBarWrap>
       { pathname === '/' && (
@@ -39,13 +40,13 @@ const DashboardTopStateBar = () => {
 const TopStateBarWrap = styled(Box)({
   height:'110px',
   borderBottom:'1px solid #ddd',
-  padding:'0 20px'
+  padding:'0 20px',
 });
 const CommonTopState = styled(Box)({
   display:'flex',
   justifyContent:'space-between',
   alignItems:'center', 
-  height:'100%'
+  height:'100%',
 })
 const GoalCount = styled('span')({
   fontSize:'14px',

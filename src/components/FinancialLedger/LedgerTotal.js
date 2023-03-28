@@ -1,31 +1,35 @@
 import React, {useState, useEffect} from 'react';
-import { Box, ToggleButtonGroup, ToggleButton, Typography, ListItem, ListItemText } from '@mui/material';
+import { Box, ToggleButtonGroup, ToggleButton, Typography, ListItem, ListItemText, IconButton } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import OpenModalBtn from '../common/OpenModalBtn';
 import axios from 'axios';
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import EditIcon from '@mui/icons-material/Edit';
 
 const LedgerTotal = () => {
   const [tabValue, setTabValue] = useState('expense');
-  // const [monthlyTotal, setMonthlyTotal] = useState([]);
   const [expenseList, setExpenseList] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
-  const [totalIncome, setTotalIncome] = useState(false);
-  const [totalExpense, setTotalExpense] = useState(false);
+  const [totalIncome, setTotalIncome] = useState('');
+  const [totalExpense, setTotalExpense] = useState('');
   //======================================================
   const handleTabValue = (event, value) => { 
     if (value !== null ) { setTabValue(value); }
   };
+  const CHANGE_INCOME = totalIncome.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  const CHANGE_EXPENSE = totalExpense.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   //======================================================
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/total')
     .then((res) => {
-      console.log('res', res.data);
+      console.log('resTotal', res.data);
+      setTotalExpense(res.data[0][0]['sum_count'])
+      setTotalIncome(res.data[0][1]['sum_count'])
       setExpenseList(res.data[1])
       setIncomeList(res.data[2])
-      setTotalIncome(res.data[0][0]['sum_count'])
-      setTotalExpense(res.data[0][1]['sum_count'])
     })
   }, []);
+  console.log('totalIncome', totalIncome);
   //======================================================
   return (
   <AddInfoArea>
@@ -45,23 +49,30 @@ const LedgerTotal = () => {
         </ToggleButton>
       </ToggleButtonGroup>
     </UpperText>
-    { tabValue === 'income' ? 
+    { tabValue === 'expense' ? 
       (
         <TabBox>
           <ShowTotal>
-            <TotalText>수입 전액</TotalText>
+            <TotalText>지출 전액</TotalText>
             <TotalCount>
-              {totalExpense}
+              {CHANGE_EXPENSE}
             </TotalCount>
           </ShowTotal>
           <ShowRecent>
             {
-              incomeList && incomeList.map((list) => {
+              expenseList && expenseList.map((list) => {
                 return(
                   <RecentList>
                     <ListItemText
                       key={list.ledger_no}
-                      primary={list.ledger_description}
+                      primary={
+                        <Box>
+                          {list.ledger_description}
+                          <CategoryText>
+                            {list.ledger_category}
+                          </CategoryText>
+                        </Box>
+                      }
                       secondary={
                         <Box>
                           <RecentPrice
@@ -84,32 +95,47 @@ const LedgerTotal = () => {
       (
         <TabBox>
           <ShowTotal>
-            <TotalText>지출 전액</TotalText>
+            <TotalText>수입 전액</TotalText>
             <TotalCount>
-              {totalIncome}
+              {CHANGE_INCOME}
             </TotalCount>
           </ShowTotal>
           <ShowRecent>
             {
-              expenseList && expenseList.map((list) => {
+              incomeList && incomeList.map((list) => {
                 return(
-                    <RecentList>
-                      <ListItemText
-                        key={list.ledger_no}
-                        primary={list.ledger_description}
-                        secondary={
-                          <Box>
-                            <RecentPrice
-                              component="span"
-                              variant="body2"
-                              color="text.primary"
-                            >
-                              {list.ledger_count}
-                            </RecentPrice>
-                          </Box>
-                        }
-                      />
-                    </RecentList>
+                  <RecentList>
+                    <ListItemText
+                      key={list.ledger_no}
+                      primary={
+                        <Box>
+                          {list.ledger_description}
+                          <CategoryText>
+                            {list.ledger_category}
+                          </CategoryText>
+                        </Box>
+                      }
+                      secondary={
+                        <Box>
+                          <RecentPrice
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            {list.ledger_count}
+                          </RecentPrice>
+                          {/* <Box>
+                            <IconButton aria-label="edit" size="small">
+                              <EditIcon fontSize="small"/>
+                            </IconButton>
+                            <IconButton aria-label="delete" size="small">
+                              <DeleteIcon fontSize="small"/>
+                            </IconButton>
+                          </Box> */}
+                        </Box>
+                      }
+                    />
+                  </RecentList>
                 )
               })
             }
@@ -124,7 +150,8 @@ const LedgerTotal = () => {
 
 //style=================================================
 const AddInfoArea = styled(Box)({
-  borderLeft:'1px solid #ddd',
+  // borderLeft:'1px solid #ddd',
+  border:'1px solid #ddd',
   width:'30%',
   padding:'20px',
   position:'relative'
@@ -132,7 +159,7 @@ const AddInfoArea = styled(Box)({
 const UpperText = styled(Box)({
   display:'flex',
   justifyContent:'space-around',
-  height:'15%',
+  height:'15%'
 });
 const TabBox = styled(Box)({
   height:'85%'
@@ -143,18 +170,17 @@ const ShowTotal = styled(Box)({
   flexDirection:'column',
   justifyContent:'center',
   textAlign:'right',
-  borderBottom:'1px solid #ddd'
+  borderBottom:'1px solid #ddd',
 });
-const TotalText = styled('h3')({
-  fontSize:'20px',
-  marginBottom:'10px'
+const TotalText = styled(Typography)({
+  fontSize:'14px'
 });
 const TotalCount = styled(Typography)({
-  fontSize:'30px'
+  fontSize:'25px'
 });
 const ShowRecent = styled(Box)({
   height:'75%',
-  padding:'20px',
+  padding:'10px',
   display:'flex',
   flexDirection:'column',
   justifyContent:'flex-start'
@@ -162,9 +188,20 @@ const ShowRecent = styled(Box)({
 const RecentList = styled(ListItem)({
   textAlign:'right',
   padding:0,
-  height:'33.3333%',
+  height:'33.3333%'
 });
-const RecentPrice = styled(Typography)({
+// const ListItemSecondary = styled(Box)({
+//   display:'flex',
+//   alignItems:'flex-end',
+//   justifyContent:'flex-end',
+//   flexDirection:'column'
+// })
+const CategoryText = styled('span')({
+  fontSize:'10px',
+  color:'#7d7d7d',
+  marginLeft:'10px'
+});
+const RecentPrice = styled('p')({
   fontSize:'20px'
 });
 //======================================================
