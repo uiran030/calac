@@ -21,3 +21,5 @@ router.get('/goal', (req, res) => {
     console.log('result', result);
   })
 });
+
+module.exports = router;

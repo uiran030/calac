@@ -1,11 +1,12 @@
 import React,{useState} from 'react'
 import "../../assets/css/App.css";
 import { styled } from "@mui/material/styles";
-import { Box, Button, Modal, Fade, Typography, Backdrop, Divider, TextField } from "@mui/material";
+import { Box, Button, Modal, Fade, Typography, Backdrop, Divider, TextField, Hidden } from "@mui/material";
 import CreateIcon from '@mui/icons-material/Create';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
+import DiaryCard from './DiaryCard';
 
 const WriteDiary = () => {
   const [open, setOpen] = useState(false);
@@ -91,7 +92,6 @@ const WriteDiary = () => {
     }
   }
   //======================================================
-
   return (
     <Box>
       <Button 

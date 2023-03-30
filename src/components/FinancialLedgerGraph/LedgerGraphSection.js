@@ -1,20 +1,25 @@
 import React from 'react';
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import TopBar from '../common/TopBar';
+import LedgerMonthlyGraph from './LedgerMonthlyGraph';
 import LedgerGraphChart from './LedgerGraphChart';
+import LedgerYearlyGraph from './LedgerYearlyGraph';
 
 const LedgerGraphSection = () => {
   return (
     <LedgerGraphWrap>
-      <TopBar />
-      <LedgerGraphChart/>
+      {/* <LedgerGraphChart/> */}
+      <LedgerMonthlyGraph/>
+      {/* <LedgerYearlyGraph/> */}
     </LedgerGraphWrap>
   );
 };
 //style=================================================
 const LedgerGraphWrap = styled(Box)({
-  height:'100vh'
+  display:'flex',
+  width:'100%',
+  border:'1px solid black',
+  justifyContent:'space-between'
 })
 //======================================================
 export default LedgerGraphSection;

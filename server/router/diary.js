@@ -15,15 +15,23 @@ router.get('/',(req,res) => {
   const offset = req.query.offset;
   let selectQuery = '';
   if(limit !== undefined || offset !== undefined) {
-    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset}`;
+    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
   } else {
-    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC`;
+    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC;`;
   }
   db.query(selectQuery, (err, result) => {
     if(err) console.log("err",err);
     else {res.send(result)}
   })
 });
+//==============================================
+router.get('/count',(req,res)=>{
+  const countQuery = 'SELECT COUNT(*) FROM diary;'
+  db.query(countQuery, (err, result) => {
+    if(err) console.log("err",err);
+    else {res.send(result)}
+  })
+})
 //==============================================
 
 router.post('/insert',(req,res) => {

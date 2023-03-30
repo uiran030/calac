@@ -1,21 +1,20 @@
-import React from 'react';
-import { Box, Input,TextField, Button } from "@mui/material";
+import React from "react";
+import { Box, Input, TextField, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Link } from 'react-router-dom';
-import { BorderRight } from '@mui/icons-material';
+import { Link } from "react-router-dom";
 
-const ariaLabel = { 'aria-label': 'description' };
+const ariaLabel = { "aria-label": "description" };
 
 const LoginInputBox = () => {
   return (
     <InputBoxWrap
-      component="form"
+      component='form'
       noValidate
-      autoComplete="off"
-      sx={{color:'secondary'}}
+      autoComplete='off'
+      sx={{ color: "secondary" }}
     >
-      <LoginTextField id="outlined-basic" variant="outlined" color='secondary' />
-      <LoginTextField id="outlined-basic" variant="outlined" color='secondary' />
+      <TextField id="outlined-basic" placeholder="아이디" variant="outlined" color='secondary' sx={{color:'white'}}/>
+      <TextField id="outlined-basic" label="비밀번호" variant="outlined" color='secondary' />
       <LoginBtn>로그인</LoginBtn>
       <MoreBtn>
         <Link to='/login/signup' style={{ textDecoration: "none" }}>
@@ -35,25 +34,20 @@ const LoginInputBox = () => {
 
 //style=================================================
 const InputBoxWrap = styled(Box)({
-  display:'flex',
-  flexDirection:'column',
-  justifyContent:'center',
-  alignItems:'center',
-  height:'100%',
-  width:'100%',
-  color:'white'
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "100%",
+  width: "100%",
+  color: "white",
 });
 const LoginBtn = styled(Button)({
-  background:'white',
-  marginTop:'40px'
+  background: "white",
+  marginTop: "40px",
 });
 const MoreBtn = styled(Button)({
-  marginTop:'20px'
-});
-const LoginTextField = styled(TextField)({
-  marginBottom: 14,
-  border: '1px solid #fff',
-  borderRadius: 4,
+  marginTop: "20px",
 });
 //======================================================
 export default LoginInputBox;
