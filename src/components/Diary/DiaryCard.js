@@ -18,6 +18,7 @@ const DiaryCard = () => {
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState([]);
+  const [isModifyOpen, setIsModifyOpen] = useState(false);
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
@@ -41,7 +42,7 @@ const DiaryCard = () => {
   },[commentCnt])
   //======================================================
   let offset = 0;
-  const loaddiary = () => {
+  const loadDiary = () => {
     axios.get(`http://localhost:5000/diary?limit=10&offset=${offset}`)
     .then(res=>{
       setPosts(oldPosts => [...oldPosts, ...res.data]);
@@ -51,12 +52,12 @@ const DiaryCard = () => {
   //======================================================
   const handleScroll = (e) => {
     if (window.innerHeight + document.getElementById("postList").scrollTop + 1 >= document.getElementById("postList").scrollHeight) {
-        loaddiary();
-      }
+      loadDiary();
     }
+  }
   //======================================================
   useEffect(()=>{
-    loaddiary();
+    loadDiary();
     let listRange = document.getElementById("postList");
     listRange.addEventListener("scroll", handleScroll);
   },[])
@@ -77,6 +78,8 @@ const DiaryCard = () => {
                         <DiaryMoreButton 
                           posts={posts} 
                           id={list.diary_no}
+                          isModifyOpen={isModifyOpen}
+                          setIsModifyOpen={setIsModifyOpen}
                         />
                       )
                     )}

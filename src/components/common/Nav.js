@@ -100,7 +100,7 @@ const Nav = () => {
             <Link to='/diary'>
               <CommonListItem
                 onClick={() => {
-                  setBtnActive("feed");
+                  setBtnActive("diary");
                 }}
               >
                 <TitleColor
