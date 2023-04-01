@@ -3,8 +3,9 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles"; 
 import TopBar from '../common/TopBar';
 import LedgerDonut from './LedgerDonut';
-import LedgerTotal from './LedgerTotal';
+import LedgerTopThree from './LedgerTopThree';
 import LedgerGraphSection from '../FinancialLedgerGraph/LedgerGraphSection';
+import OpenModalBtn from '../common/OpenModalBtn';
 
 const FinancialLedger = () => {
   return (
@@ -15,12 +16,13 @@ const FinancialLedger = () => {
       <LedgerWrapBox>
         <LedgerBox>
           <LedgerDonut/>
-          <LedgerTotal/>
+          <LedgerTopThree/>
         </LedgerBox>
         <LedgerBox>
           <LedgerGraphSection/>
         </LedgerBox>
       </LedgerWrapBox>
+    <OpenModalBtn />
     </LedgerWrap>
   );
 };
