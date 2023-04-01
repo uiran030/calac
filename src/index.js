@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -10,11 +11,10 @@ import FinancialLedger from "./pages/FinancialLedger/FinancialLedger";
 import FindIdPw from "./pages/User/FindIdPw";
 import Scheduler from "./pages/Scheduler/Scheduler";
 import SignUp from "./pages/User/SignUp";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/User/Login";
 import Setting from "./pages/Setting/Setting";
 import ProtectedRoute from "./pages/ProtectedRoute";
-import LedgerGraphSection from "./pages/FinancialLedgerGraph/FinancialLedgerGraph";
+import LedgerTotalSection from "./pages/FinancialLedgerTotal/FinancialLedgerTotal.js";
 
 const router = createBrowserRouter([
   {
@@ -35,8 +35,8 @@ const router = createBrowserRouter([
         element: <FinancialLedger />,
       },
       {
-        path: "/financialledger/graph",
-        element: <LedgerGraphSection />,
+        path: "/financialledger/total",
+        element: <LedgerTotalSection />,
       },
       {
         path: "/login/findidpw",

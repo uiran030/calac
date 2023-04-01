@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import Weather from '../Dashboard/Weather';
+import { Link } from "react-router-dom";
 
 const DashboardTopStateBar = () => {
   const pathname = window.location.pathname;
@@ -31,6 +32,19 @@ const DashboardTopStateBar = () => {
             <Text>이번달 지출 목표 금액</Text>
             <Text>1,000,000원 <GoalCount>(+258,020)</GoalCount></Text>
           </Box>
+          {!pathname.includes('total') ? (
+            <Box>
+              <Link to="/financialledger/total">
+                내역 전체보기
+              </Link>
+            </Box>
+          ) : (
+            <Box>
+              <Link to="/financialledger">
+                이전 페이지로
+              </Link>
+            </Box>
+          )}
         </CommonTopState>
       )}
     </TopStateBarWrap>

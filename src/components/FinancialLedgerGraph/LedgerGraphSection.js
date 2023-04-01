@@ -1,16 +1,16 @@
 import React from 'react';
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import LedgerTotalGraph from './LedgerTotalGraph';
+import LedgerGoalGraph from './LedgerGoalGraph';
 import LedgerMonthlyGraph from './LedgerMonthlyGraph';
-import LedgerGraphChart from './LedgerGraphChart';
-import LedgerYearlyGraph from './LedgerYearlyGraph';
 
 const LedgerGraphSection = () => {
   return (
     <LedgerGraphWrap>
-      {/* <LedgerGraphChart/> */}
+      <LedgerGoalGraph/>
+      <LedgerTotalGraph/>
       <LedgerMonthlyGraph/>
-      {/* <LedgerYearlyGraph/> */}
     </LedgerGraphWrap>
   );
 };
@@ -18,8 +18,8 @@ const LedgerGraphSection = () => {
 const LedgerGraphWrap = styled(Box)({
   display:'flex',
   width:'100%',
-  border:'1px solid black',
-  justifyContent:'space-between'
+  justifyContent:'space-between',
+  height:'350px'
 })
 //======================================================
 export default LedgerGraphSection;

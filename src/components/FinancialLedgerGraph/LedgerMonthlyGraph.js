@@ -10,12 +10,11 @@ const LedgerGraphChart = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger')
     .then((res) => {
-      console.log(res.data)
-      setMonthlyData(res.data[1]);
+      // console.log(res.data)
+      setMonthlyData(res.data);
     })
   }, []);
-  console.log('monthlyData', monthlyData);
-
+  // console.log('monthlyData', monthlyData);
   //======================================================
   const result = monthlyData.reduce((a, b) => {
     const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
@@ -26,7 +25,7 @@ const LedgerGraphChart = () => {
     }
     return a;
   }, []);
-  console.log('result', result);
+  // console.log('result', result);
   //======================================================
   let today = new Date();
   let year = today.getFullYear();
@@ -66,32 +65,21 @@ const LedgerGraphChart = () => {
   //======================================================
   return (
     <ChartWrap>
-      {/* <ChartBox> */}
-        <ApexCharts
-          options={monthlyState.options}
-          series={result}
-          typs='line'
-          width={'100%'}
-          height={'100%'}
-        />
-      {/* </ChartBox> */}
+      <ApexCharts
+        options={monthlyState.options}
+        series={result}
+        typs='line'
+        width={'100%'}
+        height={'100%'}
+      />
     </ChartWrap>
   );
 };
 //style=================================================
 const ChartWrap = styled(Box)({
-  position:'relative',
-  width:'45%',
-  height:'400px',
-  border:'1px solid red'
-});
-const ChartBox = styled(Box)({
-  width: '90%', 
-  height: '90%', 
-  margin: '0 auto',
-  display:'flex',
-  flexDirection:'column',
-  justifyContent:'center'
+  width:'35%',
+  border:'1px solid #ddd',
+  padding:'10px',
 });
 //======================================================
 export default LedgerGraphChart;
