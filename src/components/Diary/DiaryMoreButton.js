@@ -14,8 +14,8 @@ const DiaryMoreButton = (posts,id) => {
   //======================================================
   const onModify = (id) => {
     console.log("id",id)
-    setIsModifyOpen(true)
-  }
+    setIsModifyOpen(true);
+  };
   //======================================================
   const onDelete = (id) => {
     if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
