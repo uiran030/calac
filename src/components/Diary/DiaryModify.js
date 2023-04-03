@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import { Box, Typography, Button, Divider, TextField, Dialog, DialogTitle, DialogContent, Avatar} from "@mui/material";
 import axios from 'axios';
 
+
 const DiaryModify = ({isModifyOpen,setIsModifyOpen,id,posts}) => {
   //======================================================
   console.log("1",isModifyOpen)
@@ -79,5 +80,4 @@ const ContentBox = styled(Box)({
 const DetailDivider = styled(Divider)({
 });
 //======================================================
-
 export default DiaryModify

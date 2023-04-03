@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react'
 import { styled } from "@mui/material/styles";
-import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, Modal, Fade, Typography, Backdrop, Divider, TextField, Hidden } from "@mui/material";
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, Modal, Fade, Typography, Backdrop, Divider, TextField, Hidden} from "@mui/material";
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import axios from 'axios';
@@ -15,6 +15,19 @@ const DiaryMoreButton = (posts,id) => {
   const onModify = (id) => {
     console.log("id",id)
     setIsModifyOpen(true);
+    console.log("123")
+  };
+  //======================================================
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = (id) => {
+    console.log(id)
+    if(window.confirm(`게시글을 수정하시겠습니까??`) === true){
+      setOpen(true);
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
   //======================================================
   const onDelete = (id) => {
@@ -35,7 +48,7 @@ const DiaryMoreButton = (posts,id) => {
     <TabBox>
       <List>
         <ListItem disablePadding >
-          <ListItemButtonIcon onClick={()=>onModify(posts.id)}> 
+          <ListItemButtonIcon onClick={()=>handleClickOpen(posts.id)}> 
             <AutoFixNormalIcon />
             <ListItemText primary="modify"/>
           </ListItemButtonIcon>
@@ -47,57 +60,51 @@ const DiaryMoreButton = (posts,id) => {
           </ListItemButtonIcon>
         </ListItem>
       </List>
+
       <Modal
+        open={open}
+        onClose={handleClose}
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={isModifyOpen}
-        onClose={()=>setIsModifyOpen(!isModifyOpen)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
       >
-        <Fade in={isModifyOpen}>
-          <ModalBox>
-            <TitleTypography>Write Diary</TitleTypography>
-            <Divider/>
-            <TitleBox>
-              <TextField
-                id="standard success" 
-                color="success"
-                variant="standard" 
-                fullWidth 
-                label="제목" 
-                multiline 
-                name="title"
-              />
-            </TitleBox>
+        <ModalBox>
+          <TitleTypography>Write Diary</TitleTypography>
+          <Divider/>
+          <TitleBox>
+            <TextField
+              id="standard success" 
+              color="success"
+              variant="standard" 
+              fullWidth 
+              label="제목" 
+              multiline 
+              name="title"
+            />
+          </TitleBox>
 
-            <EditorBox>
-              <CKEditor
-                style={{paddingTop:'20px'}}
-                editor={ClassicEditor}
-                config={{
-                  placeholder: "내용을 입력하세요 :)",
-                }}
-                onReady={editor=>{
-                  // console.log('Editor is ready to use!', editor);
-                }}
-                onBlur={(event, editor) => {
-                    // console.log('Blur.', editor);
-                }}
-                onFocus={(event, editor) => {
-                    // console.log('Focus.', editor);
-                }}
-              />
-            </EditorBox>
+          <EditorBox>
+            <CKEditor
+              style={{paddingTop:'20px'}}
+              editor={ClassicEditor}
+              config={{
+                placeholder: "내용을 입력하세요 :)",
+              }}
+              onReady={editor=>{
+                // console.log('Editor is ready to use!', editor);
+              }}
+              onBlur={(event, editor) => {
+                  // console.log('Blur.', editor);
+              }}
+              onFocus={(event, editor) => {
+                  // console.log('Focus.', editor);
+              }}
+            />
+          </EditorBox>
 
-            <BtnBox>
-              <SubmitButton fullWidth variant="outlined">Submit</SubmitButton>
-            </BtnBox>
-          </ModalBox>
-        </Fade>
+          <BtnBox>
+            <SubmitButton fullWidth variant="outlined">Submit</SubmitButton>
+          </BtnBox>
+        </ModalBox>
       </Modal>
     </TabBox>
   )
@@ -144,5 +151,4 @@ const SubmitButton = styled(Button)({
   "&:hover":{backgroundColor: '#07553B', color: '#fff'}
 });
 //======================================================
-
 export default DiaryMoreButton
