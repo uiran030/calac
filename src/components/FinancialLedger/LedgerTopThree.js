@@ -67,11 +67,11 @@ const LedgerTopThree = () => {
             </TotalCount>
         </ShowTotal>
         <ShowRecent>
-          { recentThreeList && recentThreeList.map((list) => {
+          { recentThreeList && recentThreeList.map((list, index) => {
             return(
               <RecentList>
                 <ListItemText
-                  key={list.ledger_no}
+                  key={index}
                   primary={
                     <Box>
                       {list.ledger_description}

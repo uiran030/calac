@@ -52,9 +52,6 @@ const LedgerGoalGraph = () => {
     })
   }, []);
   //======================================================
-  //test
-  // console.log('change_money', change_money)
-  //======================================================
   const change_money = money.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   const goalPercent = Math.round(totalCountData/money*100);
   //======================================================
