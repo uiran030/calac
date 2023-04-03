@@ -1,19 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, ButtonGroup,ToggleButtonGroup,ToggleButton, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup,ToggleButtonGroup, ToggleButton, Typography, Modal } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 
 const LedgerTotalList = () => {
   const [tabValue, setTabValue] = useState('expense');
   const [monthlyData, setMonthlyData] = useState([]);
+  const [open, setOpen] = useState(false);
   //======================================================
   let type = 'expense';
   const handleTabValue = (event, value) => { 
     if (value !== null ) { setTabValue(value); }
   };
   type = tabValue;
+  //======================================================
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+  //======================================================
+  // 모달창 닫기
+  const handleClose = () => setOpen(false);
   //======================================================
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger?type=${type}`)
@@ -29,6 +46,11 @@ const LedgerTotalList = () => {
     } else {
       alert('취소하셨습니다.')
     }
+  }
+  //=====================================================
+  const handleEdit = () => {
+    console.log('click')
+    setOpen(true)
   }
   //=====================================================
   return (
@@ -74,7 +96,7 @@ const LedgerTotalList = () => {
                 {/* {(data.ledger_createdAt).toString()}  시간 잘못 보이는것 수정해야함*/}
               </Typography>
               <Box sx={{width:'15%', display:'flex'}}>
-                <Button sx={{width:'50%'}}><EditIcon/></Button>
+                <Button sx={{width:'50%'}}><EditIcon onClick={()=>handleEdit()}/></Button>
                 <Button 
                   sx={{width:'50%'}}
                   onClick={()=>handleDelete(data.ledger_no)}
@@ -87,6 +109,18 @@ const LedgerTotalList = () => {
         </ListTableWrap>
       </ListBox>
       
+      
+      {/* modal */}
+      <Modal
+        open={open}
+        onClose={handleClose}
+      >
+        <Box sx={style}>
+          <ModalTitle>
+            <CloseIcon onClick={() => setOpen(false)}/>
+          </ModalTitle>
+        </Box>
+      </Modal>
     </LedgerTotalWrap>
   );
 };
@@ -117,6 +151,12 @@ const ListTableBox = styled(Box)({
   display:'flex',
   alignItems:'center',
   height:'70px',
+});
+const ModalTitle = styled(Box)({
+  display:'flex',
+  justifyContent:'space-between',
+  alignItems:'center',
+  marginBottom:'20px'
 });
 //======================================================
 export default LedgerTotalList;

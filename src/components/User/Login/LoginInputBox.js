@@ -1,33 +1,67 @@
 import React from "react";
-import { Box, Input, TextField, Button } from "@mui/material";
+import { Box, Input, TextField, Button, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, ButtonGroup } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const ariaLabel = { "aria-label": "description" };
 
 const LoginInputBox = () => {
+  
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
-    <InputBoxWrap
-      component='form'
-      noValidate
-      autoComplete='off'
-      sx={{ color: "secondary" }}
-    >
-      <TextField id="outlined-basic" placeholder="아이디" variant="outlined" color='secondary' sx={{color:'white'}}/>
-      <TextField id="outlined-basic" label="비밀번호" variant="outlined" color='secondary' />
-      <LoginBtn>로그인</LoginBtn>
-      <MoreBtn>
-        <Link to='/login/signup' style={{ textDecoration: "none" }}>
-          <Button variant='outlined' color='secondary'>
-            회원가입
-          </Button>
-        </Link>
-        <Link to='/login/findidpw' style={{ textDecoration: "none" }}>
-          <Button variant='outlined' color='secondary'>
-            ID / PW 찾기
-          </Button>
-        </Link>
-      </MoreBtn>
+    <InputBoxWrap>
+      <InputInner>
+        <Box>
+          <TextField id="outlined-basic" label="아이디" variant="outlined" sx={{width:'100%'}}/>
+          <FormControl sx={{ width: '100%', mt : 2 }} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">비밀번호</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+            />
+          </FormControl>
+        </Box>
+        <BtnWrap>
+        <Button variant="contained">로그인</Button>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              '& > *': {
+                m: 1,
+              },
+            }}
+          >
+            <ButtonGroup variant="text" aria-label="text button group">
+              <Link to='/login/signup'><Button>회원가입</Button></Link>
+              <Link to='/login/findidpw'><Button>ID / PW 찾기</Button></Link>
+            </ButtonGroup>
+          </Box>
+        </BtnWrap>
+      </InputInner>
     </InputBoxWrap>
   );
 };
@@ -40,14 +74,17 @@ const InputBoxWrap = styled(Box)({
   alignItems: "center",
   height: "100%",
   width: "100%",
-  color: "white",
 });
-const LoginBtn = styled(Button)({
-  background: "white",
-  marginTop: "40px",
+const InputInner = styled(Box)({
+  width:'30%',
+  height:'30%',
+  display:'flex',
+  flexDirection:'column',
+  justifyContent:'space-between'
 });
-const MoreBtn = styled(Button)({
-  marginTop: "20px",
+const BtnWrap = styled(Box)({
+  display:'flex',
+  flexDirection:'column'
 });
 //======================================================
 export default LoginInputBox;
