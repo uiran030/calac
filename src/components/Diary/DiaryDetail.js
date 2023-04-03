@@ -89,10 +89,13 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
       >
         <DialogBox>
           <TitleBox>
-            <Avatar alt="Remy Sharp" src="/images/avatar.png">
-              <UserTypography>{id}</UserTypography>
-            </Avatar>
-            <DialogTitle>{title}</DialogTitle>
+            <TitleSmallBox>
+              <Avatar alt="Remy Sharp" src="/images/avatar.png">
+                <UserTypography>{id}</UserTypography>
+              </Avatar>
+              <DialogTitle>{title}</DialogTitle>
+            </TitleSmallBox>
+            <UpdateBox><Button>수정</Button></UpdateBox>
           </TitleBox>
           <DateTypography>{createdAt}</DateTypography>
           <MyDialogContent dividers>
@@ -162,11 +165,18 @@ const DialogBox = styled(Box)({
 const TitleBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'space-between',
   padding: '15px 15px 0',
+})
+const TitleSmallBox = styled(Box)({
+  display:'flex',
+  alignItems:'center',
 })
 const UserTypography = styled(Typography)({
   padding: 0,
   marginLeft: 13,
+})
+const UpdateBox = styled(Box)({
 })
 const DateTypography = styled(Typography)({
   fontSize: 15,
