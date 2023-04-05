@@ -8,7 +8,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
 import Diary from "./pages/Diary/Diary";
 import FinancialLedger from "./pages/FinancialLedger/FinancialLedger";
-import FindIdPw from "./pages/User/FindIdPw";
+import FindId from "./pages/User/FindIdPw";
+import FindPw from "./pages/User/FindIdPw";
 import Scheduler from "./pages/Scheduler/Scheduler";
 import SignUp from "./pages/User/SignUp";
 import Login from "./pages/User/Login";
@@ -39,8 +40,12 @@ const router = createBrowserRouter([
         element: <LedgerTotalSection />,
       },
       {
-        path: "/login/findidpw",
-        element: <FindIdPw />,
+        path: "/login/findid",
+        element: <FindId />,
+      },
+      {
+        path: "/login/findpw",
+        element: <FindPw />,
       },
       {
         path: "/login",
