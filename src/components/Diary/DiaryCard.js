@@ -18,7 +18,6 @@ const DiaryCard = () => {
   const [createdAt, setCreatedAt] = useState('');
   const [posts, setPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState([]);
-  const [isModifyOpen, setIsModifyOpen] = useState(false);
   //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
@@ -78,8 +77,8 @@ const DiaryCard = () => {
                         <DiaryMoreButton 
                           posts={posts} 
                           id={list.diary_no}
-                          isModifyOpen={isModifyOpen}
-                          setIsModifyOpen={setIsModifyOpen}
+                          openMoreButton={openMoreButton}
+                          setOpenMoreButton={setOpenMoreButton}
                         />
                       )
                     )}

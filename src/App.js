@@ -1,16 +1,12 @@
 import "./assets/css/App.css";
 import Home from "./components/common/Home";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import {Provider} from 'react-redux';
-import store from './redux/store';
 
 function App() {
   return (
-    <Provider store={store}>
       <ThemeProvider theme={theme}>
         <Home />
       </ThemeProvider>
-    </Provider>
   );
 }
 

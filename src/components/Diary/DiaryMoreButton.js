@@ -8,21 +8,13 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import DiaryModify from './DiaryModify';
 
-const DiaryMoreButton = (posts,id) => {
-  //======================================================
-  const [isModifyOpen, setIsModifyOpen] = useState(false);
-  //======================================================
-  const onModify = (id) => {
-    console.log("id",id)
-    setIsModifyOpen(true);
-    console.log("123")
-  };
+const DiaryMoreButton = (posts,id,openMoreButton,setOpenMoreButton) => {
   //======================================================
   const [open, setOpen] = useState(false);
   const handleClickOpen = (id) => {
     console.log(id)
     if(window.confirm(`게시글을 수정하시겠습니까??`) === true){
-      setOpen(true);
+      setOpen(open);
     }
   };
 
@@ -42,6 +34,7 @@ const DiaryMoreButton = (posts,id) => {
   }
   //======================================================
   useEffect(()=>{
+    console.log(open)
   },[])
   //======================================================
   return (
@@ -61,6 +54,9 @@ const DiaryMoreButton = (posts,id) => {
         </ListItem>
       </List>
 
+      {open && (
+
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -106,6 +102,7 @@ const DiaryMoreButton = (posts,id) => {
           </BtnBox>
         </ModalBox>
       </Modal>
+      )}
     </TabBox>
   )
 };
