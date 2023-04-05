@@ -1,1 +1,0 @@
-export {modalOpen, modalClose} from './modlaOnOff/action'
