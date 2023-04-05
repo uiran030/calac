@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, Button, TextField, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from "@mui/material";
+import { Box, Button, TextField, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import SignUpBox from './SignUpBox';
 import { style } from 'd3';
@@ -22,8 +22,8 @@ const SignUpSection = () => {
         <InnerInput id="outlined-basic" label="비밀번호" variant="outlined"/>
         <InnerInput id="outlined-basic" label="이름" variant="outlined"/>
         <InnerInput id="outlined-basic" label="생년월일" variant="outlined"/>
-        <FormControl sx={{width:'40%'}}>
-          <FormLabel id="demo-row-radio-buttons-group-label">성별</FormLabel>
+        <RadioBox>
+          <Typography sx={{width:'20%'}}>성별</Typography>
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -34,9 +34,9 @@ const SignUpSection = () => {
             <FormControlLabel value="남성" control={<Radio />} label="남성" />
             <FormControlLabel value="여성" control={<Radio />} label="여성" />
           </RadioGroup>
-        </FormControl>
+        </RadioBox>
         <InnerInput id="outlined-basic" label="핸드폰번호" variant="outlined" />
-        <Button variant="contained" sx={{width:'40%', height:'50px'}}>가입하기</Button>
+        <SignBtn variant="contained">가입하기</SignBtn>
       </BoxInner>
     </BoxWrap>
   );
@@ -52,12 +52,23 @@ const BoxWrap = styled(Box)({
 const BoxInner = styled(Box)({
   display:'flex',
   flexDirection:'column', 
-  width:'100%', 
+  width:'40%', 
   alignItems:'center'
 });
 const InnerInput = styled(TextField)({
-  width:'40%',
-  marginBottom:'20px'
+  width:'100%',
+  marginBottom:'40px'
+});
+const RadioBox = styled(Box)({
+  width:'100%',
+  display:'flex',
+  alignItems:'center',
+  marginBottom:'40px'
+});
+const SignBtn = styled(Button)({
+  width:'100%',
+  height:'50px',
+  fontSize:'20px'
 });
 //======================================================
 export default SignUpSection;

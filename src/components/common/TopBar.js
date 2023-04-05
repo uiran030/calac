@@ -7,7 +7,6 @@ import axios from 'axios';
 
 const DashboardTopStateBar = () => {
   const pathname = window.location.pathname;
-  console.log('pathname', pathname);
   const [money, setMoney] = useState(false);
   //======================================================
   useEffect(() => {

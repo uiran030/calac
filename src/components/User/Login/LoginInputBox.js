@@ -17,6 +17,11 @@ const LoginInputBox = () => {
     event.preventDefault();
   };
 
+  const handleFind = (e) => {
+    console.log('e', e)
+    window.open(`/login/find${e}`, '',  'top=200, left=200, width=400, height=400')
+  }
+
   return (
     <InputBoxWrap>
       <InputInner>
@@ -57,7 +62,8 @@ const LoginInputBox = () => {
           >
             <ButtonGroup variant="text" aria-label="text button group">
               <Link to='/login/signup'><Button>회원가입</Button></Link>
-              <Link to='/login/findidpw'><Button>ID / PW 찾기</Button></Link>
+              <Button onClick={()=>{handleFind('id')}}>아이디 찾기</Button>
+              <Button onClick={()=>{handleFind('pw')}}>비밀번호 찾기</Button>
             </ButtonGroup>
           </Box>
         </BtnWrap>

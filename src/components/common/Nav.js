@@ -13,29 +13,6 @@ const Nav = () => {
     setBtnActive(true);
   };
   //=================================================================================
-  const tabMenu = [
-    {
-      link : '/',
-      text : 'DashBoard'
-    },
-    {
-      link : '/scheduler',
-      text : 'Scheduler'
-    },
-    {
-      link : '/financialledger',
-      text : 'Financial ledger'
-    },
-    {
-      link : '/diary',
-      text : 'Diary'
-    },
-    {
-      link : '/setting',
-      text : 'Setting'
-    }
-  ];
-  //=================================================================================
   return (
     <NavBar>
       <nav>
