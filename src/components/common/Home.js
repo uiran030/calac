@@ -5,8 +5,10 @@ import Nav from "./Nav";
 import { Outlet } from "react-router-dom";
 
 const Home = () => {
+  const pathname = window.location.pathname;
   return (
     <HomeWrap>
+      { !pathname.includes('/login/find') ? (
       <MyGrid container>
         <Grid item xs={2} sx={{ display: "fixed" }}>
           <Nav />
@@ -15,6 +17,13 @@ const Home = () => {
           <Outlet />
         </DashboardGrid>
       </MyGrid>
+      ) : (
+        <MyGrid container>
+        <DashboardGrid item xs={12}>
+          <Outlet />
+        </DashboardGrid>
+        </MyGrid>
+      )}
     </HomeWrap>
   );
 };

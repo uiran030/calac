@@ -14,8 +14,6 @@ const LoginSection = () => {
 const LoginWrap = styled(Box)({
   width: "100%",
   height: "100vh",
-  borderLeft:'1px solid #ddd',
-  backgroundColor: "#07553B"
 });
 //======================================================
 export default LoginSection;
