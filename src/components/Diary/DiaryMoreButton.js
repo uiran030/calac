@@ -8,14 +8,16 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import DiaryModify from './DiaryModify';
 
-const DiaryMoreButton = (posts,id,openMoreButton,setOpenMoreButton) => {
+const DiaryMoreButton = ({posts,id,openMoreButton,setOpenMoreButton}) => {
   //======================================================
   const [open, setOpen] = useState(false);
   const handleClickOpen = (id) => {
     console.log(id)
-    if(window.confirm(`게시글을 수정하시겠습니까??`) === true){
-      setOpen(open);
-    }
+    // if(window.confirm(`게시글을 수정하시겠습니까??`) === true){
+    //   setOpen(true);
+    // }
+    setOpen(true)
+    setOpenMoreButton(!openMoreButton)
   };
 
   const handleClose = () => {
@@ -34,20 +36,21 @@ const DiaryMoreButton = (posts,id,openMoreButton,setOpenMoreButton) => {
   }
   //======================================================
   useEffect(()=>{
-    console.log(open)
+    console.log("open",open)
+    console.log("openMoreButton",openMoreButton)
   },[])
   //======================================================
   return (
     <TabBox>
       <List>
         <ListItem disablePadding >
-          <ListItemButtonIcon onClick={()=>handleClickOpen(posts.id)}> 
+          <ListItemButtonIcon onClick={()=>handleClickOpen(id)}> 
             <AutoFixNormalIcon />
             <ListItemText primary="modify"/>
           </ListItemButtonIcon>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButtonIcon  onClick={()=>onDelete(posts.id)}>
+          <ListItemButtonIcon  onClick={()=>onDelete(id)}>
             <DeleteOutlineIcon />
             <ListItemText primary="delete" />
           </ListItemButtonIcon>
