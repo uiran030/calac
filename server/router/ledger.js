@@ -61,6 +61,16 @@ router.post("/insert", (req, res) => {
   });
 });
 
+// ledger goal graph의 update (이번달 목표 지출 금액 수정)
+router.put("/goal/update/:id", (req, res) => {
+  const count = req.body.count;
+  const no = req.body.no;
+  const updateGoalQuery = `UPDATE goal_money  SET money_count=${count}, money_updatedAt=current_timestamp WHERE money_no= ${no};`;
+  db.query(updateGoalQuery, (err, result) => {
+    res.send("success!!!!!!!!!!");
+  });
+});
+
 // ledger page의 delete
 router.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
