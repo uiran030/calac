@@ -1,11 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import Weather from '../Dashboard/Weather';
+import { Link } from "react-router-dom";
+import axios from 'axios'; 
 
 const DashboardTopStateBar = () => {
   const pathname = window.location.pathname;
-  console.log('pathname', pathname);
+  const [money, setMoney] = useState(false);
+  const [totalCountData, setTotalCountData] = useState(false);
+  //======================================================
+  useEffect(() => {
+    axios.get('http://localhost:5000/ledger/goal')
+    .then((res) => {
+      setMoney(res.data[0]['money_count']);
+    })
+  }, []);
+  //======================================================
+  useEffect(() => {
+    axios.get(`http://localhost:5000/ledger/total?type=expense`)
+    .then((res) => {
+      console.log('res', res.data[0])
+      res.data[0][0]['sum_count'] !== null ? (
+        setTotalCountData(res.data[0][0]['sum_count'])
+      ) : (
+        setTotalCountData(0)
+      );
+    })
+  }, []);
+  //======================================================
+  const change_money = money.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  const minusGoal = money-totalCountData;
   //======================================================
   return (
     <TopStateBarWrap>
@@ -29,8 +54,32 @@ const DashboardTopStateBar = () => {
         <CommonTopState>
           <Box>
             <Text>이번달 지출 목표 금액</Text>
-            <Text>1,000,000원 <GoalCount>(+258,020)</GoalCount></Text>
+            <Text>
+              {change_money} 
+              {minusGoal >= 0 ? (
+                <GoalCount sx={{color:'blue'}}>
+                  (-{minusGoal.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")})
+                </GoalCount>
+              ) : (
+                <GoalCount sx={{color:'red'}}>
+                  (+{minusGoal.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",").replace('-', '')})
+                </GoalCount>
+              )}
+            </Text>
           </Box>
+          {!pathname.includes('total') ? (
+            <Box>
+              <Link to="/financialledger/total">
+                내역 전체보기
+              </Link>
+            </Box>
+          ) : (
+            <Box>
+              <Link to="/financialledger">
+                이전 페이지로
+              </Link>
+            </Box>
+          )}
         </CommonTopState>
       )}
     </TopStateBarWrap>
@@ -50,7 +99,7 @@ const CommonTopState = styled(Box)({
 })
 const GoalCount = styled('span')({
   fontSize:'14px',
-  color:'red'
+  marginLeft:'5px',
 })
 const Text = styled('p')({
   fontSize:'16px'

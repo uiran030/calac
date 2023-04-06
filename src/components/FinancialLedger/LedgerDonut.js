@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { ResponsivePie } from '@nivo/pie';
 import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from 'axios';
 
 const FinalncialLedgerDonut = () => {
@@ -12,21 +10,20 @@ const FinalncialLedgerDonut = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger')
     .then((res) => {
-      console.log(res.data)
       setMonthlyDountData(res.data[0]);
     })
   }, []);
-  console.log('monthlyDonutData', monthlyDonutData);
   //=====================================================
   return (
     <DountWrap className="donut">
       <DountGraph>
         <DountTitle>이번달 지출 현황</DountTitle>
-        <Box style={{ width: '100%', height: '90%', margin: '0 auto'}}>
-        {/* nivo로 만든 도넛차트 */}          
+        {monthlyDonutData.length !== 0 ? (
+          <Box style={{ width: '100%', height: '90%', margin: '0 auto'}}>
+          {/* nivo로 만든 도넛차트 */}
           <ResponsivePie
             data = {
-              monthlyDonutData.map((data) => (
+              monthlyDonutData && monthlyDonutData.map((data) => (
                 {id : data.ledger_category, value : data.sum_count}
               ))
             }
@@ -122,12 +119,12 @@ const FinalncialLedgerDonut = () => {
             ]}
           />
         </Box>
+        ) : (
+          <Box style={{ width: '100%', height: '90%', margin: '0 auto'}}>
+            값이 없습니다.
+          </Box>
+        )}
       </DountGraph>
-      {/* <Link to='/financialledger/graph'>
-        <NextBtn variant="text">
-          그래프 보기<KeyboardArrowRightIcon/>
-        </NextBtn>
-      </Link> */}
     </DountWrap>
   );
 };
