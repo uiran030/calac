@@ -12,7 +12,6 @@ const LedgerTotalSection = () => {
         <TopBar />
       </TopBarWrap>
       <LedgerTotalList/>
-      {/* <OpenModalBtn/> */}
     </LedgerTotalWrap>
   );
 };

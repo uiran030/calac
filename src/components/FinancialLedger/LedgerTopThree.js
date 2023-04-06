@@ -69,11 +69,10 @@ const LedgerTopThree = () => {
         <ShowRecent>
           { recentThreeList && recentThreeList.map((list, index) => {
             return(
-              <RecentList>
+              <RecentList key={index}>
                 <ListItemText
-                  key={index}
                   primary={
-                    <Box>
+                    <React.Fragment>
                       {list.ledger_description}
                       <CategoryText 
                         variant="body1"
@@ -81,10 +80,10 @@ const LedgerTopThree = () => {
                       >
                         {list.ledger_category}
                       </CategoryText>
-                    </Box>
+                    </React.Fragment>
                   }
                   secondary={
-                    <Box>
+                    <React.Fragment>
                       <RecentPrice
                         component="span"
                         variant="body2"
@@ -92,7 +91,7 @@ const LedgerTopThree = () => {
                       >
                         {list.ledger_count}
                       </RecentPrice>
-                    </Box>
+                    </React.Fragment>
                   }
                 />
               </RecentList>
