@@ -4,9 +4,9 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <Home />
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <Home />
+      </ThemeProvider>
   );
 }
 

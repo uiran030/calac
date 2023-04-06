@@ -8,13 +8,13 @@ connectDB.open(db);
 //==============================================
 
 router.post('/',(req,res) => {
-  const dairy_no = req.body.dairy_no;
-  const selectQuery = `SELECT comments.comment_no, comments.dairy_no, comments.user_no, comments.comment, comments.createdAt, comments.updatedAt, users.user_id FROM comments LEFT JOIN users on comments.user_no=users.user_no WHERE comments.user_no=1 AND comments.dairy_no=${dairy_no};`;
-  const countQuery = `SELECT COUNT(*) as cnt FROM comments WHERE dairy_no=${dairy_no};`
+  const diary_no = req.body.diary_no;
+  const selectQuery = `SELECT comments.comment_no, comments.diary_no, comments.user_no, comments.comment, comments.createdAt, comments.updatedAt, users.user_id FROM comments LEFT JOIN users on comments.user_no=users.user_no WHERE comments.user_no=1 AND comments.diary_no=${diary_no};`;
+  const countQuery = `SELECT COUNT(*) as cnt FROM comments WHERE diary_no=${diary_no};`
   db.query(selectQuery + countQuery, (err, result) => {
     if(err) console.log("err",err);
     else{
-      // console.log("dairy_no",dairy_no);
+      // console.log("diary_no",diary_no);
       res.send(result);
       // console.log('result', result);
     }
@@ -22,13 +22,13 @@ router.post('/',(req,res) => {
 });
 //==============================================
 router.post('/insert', (req,res) => {
-  const dairy_no = req.body.dairy_no;
+  const diary_no = req.body.diary_no;
   const comment = req.body.comment;
-  const insertQuery = `INSERT INTO comments (dairy_no, user_no, comment) VALUES ('${dairy_no}', '1', '${comment}');`
+  const insertQuery = `INSERT INTO comments (diary_no, user_no, comment) VALUES ('${diary_no}', '1', '${comment}');`
   db.query(insertQuery, (err,result) => {
     if(err) console.log("err",err);
     else {
-      // console.log("dairy_no",dairy_no);
+      // console.log("diary_no",diary_no);
       res.send(result);
       // console.log('result', result);
     }
@@ -51,7 +51,7 @@ router.post('/delete',(req,res)=>{
 //==============================================
 
 router.get('/count',(req,res)=>{
-  const countQuery = `SELECT dairy_no, COUNT(*) as cnt FROM comments GROUP BY dairy_no;`
+  const countQuery = `SELECT diary_no, COUNT(*) as cnt FROM comments GROUP BY diary_no;`
   db.query(countQuery, (err,result)=>{
     if(err) console.log("err",err);
     else{
