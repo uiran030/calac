@@ -665,7 +665,6 @@ export default function DemoApp() {
           onOpenCategory={handleOpenCategory}
         />
         {/* //======================================================= */}
-
         <CategoryEditModal
           openCategory={openCategory}
           onCloseCategory={handleCloseCategory}
