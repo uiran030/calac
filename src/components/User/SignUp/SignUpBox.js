@@ -19,6 +19,7 @@ import SignUpBox from "./SignUpBox";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUpSection = () => {
   // const [genderValue, setGenderValue] = useState("남성");
@@ -37,18 +38,18 @@ const SignUpSection = () => {
   //   setGenderValue(e.target.value);
   // };
 
-  const handleNotDuplicated = () => {
-    setSignUpInfo({ ...signUpInfo, notDuplicated: true });
-  };
-
   const handleSignUpInfo = (e) => {
     setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value });
   };
 
+  // 객체의 값중에 빈 문자열이 있는지 확인( boolean 자료형의 값이 할당 됨)
   const allValuesNotEmpty = Object.values(signUpInfo).every(
     (val) => val !== ""
   );
 
+  const navigate = useNavigate();
+
+  // 회원가입 정보 DB에 INSERT ======================================================
   const handleSubmit = () => {
     if (!signUpInfo.notDuplicated) {
       alert("아이디 중복을 확인해주세요.");
@@ -59,7 +60,6 @@ const SignUpSection = () => {
       return;
     }
 
-    // 새 이벤트 DB에 INSERT ======================================================
     const { id, pwd, name, birth, gender, phone } = signUpInfo;
     axios
       .post("http://localhost:5000/users/insert", {
@@ -71,33 +71,50 @@ const SignUpSection = () => {
         phone,
       })
       .then((response) => {
-        alert("등록성공!");
-        // // Add newly created event to calendar
-        // setCurrentEvents((currentEvents) => [
-        //   // 성공시 UI에도 바로 반영
-        //   ...currentEvents,
-        //   {
-        //     id: response.data.id,
-        //     title: response.data.title,
-        //     start: response.data.start,
-        //     end: response.data.end,
-        //     color: response.data.color,
-        //     locale: response.data.locale,
-        //     // allDay: false,
-        //   },
-        // ]);
+        if (
+          window.confirm(
+            `가입이 완료되었습니다. 로그인 창으로 이동하시겠습니까?`
+          )
+        ) {
+          navigate("/login");
+          setSignUpInfo({
+            id: "",
+            notDuplicated: false,
+            pwd: "",
+            pwdCheck: "",
+            name: "",
+            birth: "",
+            gender: "남성",
+            phone: "",
+          });
+        }
       })
       .catch(() => {
-        alert("등록실패");
+        alert("가입 실패 관리자에게 문의하세요.");
       })
-      .finally(() => {
-        // handleClose(); // 새 이벤트 추가 모달 닫기
-      });
+      .finally(() => {});
   };
 
   //============================================
-
-  // password관련 ===
+  //아이디 중복확인 =============================
+  const handleNotDuplicated = () => {
+    axios
+      .get(`http://localhost:5000/users/duplicatedId?inputId=${signUpInfo.id}`)
+      .then((response) => {
+        console.log("하아잇", response.data);
+        if (response.data.length === 0) {
+          alert("사용 가능한 아이디 입니다.");
+          setSignUpInfo({ ...signUpInfo, notDuplicated: true });
+        } else {
+          alert("이미 존재하는 아이디 입니다.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  //============================================
+  // 패스워드 UI 관련 ===========================
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -105,10 +122,8 @@ const SignUpSection = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  // ===
-
+  // ==========================================
   console.log(signUpInfo);
-  // ======================================================
   return (
     <BoxWrap component='form' noValidate autoComplete='off'>
       <BoxInner>
@@ -261,11 +276,21 @@ const SignUpSection = () => {
         />
         <SignBtn
           variant='contained'
-          disabled={allValuesNotEmpty ? false : true}
+          disabled={!allValuesNotEmpty}
           onClick={handleSubmit}
         >
           가입하기
         </SignBtn>
+        <Box display='flex' marginTop='10px'>
+          <Typography color='grey'>
+            Already registered?&nbsp;&nbsp;&nbsp;
+          </Typography>
+          <Link to='/login'>
+            <Typography color='green' sx={{ cursor: "pointer" }}>
+              login
+            </Typography>
+          </Link>
+        </Box>
       </BoxInner>
     </BoxWrap>
   );
