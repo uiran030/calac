@@ -13,6 +13,7 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
+  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import SignUpBox from "./SignUpBox";
@@ -32,14 +33,56 @@ const SignUpSection = () => {
     birth: "",
     gender: "남성",
     phone: "",
+    quiz: "",
+    answer: "",
+    emailId: "",
+    emailDomains: "",
   });
+  //======================================================
+  const selectQuiz = [
+    {
+      label: "어릴적 제일 친한 친구의 이름은?",
+      value: "bestFriend",
+    },
+    {
+      label: "나의 고향은?",
+      value: "hometown",
+    },
+    {
+      label: "아버지의 성함은?",
+      value: "father",
+    },
+  ];
+  //======================================================
+  const emailDomains = [
+    { label: "Gmail.com", value: "@gmail.com" },
+    { label: "Naver.com", value: "@naver.com" },
+    { label: "Daum.net", value: "@daum.net" },
+    { label: "Hanmail.net", value: "@hanmail.net" },
+    { label: "Hotmail.com", value: "@hotmail.com" },
+    { label: "Yahoo.com", value: "@yahoo.com" },
+    { label: "Nate.com", value: "@nate.com" },
+    { label: "Kakao.com", value: "@kakao.com" },
+    { label: "iCloud.com", value: "@icloud.com" },
+    { label: "Outlook.com", value: "@outlook.com" },
+  ];
   //======================================================
   // const handleGender = (e) => {
   //   setGenderValue(e.target.value);
   // };
 
   const handleSignUpInfo = (e) => {
-    setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value });
+    // 중복확인 받고나서 다시 아이디 변경할 경우 대비한 조건문
+    if (e.target.name === "id") {
+      setSignUpInfo((prevSignUpInfo) => ({
+        ...prevSignUpInfo,
+        notDuplicated: false,
+      }));
+    }
+    setSignUpInfo((prevSignUpInfo) => ({
+      ...prevSignUpInfo,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   // 객체의 값중에 빈 문자열이 있는지 확인( boolean 자료형의 값이 할당 됨)
@@ -60,7 +103,18 @@ const SignUpSection = () => {
       return;
     }
 
-    const { id, pwd, name, birth, gender, phone } = signUpInfo;
+    const {
+      id,
+      pwd,
+      name,
+      birth,
+      gender,
+      phone,
+      quiz,
+      answer,
+      emailId,
+      emailDomains,
+    } = signUpInfo;
     axios
       .post("http://localhost:5000/users/insert", {
         id,
@@ -69,6 +123,10 @@ const SignUpSection = () => {
         birth,
         gender,
         phone,
+        quiz,
+        answer,
+        emailId,
+        emailDomains,
       })
       .then((response) => {
         if (
@@ -86,6 +144,10 @@ const SignUpSection = () => {
             birth: "",
             gender: "남성",
             phone: "",
+            quiz: "",
+            answer: "",
+            emailId: "",
+            emailDomains: "",
           });
         }
       })
@@ -104,7 +166,10 @@ const SignUpSection = () => {
         console.log("하아잇", response.data);
         if (response.data.length === 0) {
           alert("사용 가능한 아이디 입니다.");
-          setSignUpInfo({ ...signUpInfo, notDuplicated: true });
+          setSignUpInfo((prevSignUpInfo) => ({
+            ...prevSignUpInfo,
+            notDuplicated: true,
+          }));
         } else {
           alert("이미 존재하는 아이디 입니다.");
         }
@@ -131,7 +196,7 @@ const SignUpSection = () => {
           display='flex'
           justifyContent='space-between'
           width='100%'
-          marginBottom='40px'
+          // marginBottom='40px'
         >
           <TextField
             name='id'
@@ -141,6 +206,7 @@ const SignUpSection = () => {
             variant='outlined'
             fullWidth
             required
+            size='small'
           />
           <Button
             variant='outlined'
@@ -150,7 +216,7 @@ const SignUpSection = () => {
             중복확인
           </Button>
         </Box>
-        <FormControl sx={{ width: "100%", mb: "40px" }} variant='outlined'>
+        <FormControl variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='outlined-adornment-password'>
             비밀번호 *
           </InputLabel>
@@ -174,49 +240,55 @@ const SignUpSection = () => {
             label='비밀번호 *'
           />
         </FormControl>
-        <FormControl sx={{ width: "100%", mb: "2px" }} variant='outlined'>
-          <InputLabel htmlFor='outlined-adornment-password'>
-            비밀번호 확인 *
-          </InputLabel>
-          <OutlinedInput
-            name='pwdCheck'
-            onChange={handleSignUpInfo}
-            error={signUpInfo.pwd === signUpInfo.pwdCheck ? false : true}
-            // helperText={
-            //   signUpInfo.pwd === signUpInfo.pwdCheck
-            //     ? "비밀번호 일치합니다."
-            //     : "비밀번호 일치하지 않습니다."
-            // }
-            id='outlined-adornment-password'
-            type={showPassword ? "text" : "password"}
-            endAdornment={
-              <InputAdornment position='end'>
-                <IconButton
-                  aria-label='toggle password visibility'
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge='end'
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label='비밀번호 확인 *'
-          />
-        </FormControl>
+        <Box sx={{ width: "100%" }}>
+          <FormControl
+            sx={{ mb: "2px" }}
+            variant='outlined'
+            fullWidth
+            size='small'
+          >
+            <InputLabel htmlFor='outlined-adornment-password'>
+              비밀번호 확인 *
+            </InputLabel>
+            <OutlinedInput
+              name='pwdCheck'
+              onChange={handleSignUpInfo}
+              error={signUpInfo.pwd === signUpInfo.pwdCheck ? false : true}
+              // helperText={
+              //   signUpInfo.pwd === signUpInfo.pwdCheck
+              //     ? "비밀번호 일치합니다."
+              //     : "비밀번호 일치하지 않습니다."
+              // }
+              id='outlined-adornment-password'
+              type={showPassword ? "text" : "password"}
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label='toggle password visibility'
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge='end'
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label='비밀번호 확인 *'
+            />
+          </FormControl>
 
-        <Typography
-          fontSize='12px'
-          width='100%'
-          paddingLeft='10px'
-          marginBottom='40px'
-          color={signUpInfo.pwd === signUpInfo.pwdCheck ? "green" : "red"}
-        >
-          {signUpInfo.pwd === signUpInfo.pwdCheck
-            ? "비밀번호가 일치합니다."
-            : "비밀번호가 일치하지 않습니다."}
-        </Typography>
-
+          <Typography
+            fontSize='12px'
+            width='100%'
+            paddingLeft='10px'
+            // marginBottom='40px'
+            color={signUpInfo.pwd === signUpInfo.pwdCheck ? "green" : "red"}
+          >
+            {signUpInfo.pwd === signUpInfo.pwdCheck
+              ? "비밀번호가 일치합니다."
+              : "비밀번호가 일치하지 않습니다."}
+          </Typography>
+        </Box>
         {/* <InnerInput
           name='pwd'
           onChange={handleSignUpInfo}
@@ -244,6 +316,7 @@ const SignUpSection = () => {
           label='이름'
           variant='outlined'
           required
+          size='small'
         />
         <InnerInput
           name='birth'
@@ -252,6 +325,7 @@ const SignUpSection = () => {
           label='생년월일'
           variant='outlined'
           required
+          size='small'
         />
         <RadioBox>
           <Typography sx={{ width: "20%" }}>성별 *</Typography>
@@ -270,10 +344,80 @@ const SignUpSection = () => {
           name='phone'
           onChange={handleSignUpInfo}
           id='outlined-basic'
-          label='핸드폰번호'
+          label='전화번호'
           variant='outlined'
           required
+          size='small'
         />
+        {/*  */}
+        <TextField
+          id='outlined-select-currency'
+          select
+          label='질문'
+          defaultValue=''
+          fullWidth
+          required
+          name='quiz'
+          onChange={handleSignUpInfo}
+          variant='outlined'
+          size='small'
+          // value={currentCategory && currentCategory} // 필요 없는듯,..?
+          // sx={{ width: "200px" }}
+        >
+          {selectQuiz.map((option, index) => (
+            <MenuItem key={index} value={option.value && option.value}>
+              <Box display='flex' alignItems='center'>
+                <Typography>{option.label}</Typography>
+              </Box>
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          id='outlined-basic'
+          label='답변'
+          name='answer'
+          onChange={handleSignUpInfo}
+          variant='outlined'
+          fullWidth
+          required
+          size='small'
+        />
+        <Box display='flex' alignItems='center' sx={{ width: "100%" }}>
+          <TextField
+            id='outlined-basic'
+            label='이메일 아이디'
+            name='emailId'
+            onChange={handleSignUpInfo}
+            variant='outlined'
+            fullWidth
+            required
+            size='small'
+          />
+          <Typography marginX='10px'>@</Typography>
+          <TextField
+            id='outlined-select-currency'
+            select
+            label='도메인'
+            defaultValue=''
+            fullWidth
+            required
+            name='emailDomains'
+            onChange={handleSignUpInfo}
+            variant='outlined'
+            size='small'
+            // value={currentCategory && currentCategory} // 필요 없는듯,..?
+            // sx={{ width: "200px" }}
+          >
+            {emailDomains.map((option, index) => (
+              <MenuItem key={index} value={option.value && option.value}>
+                <Box display='flex' alignItems='center'>
+                  <Typography>{option.label}</Typography>
+                </Box>
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+        {/*  */}
         <SignBtn
           variant='contained'
           disabled={!allValuesNotEmpty}
@@ -308,16 +452,17 @@ const BoxInner = styled(Box)({
   flexDirection: "column",
   width: "40%",
   alignItems: "center",
+  gap: "10px",
 });
 const InnerInput = styled(TextField)({
   width: "100%",
-  marginBottom: "40px",
+  // marginBottom: "40px",
 });
 const RadioBox = styled(Box)({
   width: "100%",
   display: "flex",
   alignItems: "center",
-  marginBottom: "40px",
+  // marginBottom: "40px",
 });
 const SignBtn = styled(Button)({
   width: "100%",

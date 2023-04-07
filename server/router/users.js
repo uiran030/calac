@@ -41,9 +41,12 @@ router.post("/insert", (req, res) => {
   const user_birth = req.body.birth;
   const user_gender = req.body.gender;
   const user_phone = req.body.phone;
+  const user_quiz = req.body.quiz;
+  const user_answer = req.body.answer;
+  const user_email = req.body.emailId + req.body.emailDomains;
   // console.log("소금", typeof salt, "해쉬브라운 먹고싶다", hash);
   const sqlQuery =
-    "INSERT INTO users(user_id,user_salt,user_hash,user_name,user_birth,user_gender,user_phone) VALUES(?,?,?,?,?,?,?);";
+    "INSERT INTO users(user_id,user_salt,user_hash,user_name,user_birth,user_gender,user_phone,user_quiz,user_answer,user_email) VALUES(?,?,?,?,?,?,?,?,?,?);";
   db.query(
     sqlQuery,
     [
@@ -54,6 +57,9 @@ router.post("/insert", (req, res) => {
       user_birth,
       user_gender,
       user_phone,
+      user_quiz,
+      user_answer,
+      user_email,
     ],
     (err, result) => {
       console.log(result);
@@ -69,6 +75,9 @@ router.post("/insert", (req, res) => {
           user_birth,
           user_gender,
           user_phone,
+          user_quiz,
+          user_answer,
+          user_email,
         };
         res.send(newEvent);
       }
@@ -79,7 +88,7 @@ router.post("/insert", (req, res) => {
 //아이디 중복확인================================
 router.get("/duplicatedId", (req, res) => {
   const inputId = req.query.inputId;
-  const sqlQuery = `SELECT user_id FROM users WHERE user_id = ${inputId};`;
+  const sqlQuery = `SELECT user_id FROM users WHERE user_id = '${inputId}';`;
   db.query(sqlQuery, (err, result) => {
     if (err) throw err;
     res.send(result);
