@@ -96,5 +96,17 @@ router.get("/duplicatedId", (req, res) => {
   });
 });
 //==============================================
+//아이디 찾기 ===================================
+router.get("/findId", (req, res) => {
+  const name = req.query.name;
+  const email = req.query.emailId + req.query.emailDomains;
+  const sqlQuery = `SELECT user_id FROM users WHERE user_name = ? AND user_email = ?;`;
+  db.query(sqlQuery, [name, email], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+    console.log("result", result);
+  });
+});
+//==============================================
 
 module.exports = router;

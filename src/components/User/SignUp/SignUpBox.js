@@ -55,16 +55,16 @@ const SignUpSection = () => {
   ];
   //======================================================
   const emailDomains = [
-    { label: "Gmail.com", value: "@gmail.com" },
-    { label: "Naver.com", value: "@naver.com" },
-    { label: "Daum.net", value: "@daum.net" },
-    { label: "Hanmail.net", value: "@hanmail.net" },
-    { label: "Hotmail.com", value: "@hotmail.com" },
-    { label: "Yahoo.com", value: "@yahoo.com" },
-    { label: "Nate.com", value: "@nate.com" },
-    { label: "Kakao.com", value: "@kakao.com" },
-    { label: "iCloud.com", value: "@icloud.com" },
-    { label: "Outlook.com", value: "@outlook.com" },
+    { label: "gmail.com", value: "@gmail.com" },
+    { label: "naver.com", value: "@naver.com" },
+    { label: "daum.net", value: "@daum.net" },
+    { label: "hanmail.net", value: "@hanmail.net" },
+    { label: "hotmail.com", value: "@hotmail.com" },
+    { label: "yahoo.com", value: "@yahoo.com" },
+    { label: "nate.com", value: "@nate.com" },
+    { label: "kakao.com", value: "@kakao.com" },
+    { label: "icloud.com", value: "@icloud.com" },
+    { label: "outlook.com", value: "@outlook.com" },
   ];
   //======================================================
   // const handleGender = (e) => {
@@ -289,31 +289,11 @@ const SignUpSection = () => {
               : "비밀번호가 일치하지 않습니다."}
           </Typography>
         </Box>
-        {/* <InnerInput
-          name='pwd'
-          onChange={handleSignUpInfo}
-          id='outlined-basic'
-          label='비밀번호'
-          variant='outlined'
-        />
-        <InnerInput
-          name='pwdCheck'
-          onChange={handleSignUpInfo}
-          id='outlined-basic'
-          label='비밀번호 확인'
-          variant='outlined'
-          error={signUpInfo.pwd === signUpInfo.pwdCheck ? false : true}
-          helperText={
-            signUpInfo.pwd === signUpInfo.pwdCheck
-              ? "비밀번호 일치합니다."
-              : "비밀번호 일치하지 않습니다."
-          }
-        /> */}
         <InnerInput
           name='name'
           onChange={handleSignUpInfo}
           id='outlined-basic'
-          label='이름'
+          label='성명'
           variant='outlined'
           required
           size='small'
