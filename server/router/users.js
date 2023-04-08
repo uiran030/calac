@@ -108,5 +108,52 @@ router.get("/findId", (req, res) => {
   });
 });
 //==============================================
+//비밀번호 찾기 본인인증 =========================
+router.get("/findPw", (req, res) => {
+  const inputId = req.query.inputId;
+  const inputQuiz = req.query.inputQuiz;
+  const inputAnswer = req.query.inputAnswer;
+  const sqlQuery = `SELECT user_quiz, user_answer FROM users WHERE user_id = ?;`;
+  db.query(sqlQuery, [inputId], (err, result) => {
+    if (err) throw err;
+    // res.send(result);
+    // console.log("inputId", inputId);
+    // console.log("inputQuiz", inputQuiz);
+    // console.log("inputAnswer", inputAnswer);
+    // console.log("user_quiz", result[0].user_quiz);
+    // console.log("user_answer", result[0].user_answer);
+    // console.log("result", result);
+
+    if (
+      inputQuiz === result[0].user_quiz &&
+      result[0].user_answer === inputAnswer
+    ) {
+      console.log(true);
+      res.send(true);
+    } else {
+      console.log(false);
+      res.send(false);
+    }
+  });
+});
+//==============================================
+// 비밀번호 변경 ================================
+router.put("/findPw/changePw", (req, res) => {
+  const { salt, hash } = hashPassword(req.body.newPwd);
+  const user_id = req.body.id;
+  const user_salt = salt;
+  const user_hash = hash;
+  const sqlQuery =
+    "UPDATE users SET user_salt=?, user_hash=? WHERE user_id = ?;";
+  db.query(sqlQuery, [user_salt, user_hash, user_id], (err, result) => {
+    console.log(result);
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+//==============================================
 
 module.exports = router;

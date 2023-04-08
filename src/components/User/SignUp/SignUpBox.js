@@ -192,6 +192,14 @@ const SignUpSection = () => {
   return (
     <BoxWrap component='form' noValidate autoComplete='off'>
       <BoxInner>
+        <Typography
+          color='primary'
+          fontWeight={700}
+          fontSize='20px'
+          marginBottom='30px'
+        >
+          회 원 가 입
+        </Typography>
         <Box
           display='flex'
           justifyContent='space-between'

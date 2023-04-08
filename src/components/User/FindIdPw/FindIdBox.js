@@ -42,7 +42,7 @@ const FindIdPwBox = () => {
         if (response.data.length === 0) {
           setFoundId(`일치하는 정보가 없습니다.`);
         } else
-          setFoundId(`귀하의 아이디는 ${response.data[0].user_id} 입니다.`);
+          setFoundId(`귀하의 아이디는"${response.data[0].user_id}" 입니다.`);
       })
       .catch((error) => {
         console.error(error);
@@ -53,6 +53,9 @@ const FindIdPwBox = () => {
   //======================================================
   return (
     <IdBoxWrap>
+      <Typography color='primary' fontWeight={700} fontSize='20px'>
+        아이디 찾기
+      </Typography>
       <TextField
         id='outlined-basic'
         label='성명'
@@ -104,6 +107,8 @@ const FindIdPwBox = () => {
         onClick={() => {
           window.close();
         }}
+        fullWidth
+        sx={{ position: "absolute", bottom: "20px", left: "0" }}
       >
         닫기
       </Button>
