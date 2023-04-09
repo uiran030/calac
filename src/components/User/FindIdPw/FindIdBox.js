@@ -53,7 +53,6 @@ const FindIdPwBox = () => {
         console.error(error);
       });
   };
-
   console.log(foundId);
   //======================================================
   return (
