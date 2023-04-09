@@ -3,14 +3,14 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import LedgerTotalGraph from './LedgerTotalGraph';
 import LedgerGoalGraph from './LedgerGoalGraph';
-import LedgerMonthlyGraph from './LedgerMonthlyGraph';
+import LedgerWeeklyGraph from './LedgerWeeklyGraph';
 
 const LedgerGraphSection = () => {
   return (
     <LedgerGraphWrap>
       <LedgerGoalGraph/>
       <LedgerTotalGraph/>
-      <LedgerMonthlyGraph/>
+      <LedgerWeeklyGraph/>
     </LedgerGraphWrap>
   );
 };

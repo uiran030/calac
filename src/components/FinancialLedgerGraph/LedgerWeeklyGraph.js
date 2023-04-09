@@ -4,30 +4,27 @@ import { styled } from "@mui/material/styles";
 import ApexCharts from 'react-apexcharts';
 import axios from 'axios';
 
-const LedgerTotalGraph = () => {
-  const [totalExpense, setTotalExpense] = useState({});
-  const [totalIncome, setTotalIncome] = useState({});
+const LedgerWeeklyGraph = () => {
   //======================================================
-  useEffect(() => {
-    axios.get(`http://localhost:5000/ledger/monthly/total`)
-    .then((res) => {
-      res.data[0][0] !== null ? (
-        setTotalExpense(res.data[0][0]['sum_count'])
-      ):(
-        setTotalExpense(0)
-      );
-      res.data[0][1] !== null ? (
-        setTotalIncome(res.data[0][1]['sum_count'])
-      ) : (
-        setTotalIncome(0)
-      )
-    })
-  }, []);
-  //======================================================  
-  const minusPercent = Math.round(totalExpense/totalIncome*100);
+  //======================================================
+  // useEffect(() => {
+  //   axios.get(`http://localhost:5000/ledger/monthly/total`)
+  //   .then((res) => {
+  //     res.data[0][0] !== null ? (
+  //       setTotalExpense(res.data[0][0]['sum_count'])
+  //     ):(
+  //       setTotalExpense(0)
+  //     );
+  //     res.data[0][1] !== null ? (
+  //       setTotalIncome(res.data[0][1]['sum_count'])
+  //     ) : (
+  //       setTotalIncome(0)
+  //     )
+  //   })
+  // }, []);
   //======================================================
   const state = {
-    series: [minusPercent],
+    series: [40],
     options: {
       chart: {
         height: 350,
@@ -40,15 +37,15 @@ const LedgerTotalGraph = () => {
           }
         },
       },
-      colors:['#164ef5'],
-      labels: [`이번달 수입 : ${totalIncome.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`],
+      colors:['#cd2ff5'],
+      labels: [`이번주 수입 :`],
     },
   };
   //======================================================
   return (
     <ChartWrap>
       <ChartTopTextBox>
-        <Typography>수입 대비 지출 금액</Typography>
+        <Typography>이번주에 제일 많은 지출</Typography>
       </ChartTopTextBox>  
       <ApexCharts
         options={state.options}
@@ -74,4 +71,4 @@ const ChartTopTextBox = styled(Box)({
   justifyContent:'center'
 });
 //======================================================
-export default LedgerTotalGraph;
+export default LedgerWeeklyGraph;
