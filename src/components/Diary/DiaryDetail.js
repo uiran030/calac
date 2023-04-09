@@ -30,7 +30,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
   const submitComment = (id) => {
     if(newComment.comment.length > 0){
       axios.post('http://localhost:5000/comments/insert',{
-        dairy_no : id,
+        diary_no : id,
         comment : newComment.comment
       })
       .then(()=>alert('댓글이 등록되었습니다 :)'))
@@ -75,7 +75,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
   //======================================================
   useEffect(()=>{
     axios.post('http://localhost:5000/comments', {
-      dairy_no : id
+      diary_no : id
     })
     .then(res=>{setComments(res.data[0])});
   },[comments])
@@ -89,10 +89,13 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
       >
         <DialogBox>
           <TitleBox>
-            <Avatar alt="Remy Sharp" src="/images/avatar.png">
-              <UserTypography>{id}</UserTypography>
-            </Avatar>
-            <DialogTitle>{title}</DialogTitle>
+            <TitleSmallBox>
+              <Avatar alt="Remy Sharp" src="/images/avatar.png">
+                <UserTypography>{id}</UserTypography>
+              </Avatar>
+              <DialogTitle>{title}</DialogTitle>
+            </TitleSmallBox>
+            <UpdateBox><Button>수정</Button></UpdateBox>
           </TitleBox>
           <DateTypography>{createdAt}</DateTypography>
           <MyDialogContent dividers>
@@ -129,7 +132,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
                         <CommentTextField 
                           id="outlined-basic" 
                           variant="outlined" 
-                          label="댓글수정" 
+                          label={list.comment}
                           size="small" 
                           onChange={commentHandle}
                         />
@@ -162,11 +165,18 @@ const DialogBox = styled(Box)({
 const TitleBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'space-between',
   padding: '15px 15px 0',
+})
+const TitleSmallBox = styled(Box)({
+  display:'flex',
+  alignItems:'center',
 })
 const UserTypography = styled(Typography)({
   padding: 0,
   marginLeft: 13,
+})
+const UpdateBox = styled(Box)({
 })
 const DateTypography = styled(Typography)({
   fontSize: 15,

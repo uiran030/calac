@@ -8,6 +8,7 @@ import axios from 'axios';
 const DashboardTopStateBar = () => {
   const pathname = window.location.pathname;
   const [money, setMoney] = useState(false);
+  const [totalCountData, setTotalCountData] = useState(false);
   //======================================================
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/goal')
@@ -16,7 +17,20 @@ const DashboardTopStateBar = () => {
     })
   }, []);
   //======================================================
+  useEffect(() => {
+    axios.get(`http://localhost:5000/ledger/total?type=expense`)
+    .then((res) => {
+      console.log('res', res.data[0])
+      res.data[0][0]['sum_count'] !== null ? (
+        setTotalCountData(res.data[0][0]['sum_count'])
+      ) : (
+        setTotalCountData(0)
+      );
+    })
+  }, []);
+  //======================================================
   const change_money = money.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  const minusGoal = money-totalCountData;
   //======================================================
   return (
     <TopStateBarWrap>
@@ -40,7 +54,18 @@ const DashboardTopStateBar = () => {
         <CommonTopState>
           <Box>
             <Text>이번달 지출 목표 금액</Text>
-            <Text>{change_money} <GoalCount>(+258,020)</GoalCount></Text>
+            <Text>
+              {change_money} 
+              {minusGoal >= 0 ? (
+                <GoalCount sx={{color:'blue'}}>
+                  (-{minusGoal.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")})
+                </GoalCount>
+              ) : (
+                <GoalCount sx={{color:'red'}}>
+                  (+{minusGoal.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",").replace('-', '')})
+                </GoalCount>
+              )}
+            </Text>
           </Box>
           {!pathname.includes('total') ? (
             <Box>
@@ -74,7 +99,7 @@ const CommonTopState = styled(Box)({
 })
 const GoalCount = styled('span')({
   fontSize:'14px',
-  color:'red'
+  marginLeft:'5px',
 })
 const Text = styled('p')({
   fontSize:'16px'

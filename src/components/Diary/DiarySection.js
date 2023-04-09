@@ -6,12 +6,6 @@ import WriteDiary from './WriteDiary';
 import axios from 'axios';
 
 const FeedSection = () => {
-  useEffect(()=>{
-    axios.get('http://localhost:5000/dairy')
-    .then(res=>{
-      console.log("dairy",res.data)
-    })
-  },[])
   return (
     <MyBox>
       <Title>
@@ -30,6 +24,7 @@ const FeedSection = () => {
 const MyBox = styled(Box)({
   height: '100vh',
   margin: '0 auto',
+  // overflow:'auto'
 });
 const Title = styled(Box)({
   display:'flex',

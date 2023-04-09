@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, SpeedDial, SpeedDialIcon, SpeedDialAction, Modal, Tab, Typography, Button, FormControl, Input, InputAdornment, IconButton, TextField } from '@mui/material';
+import { Box, Modal, Typography, Button, IconButton, TextField } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import ApexCharts from 'react-apexcharts';
 import axios from 'axios'; 
@@ -10,19 +10,12 @@ const LedgerGoalGraph = () => {
   const [open, setOpen] = useState(false);
   const [openInput, setOpenInput] = useState(false);
   const [monthlyGoalData, setMonthlyGoalData] = useState({});
+  const [moneyNo, setMoneyNo] = useState(false);
   const [created, setCreated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [money, setMoney] = useState(false);
+  const [changeGoalMoney, setChangeGoalMoney] = useState(false);
   const [totalCountData, setTotalCountData] = useState(false);
-  //======================================================
-  // + 버튼 : 모달창 열림
-  const handleClick = () => { setOpen(true) }
-  //======================================================
-  // 모달창 닫기
-  const handleClose = () => setOpen(false);
-  //======================================================
-  // 모달창 저장버튼
-  const handleSave = () => setOpen(false);
   //======================================================
   const hadleGoalMoney = (e) => {
     const goalMoneyValue = e.target.value;
@@ -33,9 +26,10 @@ const LedgerGoalGraph = () => {
     axios.get('http://localhost:5000/ledger/goal')
     .then((res) => {
       setMonthlyGoalData(res.data[0]);
+      setMoneyNo(res.data[0]['money_no']);
+      setMoney(res.data[0]['money_count']);
       setCreated(res.data[0]['money_createdAt']);
       setUpdated(res.data[0]['money_updatedAt']);
-      setMoney(res.data[0]['money_count']);
     })
   }, []);
   //======================================================
@@ -52,8 +46,29 @@ const LedgerGoalGraph = () => {
     })
   }, []);
   //======================================================
+  const hadleChangeGoalMoney = (e) => {
+    setChangeGoalMoney(e.target.value);
+  };
+  //======================================================
+  // + 버튼 : 모달창 열림
+  const handleClick = () => { setOpen(true) }
+  //======================================================
+  // 모달창 닫기
+  const handleClose = () => {
+    setOpen(false);
+    setOpenInput(false);
+  }
+  //======================================================
+  // 모달창 저장버튼
+  const handleSave = () => {
+    setOpen(false);
+    axios.put (`http://localhost:5000/ledger/goal/update/${moneyNo}`, {
+      count : changeGoalMoney,
+      no : moneyNo
+    })
+  }
   const change_money = money.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-  const goalPercent = Math.round(totalCountData/money*100);
+  const goalPercent = Math.round(totalCountData/money*100)
   //======================================================
   let today = new Date();
   let year = today.getFullYear();
@@ -93,8 +108,8 @@ const LedgerGoalGraph = () => {
   //======================================================
   return (
     <ChartWrap>
-      <IconButton aria-label="add">
-        <AddIcon onClick={()=>{handleClick()}}/>
+      <IconButton aria-label="add" onClick={()=>{handleClick()}}>
+        <AddIcon/>
       </IconButton>
       <ApexCharts
         options={state.options}
@@ -112,14 +127,14 @@ const LedgerGoalGraph = () => {
       <Box sx={style}>
         <ModalTitle>
           {currentMonth} 목표 지출액
-          <CloseIcon onClick={() => setOpen(false)}/>
+          <CloseIcon onClick={handleClose}/>
         </ModalTitle>
         {monthlyGoalData !== undefined ? (
           <Box>
             {!openInput ? (
               <TextField
                 id="outlined-read-only-input"
-                defaultValue={change_money}
+                defaultValue={money}
                 InputProps={{
                   readOnly: true,
                 }}
@@ -130,9 +145,10 @@ const LedgerGoalGraph = () => {
                 required
                 id="outlined-required"
                 label="수정가능합니다."
-                defaultValue={change_money}
+                defaultValue={money}
                 autoFocus={true}
                 sx={{marginBottom:'10px'}}
+                onChange={hadleChangeGoalMoney}
               />
             )}
             {created === updated ? (
