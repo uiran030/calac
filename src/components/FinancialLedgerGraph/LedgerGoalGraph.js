@@ -25,6 +25,7 @@ const LedgerGoalGraph = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/goal')
     .then((res) => {
+      console.log('bbbbbbbbbbbbbbbbbb', res.data)
       setMonthlyGoalData(res.data[0]);
       setMoneyNo(res.data[0]['money_no']);
       setMoney(res.data[0]['money_count']);
@@ -32,18 +33,21 @@ const LedgerGoalGraph = () => {
       setUpdated(res.data[0]['money_updatedAt']);
     })
   }, [money]);
+  console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa', money)
   //======================================================
   const type = 'expense'
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger/total?type=${type}`)
     .then((res) => {
-      res.data[0][0]['sum_count'] !== null ? (
+      console.log('rrrrrrrrrrrrrrrrrrrrrrrr', res.data[0][0])
+      res.data[0][0] !== {} ? (
         setTotalCountData(res.data[0][0]['sum_count'])
       ) : (
         setTotalCountData(0)
       );
     })
   }, []);
+  console.log('dddddddddddddddddddddddddddd', totalCountData)
   //======================================================
   const hadleChangeGoalMoney = (e) => {
     setChangeGoalMoney(e.target.value);

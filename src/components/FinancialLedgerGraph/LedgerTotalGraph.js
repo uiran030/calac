@@ -12,12 +12,12 @@ const LedgerTotalGraph = () => {
     axios.get(`http://localhost:5000/ledger/monthly/total`)
     .then((res) => {
       res.data[0][0] !== null ? (
-        setTotalExpense(res.data[0][0]['sum_count'])
+        setTotalExpense(res.data[0]['sum_count'])
       ):(
         setTotalExpense(0)
       );
       res.data[0][1] !== null ? (
-        setTotalIncome(res.data[0][1]['sum_count'])
+        setTotalIncome(res.data[1]['sum_count'])
       ) : (
         setTotalIncome(0)
       )
