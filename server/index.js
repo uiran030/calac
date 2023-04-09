@@ -7,18 +7,24 @@ const bodyParser = require("body-parser");
 const { urlencoded } = require("body-parser");
 const path = require("path");
 //==============================================
-app.use(cors());
+// app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //==============================================
-const DASHBOARD = require('./router/dashboard.js');  
-app.use('/dashboard',DASHBOARD);
+// const DASHBOARD = require('./router/dashboard.js');
+// app.use('/dashboard',DASHBOARD);
 
 const LEDGER = require("./router/ledger.js");
 app.use("/ledger", LEDGER);
 
-const DAIRY = require("./router/dairy.js");
-app.use("/dairy", DAIRY);
+const DIARY = require("./router/diary.js");
+app.use("/diary", DIARY);
 
 const COMMENTS = require("./router/comments.js");
 app.use("/comments", COMMENTS);
