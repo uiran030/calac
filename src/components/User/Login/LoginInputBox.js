@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
-import { postData } from "../../../redux";
+import { postData } from "../../../redux/index";
 import { useDispatch } from "react-redux";
 // import { connect } from "react-redux";
 // import { setCurrentUser } from "../../../redux/index";
@@ -65,7 +65,7 @@ const LoginInputBox = ({ newLogin, setCurrentUser }) => {
         { withCredentials: true }
       )
       .then((response) => {
-        dispatch(postData(response.data));
+        postData(response.data);
         console.log("로그인 결과", response.data);
       })
       .catch((error) => {
