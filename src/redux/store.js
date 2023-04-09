@@ -1,6 +1,6 @@
-// import { combineReducers } from 'redux';
-// import goalReducer from './reducer/goalReducer';
+import { createStore } from "redux";
+import rootReducer from "./rootReducer";
 
-// export default combineReducers({
-//   goal : goalReducer,
-// })
+const store = createStore(rootReducer);
+
+export default store;
