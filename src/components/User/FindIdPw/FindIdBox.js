@@ -32,6 +32,11 @@ const FindIdPwBox = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
+  const allValuesNotEmpty = Object.values(findIdInfo).every(
+    (val) => val !== ""
+  );
+
   //=========================================
   const handleFindId = () => {
     axios
@@ -99,7 +104,13 @@ const FindIdPwBox = () => {
           ))}
         </TextField>
       </Box>
-      <Button onClick={handleFindId} variant='contained' fullWidth size='large'>
+      <Button
+        disabled={!allValuesNotEmpty}
+        onClick={handleFindId}
+        variant='contained'
+        fullWidth
+        size='large'
+      >
         아이디 찾기
       </Button>
       <FindValueBox>{foundId && foundId}</FindValueBox>

@@ -26,12 +26,14 @@ export default function DemoApp() {
   const [colorPickerVisible, setColorPickerVisible] = useState([]); // 컬리픽커 보이기 토글 (수정용)
   const [alertEvents, setAlertEvents] = useState([]); // 알림이 설정되어 있는 이벤트들
   // [데이터 불러오기] #################################################################################
-
+  console.log("카테고리", categoryList);
+  console.log("이벤트", currentEvents);
   // 카테고리 목록을 불러옴.
   useEffect(() => {
     axios
       .get("http://localhost:5000/scheduler/category")
       .then((response) => {
+        console.log("캌퉤고리", response.data);
         setCategoryList(response.data);
         setCurrentCategory(response.data[0].value); // ok
         setColorPickerVisible(response.data.slice(1).map(() => false));
@@ -41,12 +43,13 @@ export default function DemoApp() {
       });
   }, []);
 
-  // 이벤트 목록을 불러옴.
+  //이벤트 목록을 불러옴.
   useEffect(() => {
     axios
-      .get("http://localhost:5000/scheduler")
+      .get("http://localhost:5000/scheduler", { withCredentials: true })
       .then((response) => {
         // 알람이 설정된 이벤트들만 골라내기.
+        console.log("test", response.data);
         const alertEvent = response.data; // 추후 filter돌릴 예정
         setAlertEvents(alertEvent);
         // 현재 카테고리와 일치하는 이벤트들만 골라내기.

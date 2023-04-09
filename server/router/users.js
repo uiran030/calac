@@ -1,21 +1,54 @@
 const express = require("express");
 const router = express.Router();
 const crypto = require("crypto");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+
+// 인증 미들웨어 추가 ===========================
+router.use(cookieParser());
+const authMiddleware = (req, res, next) => {
+  if (req.cookies && req.cookies.sid) {
+    // 쿠키가 있는 경우 인증 성공
+    console.log(req.cookies);
+    next();
+  } else {
+    // 쿠키가 없는 경우 로그인 페이지로 이동
+    // console.log(req.cookies);
+    console.log("외않되", req.cookies);
+    res.redirect("/");
+  }
+};
+//세션 생성 관련=================================
+const sessionMiddleware = session({
+  secret: "my-secret-key",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    // secure: true, // HTTPS 프로토콜에서만 사용 가능
+    secure: false,
+    sameSite: "strict", // CSRF 공격 방지
+    maxAge: 1000 * 60 * 60 * 24, // 쿠키 유효기간 (1일)
+  },
+});
+router.use(sessionMiddleware);
+
 // crypto ======================================
 // 비밀번호를 해시화 하는 함수
-function hashPassword(password) {
+function hashPassword(pwd) {
   // salt생성
   const salt = crypto.randomBytes(16); /* .toString("hex") */ // 이게 있으면 문자열로 반환돼서 BINARY자료형에 안 담긴다.
   // 해시 함수 생성 (pbkdf2Syncg는 해시화 알고리즘)
-  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, "sha512");
+  const hash = crypto.pbkdf2Sync(pwd, salt, 1000, 64, "sha512");
   /* .toString("hex") */ return { salt, hash };
 }
 // 비밀번호 확인 함수
-function verifyPassword(password, hash, salt) {
-  const hashVerify = crypto
-    .pbkdf2Sync(password, salt, 1000, 64, "sha512")
-    .toString("hex");
-  return hash === hashVerify;
+function verifyPassword(pwd, hash, salt) {
+  const hashVerify = crypto.pbkdf2Sync(pwd, salt, 1000, 64, "sha512");
+  // .toString("hex");
+  console.log("1", hash.toString("hex"));
+  console.log("2", hashVerify.toString("hex"));
+  return hash.toString("hex") === hashVerify.toString("hex");
 }
 
 //==============================================
@@ -23,13 +56,53 @@ const connectDB = require("../config/connectDB.js");
 const db = connectDB.init();
 connectDB.open(db);
 //==============================================
-// router.get('/',(req,res) => {
-//   const sqlQuery = "select * from users"
-//     db.query(sqlQuery, (err, result) => {
-//       res.send(result);
-//       console.log('result', result);
-//     })
-// });
+//로그인 =======================================
+router.post("/login", (req, res) => {
+  const user_id = req.body.id;
+  // const user_pwd = req.body.pwd;
+  const sqlQuery = "SELECT * FROM users WHERE user_id = ?;";
+  db.query(sqlQuery, [user_id], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const isAuthenticated = verifyPassword(
+        req.body.pwd,
+        // user_hash,
+        // user.salt
+        result[0].user_hash,
+        result[0].user_salt
+      );
+      // console.log("일치정보", isAuthenticated);
+      if (isAuthenticated) {
+        // 사용자 정보를 포함하는 세션 객체 생성
+        const userInfo = {
+          no: result[0].user_no,
+          id: result[0].user_id,
+          name: result[0].user_name,
+          phone: result[0].user_phone,
+          gender: result[0].user_gender,
+          birth: result[0].user_birth,
+          quiz: result[0].user_quiz,
+          answer: result[0].user_answer,
+          email: result[0].user_email,
+          createdAt: result[0].user_createdAt,
+          updatedAt: result[0].user_updatedAt,
+        };
+
+        req.session.userInfo = userInfo;
+        res.cookie("sid", req.sessionID, {
+          maxAge: 1000 * 60 * 60 * 24,
+          domain: "localhost",
+        }); // 세션 ID를 쿠키로 저장
+        res.send(userInfo);
+      } else {
+        res.send("Login failed");
+      }
+    }
+  });
+});
+
+//===============================================
 //회원가입 =======================================
 router.post("/insert", (req, res) => {
   const { salt, hash } = hashPassword(req.body.pwd);
@@ -157,3 +230,8 @@ router.put("/findPw/changePw", (req, res) => {
 //==============================================
 
 module.exports = router;
+module.exports.sessionMiddleware = sessionMiddleware;
+module.exports.authMiddleware = authMiddleware;
+
+module.exports.cookieParser = cookieParser;
+// module.exports = { router, sessionMiddleware, authMiddleware };

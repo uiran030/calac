@@ -100,44 +100,8 @@ const FindPwBox = () => {
         console.error(error);
       });
   };
-
-  // axios // 새 이벤트 DB에 UPDATE
-  //   .put(`http://localhost:5000/scheduler/update/${updatedEvent.id}`, {
-  //     title: title,
-  //     start: start,
-  //     end: end,
-  //     color: color,
-  //     locale: locale,
-  //   })
-  //   .then((response) => {
-  //     // 성공시 UI에도 바로 반영
-  //     setOpenEdit(false); // 일단 편집모달 닫기
-
-  //     const test = currentEvents.filter(
-  //       // 업데이트 하려하는 기존 데이터 삭제
-  //       (item) => item.id !== parseInt(updatedEvent.id)
-  //       // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
-  //     );
-
-  //     setCurrentEvents(() => [
-  //       // 업데이트된 정보로 재생성
-  //       ...test,
-  //       {
-  //         id: response.data.id,
-  //         title: response.data.title,
-  //         start: response.data.start,
-  //         end: response.data.end,
-  //         color: response.data.color,
-  //         locale: response.data.locale,
-  //         // allDay: false,
-  //       },
-  //     ]);
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
   // 비밀번호 변경 ==============================
-  const changePw = () => {
+  const handleChangePw = () => {
     axios // 새 이벤트 DB에 UPDATE
       .put(`http://localhost:5000/users/findPw/changePw`, {
         id: identification.id,
@@ -333,7 +297,7 @@ const FindPwBox = () => {
           }
           variant='contained'
           sx={{ height: "87px", width: "100px" }}
-          onClick={changePw}
+          onClick={handleChangePw}
         >
           변경
         </Button>
