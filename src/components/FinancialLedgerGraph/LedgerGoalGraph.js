@@ -25,26 +25,29 @@ const LedgerGoalGraph = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/goal')
     .then((res) => {
+      console.log('bbbbbbbbbbbbbbbbbb', res.data)
       setMonthlyGoalData(res.data[0]);
       setMoneyNo(res.data[0]['money_no']);
       setMoney(res.data[0]['money_count']);
       setCreated(res.data[0]['money_createdAt']);
       setUpdated(res.data[0]['money_updatedAt']);
     })
-  }, []);
+  }, [money]);
+  console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa', money)
   //======================================================
   const type = 'expense'
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger/total?type=${type}`)
     .then((res) => {
-      console.log('res', res.data[0])
-      res.data[0][0]['sum_count'] !== null ? (
+      console.log('rrrrrrrrrrrrrrrrrrrrrrrr', res.data[0][0])
+      res.data[0][0] !== {} ? (
         setTotalCountData(res.data[0][0]['sum_count'])
       ) : (
         setTotalCountData(0)
       );
     })
   }, []);
+  console.log('dddddddddddddddddddddddddddd', totalCountData)
   //======================================================
   const hadleChangeGoalMoney = (e) => {
     setChangeGoalMoney(e.target.value);
@@ -108,14 +111,17 @@ const LedgerGoalGraph = () => {
   //======================================================
   return (
     <ChartWrap>
-      <IconButton aria-label="add" onClick={()=>{handleClick()}}>
-        <AddIcon/>
-      </IconButton>
+      <ChartTopTextBox>
+        <IconButton aria-label="add" onClick={()=>{handleClick()}}>
+          <AddIcon/>
+        </IconButton>
+        <ChartTopText>지출 목표액 달성율</ChartTopText>
+      </ChartTopTextBox>
       <ApexCharts
         options={state.options}
         series={state.series}
         type="radialBar"
-        height="90%"
+        height="300px"
         width="100%"
       />
 
@@ -166,30 +172,29 @@ const LedgerGoalGraph = () => {
             현재 목표액을 설정하지않았습니다.
           </Typography>
         )}
-        {!openInput ? (
-          <Button 
-          variant="contained"
-          sx={{width:'50%', marginTop:'30px'}}
-          onClick={() => {setOpenInput(true)}}
-          >
-            수정
-          </Button>
-        ) : (
-          <Button 
+        <ClickBtnBox>
+          {!openInput ? (
+            <ClickBtn 
             variant="contained"
-            sx={{width:'50%', marginTop:'30px'}}
-            onClick={() => {setOpenInput(false)}}
+            onClick={() => {setOpenInput(true)}}
+            >
+              수정
+            </ClickBtn>
+          ) : (
+            <ClickBtn 
+              variant="contained"
+              onClick={() => {setOpenInput(false)}}
+            >
+              취소
+            </ClickBtn>
+          ) }
+          <ClickBtn
+            variant="contained"
+            onClick={() => {handleSave()}}
           >
-            취소
-          </Button>
-        ) }
-        <Button 
-          variant="contained"
-          sx={{width:'50%', marginTop:'30px'}}
-          onClick={() => {handleSave()}}
-        >
-          저장
-        </Button>
+            저장
+          </ClickBtn>
+        </ClickBtnBox>
       </Box>
       </Modal>
     </ChartWrap>
@@ -202,11 +207,31 @@ const ChartWrap = styled(Box)({
   border:'1px solid #ddd',
   position:'relative'
 });
+const ChartTopTextBox = styled(Box)({
+  height:'50px',
+  display:'flex', 
+  alignItems:'center', 
+  position:'relative'
+});
+const ChartTopText = styled(Typography)({
+  position:'absolute', 
+  top:'50%', 
+  left:'50%', 
+  transform:'translate(-50%,-50%)'
+});
 const ModalTitle = styled(Box)({
   display:'flex',
   justifyContent:'space-between',
   alignItems:'center',
   marginBottom:'20px'
+});
+const ClickBtnBox = styled(Box)({
+  display:'flex', 
+  justifyContent:'space-between'
+});
+const ClickBtn = styled(Button)({
+  width:'48%',
+  marginTop:'30px'
 });
 //======================================================
 export default LedgerGoalGraph;
