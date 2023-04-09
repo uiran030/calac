@@ -6,6 +6,7 @@ import LedgerDonut from './LedgerDonut';
 import LedgerTopThree from './LedgerTopThree';
 import LedgerGraphSection from '../FinancialLedgerGraph/LedgerGraphSection';
 import OpenModalBtn from '../common/OpenModalBtn';
+import LedgerMonthlyGraph from '../FinancialLedgerGraph/LedgerMonthlyGraph';
 
 const FinancialLedger = () => {
   return (
@@ -20,6 +21,9 @@ const FinancialLedger = () => {
         </LedgerBox>
         <LedgerBox>
           <LedgerGraphSection/>
+        </LedgerBox>
+        <LedgerBox>
+          <LedgerMonthlyGraph/>
         </LedgerBox>
       </LedgerWrapBox>
     <OpenModalBtn />

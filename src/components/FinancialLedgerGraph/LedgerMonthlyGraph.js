@@ -8,13 +8,12 @@ const LedgerGraphChart = () => {
   const [monthlyData, setMonthlyData] = useState([]);
   //======================================================
   useEffect(() => {
-    axios.get('http://localhost:5000/ledger')
+    axios.get('http://localhost:5000/ledger/monthly/data')
     .then((res) => {
-      // console.log(res.data)
+      console.log('teettt', res.data)
       setMonthlyData(res.data);
     })
   }, []);
-  // console.log('monthlyData', monthlyData);
   //======================================================
   const result = monthlyData.reduce((a, b) => {
     const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
@@ -25,7 +24,6 @@ const LedgerGraphChart = () => {
     }
     return a;
   }, []);
-  // console.log('result', result);
   //======================================================
   let today = new Date();
   let year = today.getFullYear();
@@ -77,9 +75,10 @@ const LedgerGraphChart = () => {
 };
 //style=================================================
 const ChartWrap = styled(Box)({
-  width:'35%',
+  width:'100%',
   border:'1px solid #ddd',
   padding:'10px',
+  height:'450px'
 });
 //======================================================
 export default LedgerGraphChart;
