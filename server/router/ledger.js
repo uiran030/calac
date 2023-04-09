@@ -22,11 +22,10 @@ router.get('/', (req, res) => {
 });
 
 // ledger page의 월별 카테고리 데이터 합계
-router.get('/monthlyData', (req, res) => {
+router.get('/monthly/data', (req, res) => {
   const monthlyCategoryQuery = "SELECT ledger_category, DATE_FORMAT(ledger_createdAt, '%Y-%m') AS current_month, SUM(ledger_count) AS monthly_sum_count FROM ledger WHERE ledger_type='expense' GROUP BY current_month, ledger_category ORDER BY current_month ASC;"
   db.query( monthlyCategoryQuery, (err, result) => {
     res.send(result);
-    // console.log("result", result);
   });
 });
 
@@ -41,15 +40,8 @@ router.get('/total', (req, res) => {
   });
 });
 
-// ledger page의 현재 달의 목표 지출액 (추후에 redux로 연결할 예정)
-router.get('/goal', (req, res) => {
-  const goalMoneyQuery = `SELECT * FROM goal_money where money_createdAt LIKE '${currentMonth}%'`
-  db.query(goalMoneyQuery, (err, result) => {
-    res.send(result);
-  });
-});
-
-// ledger page의 insert
+//======================================================
+// 우측 하단 modal의 insert
 router.post("/insert", (req, res) => {
   const category = req.body.category;
   const type = req.body.type;
@@ -60,7 +52,23 @@ router.post("/insert", (req, res) => {
     res.send("success!!!!!!!!!!");
   });
 });
-
+//======================================================
+// ledger graph의 현재 달의 타입 구분없이 총액
+router.get('/monthly/total', (req, res) => {
+  let type = req.query.type;
+  const TotalExpenseIncomeQuery = `SELECT ledger_type, SUM(ledger_count) AS sum_count FROM ledger WHERE ledger_createdAt LIKE '${currentMonth}%' GROUP BY ledger_type;`
+  db.query(TotalExpenseIncomeQuery, (err, result) => {
+    res.send(result);
+  });
+});
+//======================================================
+// ledger goal의 현재 달의 목표 지출액
+router.get('/goal', (req, res) => {
+  const goalMoneyQuery = `SELECT * FROM goal_money where money_createdAt LIKE '${currentMonth}%'`
+  db.query(goalMoneyQuery, (err, result) => {
+    res.send(result);
+  });
+});
 // ledger goal graph의 update (이번달 목표 지출 금액 수정)
 router.put("/goal/update/:id", (req, res) => {
   const count = req.body.count;
@@ -70,8 +78,30 @@ router.put("/goal/update/:id", (req, res) => {
     res.send("success!!!!!!!!!!");
   });
 });
+//======================================================
+// ledger total page의 select
+router.get("/total/select/:id", (req, res) => {
+  const id = req.params.id;
+  const insertQuery = `SELECT * FROM ledger WHERE ledger_no = ${id}`;
+  db.query(insertQuery, (err, result) => {
+    res.send(result);
+  });
+});
 
-// ledger page의 delete
+// ledger total page의 update 
+router.put("/total/update/:id", (req, res) => {
+  const id = req.params.id;
+  const category = req.body.category;
+  const description = req.body.description;
+  const count = req.body.count;
+  console.log('ddd', id, category, description, count)
+  const updateQuery = `UPDATE ledger SET ledger_category='${category}', ledger_description='${description}', ledger_count='${count}', ledger_updatedAt=current_timestamp WHERE ledger_no = '${id}'`;
+  db.query(updateQuery, (err, result) => {
+    res.send(result);
+  });
+});
+
+// ledger total page의 delete
 router.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
   const insertQuery = `DELETE FROM ledger WHERE ledger_no = ${id}`;

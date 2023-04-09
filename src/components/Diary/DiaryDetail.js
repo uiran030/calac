@@ -72,6 +72,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
       }
     }
   }
+  
   //======================================================
   useEffect(()=>{
     axios.post('http://localhost:5000/comments', {
