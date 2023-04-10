@@ -4,18 +4,21 @@ import { styled } from "@mui/material/styles";
 import { Box, Typography, Button, Divider, TextField, Dialog, DialogTitle, DialogContent, Avatar} from "@mui/material";
 import axios from 'axios';
 
-
-const DiaryModify = ({isModifyOpen,setIsModifyOpen,id,posts}) => {
+const DiaryModify = ({isModify,setIsModify,diary_no}) => {
   //======================================================
-  console.log("1",isModifyOpen)
+  const [getpost, setGetPost] = useState('')
+  //======================================================
   useEffect(()=>{
+    console.log("modify",diary_no);
+    axios.post("http://localhost:5000/diary/onePost", {no:diary_no})
+    .then(res=>setGetPost(res.data))
   },[])
   //======================================================
   return (
     <Box>
       <MyDialog
-        open={isModifyOpen}
-        onClose={()=>setIsModifyOpen(!isModifyOpen)}
+        open={isModify}
+        onClose={()=>setIsModify(false)}
         aria-labelledby="customized-dialog-title"
       >
         <DialogBox>
