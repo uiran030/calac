@@ -65,14 +65,14 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
         })
         .then(()=>{
           alert("수정되었습니다 :)")
-          setUpdateTime(true);
+          setUpdateTime(true); 
         })
       } else {
         alert ("취소되었습니다 :)");
       }
     }
   }
-  
+
   //======================================================
   useEffect(()=>{
     axios.post('http://localhost:5000/comments', {
