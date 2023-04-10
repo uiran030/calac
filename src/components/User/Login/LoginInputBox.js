@@ -18,13 +18,11 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import { postData } from "../../../redux/index";
-import { useDispatch } from "react-redux";
-// import { connect } from "react-redux";
-// import { setCurrentUser } from "../../../redux/index";
+import { connect, useDispatch } from "react-redux";
 
-const LoginInputBox = ({ newLogin, setCurrentUser }) => {
+const LoginInputBox = ({ postData }) => {
   // 리덕스 =========
-  const dispatch = useDispatch();
+
   //================
   // 비밀번호 UI =====================================
   const [showPassword, setShowPassword] = useState(false);
@@ -176,18 +174,10 @@ const BtnWrap = styled(Box)({
 });
 // Redux ===============================================
 
-// const mapStateToProps = (state) => {
-//   return {
-//     newLogin: state.currentUser.newLogin,
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setCurrentUser: () => dispatch(setCurrentUser),
-//   };
-// };
+const mapDispatchToProps = {
+  postData: (data) => postData(data),
+};
 
 //======================================================
-export default LoginInputBox;
-// export default connect(mapStateToProps, mapDispatchToProps)(LoginInputBox);
+// export default LoginInputBox;
+export default connect(null, mapDispatchToProps)(LoginInputBox);

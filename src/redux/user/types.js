@@ -1,1 +1,1 @@
-export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const POST_DATA = "POST_DATA";

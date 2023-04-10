@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 
 function App() {
-  console.log("사랑해요제발", store);
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>

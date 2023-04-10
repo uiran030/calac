@@ -18,44 +18,45 @@ const authMiddleware = (req, res, next) => {
     res.redirect("/");
   }
 };
+// =============================================
 //세션 생성 관련=================================
 const sessionMiddleware = session({
-  secret: "my-secret-key",
-  resave: false,
-  saveUninitialized: true,
+  secret: "my-secret-key", // 세션을 암호화하는데 사용하는 문자열
+  resave: false, // 변경 사항이 없어도 항상 세션 저장
+  saveUninitialized: true, // 새로운 세션 생성 시에도 세션 저장
   cookie: {
     httpOnly: true,
     // secure: true, // HTTPS 프로토콜에서만 사용 가능
-    secure: false,
+    secure: false, // HTTP 프로토콜로도 가능.
     sameSite: "strict", // CSRF 공격 방지
     maxAge: 1000 * 60 * 60 * 24, // 쿠키 유효기간 (1일)
   },
 });
 router.use(sessionMiddleware);
-
-// crypto ======================================
+// =============================================
+// crypto 관련 =================================
 // 비밀번호를 해시화 하는 함수
 function hashPassword(pwd) {
   // salt생성
-  const salt = crypto.randomBytes(16); /* .toString("hex") */ // 이게 있으면 문자열로 반환돼서 BINARY자료형에 안 담긴다.
+  const salt = crypto.randomBytes(16);
   // 해시 함수 생성 (pbkdf2Syncg는 해시화 알고리즘)
   const hash = crypto.pbkdf2Sync(pwd, salt, 1000, 64, "sha512");
-  /* .toString("hex") */ return { salt, hash };
+  return { salt, hash };
 }
 // 비밀번호 확인 함수
 function verifyPassword(pwd, hash, salt) {
   const hashVerify = crypto.pbkdf2Sync(pwd, salt, 1000, 64, "sha512");
-  // .toString("hex");
-  console.log("1", hash.toString("hex"));
-  console.log("2", hashVerify.toString("hex"));
   return hash.toString("hex") === hashVerify.toString("hex");
 }
-
-//==============================================
+// =============================================
+// DB 연결부 ===================================
 const connectDB = require("../config/connectDB.js");
 const db = connectDB.init();
 connectDB.open(db);
-//==============================================
+//=============================================
+
+// 이하 데이터 처리부 ########################################################
+
 //로그인 =======================================
 router.post("/login", (req, res) => {
   const user_id = req.body.id;
@@ -89,25 +90,38 @@ router.post("/login", (req, res) => {
           updatedAt: result[0].user_updatedAt,
         };
 
-        req.session.userInfo = userInfo;
+        req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
+        console.log("확인들어갑니다잉", req.session.userInfo);
         res.cookie("sid", req.sessionID, {
           maxAge: 1000 * 60 * 60 * 24,
           domain: "localhost",
-        }); // 세션 ID를 쿠키로 저장
-        res.send(userInfo);
+        }); // 세션 ID를 브라우저에 sid쿠키로 저장
+        res.send(userInfo); //필요 없을 듯.? 이 아니네 이거 없으면 쿠키 안생김 왜.,.?
       } else {
         res.send("Login failed");
       }
     }
   });
 });
-
 //===============================================
+// 세션 객체에서 현재 사용자 정보 받아오기 ========
+router.get("/user-info", (req, res) => {
+  const userInfo = req.session.userInfo; // 세션 객체에서 유저 정보를 가져옴
+  console.log(userInfo);
+  if (userInfo) {
+    // 유저 정보가 있으면 JSON 형태로 응답
+    res.cookie("sid", req.session.id, { maxAge: 1000 * 60 * 60 * 24 }); // 세션 ID를 쿠키에 저장
+    res.status(200).json({ success: true, userInfo });
+  } else {
+    // 유저 정보가 없으면 401 Unauthorized 에러 반환
+    res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+});
+// =============================================
 //회원가입 =======================================
 router.post("/insert", (req, res) => {
   const { salt, hash } = hashPassword(req.body.pwd);
   const user_id = req.body.id;
-  // const user_pwd = req.body.pwd;
   const user_salt = salt;
   const user_hash = hash;
   const user_name = req.body.name;
@@ -117,7 +131,6 @@ router.post("/insert", (req, res) => {
   const user_quiz = req.body.quiz;
   const user_answer = req.body.answer;
   const user_email = req.body.emailId + req.body.emailDomains;
-  // console.log("소금", typeof salt, "해쉬브라운 먹고싶다", hash);
   const sqlQuery =
     "INSERT INTO users(user_id,user_salt,user_hash,user_name,user_birth,user_gender,user_phone,user_quiz,user_answer,user_email) VALUES(?,?,?,?,?,?,?,?,?,?);";
   db.query(
@@ -189,14 +202,6 @@ router.get("/findPw", (req, res) => {
   const sqlQuery = `SELECT user_quiz, user_answer FROM users WHERE user_id = ?;`;
   db.query(sqlQuery, [inputId], (err, result) => {
     if (err) throw err;
-    // res.send(result);
-    // console.log("inputId", inputId);
-    // console.log("inputQuiz", inputQuiz);
-    // console.log("inputAnswer", inputAnswer);
-    // console.log("user_quiz", result[0].user_quiz);
-    // console.log("user_answer", result[0].user_answer);
-    // console.log("result", result);
-
     if (
       inputQuiz === result[0].user_quiz &&
       result[0].user_answer === inputAnswer
@@ -230,8 +235,3 @@ router.put("/findPw/changePw", (req, res) => {
 //==============================================
 
 module.exports = router;
-module.exports.sessionMiddleware = sessionMiddleware;
-module.exports.authMiddleware = authMiddleware;
-
-module.exports.cookieParser = cookieParser;
-// module.exports = { router, sessionMiddleware, authMiddleware };

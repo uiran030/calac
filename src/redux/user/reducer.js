@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS } from "./types";
+import { POST_DATA } from "./types";
 
 const initialState = {
   no: "",
@@ -16,9 +16,8 @@ const initialState = {
 
 const loginReducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOGIN_SUCCESS:
+    case POST_DATA:
       return {
-        ...state,
         ...action.payload,
       };
     default:

@@ -1,10 +1,12 @@
-import React from 'react';
+import React from "react";
+import ChangeUserInfo from "./ChangeUserInfo";
+import { Box } from "@mui/material";
 
 const Setting = () => {
   return (
-    <div>
-      셋팅 페이지
-    </div>
+    <Box>
+      <ChangeUserInfo />
+    </Box>
   );
 };
 
