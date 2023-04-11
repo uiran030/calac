@@ -13,17 +13,13 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
-import { postData } from "../../../redux/index";
-import { connect, useDispatch } from "react-redux";
 
-const LoginInputBox = ({ postData }) => {
-  // 리덕스 =========
-
-  //================
+const LoginInputBox = () => {
+  const navigate = useNavigate();
   // 비밀번호 UI =====================================
   const [showPassword, setShowPassword] = useState(false);
 
@@ -63,11 +59,20 @@ const LoginInputBox = ({ postData }) => {
         { withCredentials: true }
       )
       .then((response) => {
-        postData(response.data);
-        console.log("로그인 결과", response.data);
+        const { success, message, userInfo } = response.data;
+        if (success) {
+          alert(`${userInfo.name}님, 환영합니다.`);
+          navigate("/");
+        } else {
+          if (message === "wrongId") {
+            alert("아이디를 확인해주세요.");
+          } else if (message === "wrongPw") {
+            alert("비밀번호를 확인해주세요.");
+          }
+        }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("에러염", error);
       });
   };
   // ================================================
@@ -172,12 +177,5 @@ const BtnWrap = styled(Box)({
   display: "flex",
   flexDirection: "column",
 });
-// Redux ===============================================
 
-const mapDispatchToProps = {
-  postData: (data) => postData(data),
-};
-
-//======================================================
-// export default LoginInputBox;
-export default connect(null, mapDispatchToProps)(LoginInputBox);
+export default LoginInputBox;

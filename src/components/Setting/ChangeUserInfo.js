@@ -24,7 +24,31 @@ import { connect } from "react-redux";
 
 const ChangeUserInfo = ({ login }) => {
   //
-  const [sessionUserInfo, setSessionUserInfo] = useState();
+
+  const [sessionUserInfo, setSessionUserInfo] = useState({
+    id: "",
+    pwd: "",
+    pwdCheck: "",
+    name: "",
+    birth: "",
+    gender: "",
+    phone: "",
+    quiz: "",
+    answer: "",
+    emailId: "",
+    emailDomains: "",
+    no: "",
+    createdAt: "",
+    updatedAt: "",
+  });
+
+  const handleSessionUserInfo = (e) => {
+    setSessionUserInfo({
+      ...sessionUserInfo,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   // 브라우저에 저장된 쿠키를 받아오는 함수  =========================
   function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -48,7 +72,19 @@ const ChangeUserInfo = ({ login }) => {
         const { success, userInfo } = response.data;
         if (success) {
           console.log("세션객체", userInfo); // 성공적으로 유저 정보를 받아온 경우 userInfo 출력
-          setSessionUserInfo(userInfo);
+          const parseEmailId = userInfo.email && userInfo.email.split("@")[0];
+          const parseEmailDomains =
+            "@" + (userInfo.email && userInfo.email.split("@")[1]);
+
+          console.log("test1", parseEmailId);
+          console.log("test2", parseEmailDomains);
+
+          setSessionUserInfo((prev) => ({
+            ...prev,
+            ...userInfo,
+            emailId: parseEmailId,
+            emailDomains: parseEmailDomains,
+          }));
         } else {
           console.log("세션객체 Unauthorized"); // 유저 정보가 없는 경우 Unauthorized 출력
         }
@@ -59,23 +95,95 @@ const ChangeUserInfo = ({ login }) => {
   }, []);
 
   console.log("이상무!!!!", sessionUserInfo);
+  //==============================================
+  const [authInfo, setAuthInfo] = useState({ id: "", pwd: "" });
+  const handleAuthInfo = (e) =>
+    setAuthInfo((prev) => ({
+      ...prev,
+      id: sessionUserInfo.id,
+      pwd: e.target.value,
+    }));
+  const handleSubmitAuthInfo = () => {
+    console.log("확인", authInfo);
+    axios
+      .post(
+        `http://localhost:5000/users/login`,
+        {
+          id: authInfo.id,
+          pwd: authInfo.pwd,
+        },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        const { success, message, userInfo } = response.data;
+        if (success) {
+          setUnauthorized(false);
+          alert("인증이 완료되었습니다. 정보 수정을 진행하세요.");
+        } else {
+          setUnauthorized(true);
+          alert("일치하지 않는 비밀번호 입니다.");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-  // ==============================================================
+  //==============================================
+  const handleSave = () => {
+    axios
+      .post(
+        `http://localhost:5000/users/changeUserInfo`,
+        {
+          id: sessionUserInfo.id,
+          pwd: sessionUserInfo.pwd,
+          name: sessionUserInfo.name,
+          birth: sessionUserInfo.birth,
+          gender: sessionUserInfo.gender,
+          phone: sessionUserInfo.phone,
+          quiz: sessionUserInfo.quiz,
+          answer: sessionUserInfo.answer,
+          emailId: sessionUserInfo.emailId,
+          emailDomains: sessionUserInfo.emailDomains,
+          no: sessionUserInfo.no,
+          createdAt: sessionUserInfo.createdAt,
+          updatedAt: sessionUserInfo.updatedAt,
+        },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        console.log(response);
+        if (
+          window.confirm(
+            `변경이 완료되었습니다. 메인화면으로 이동하시겠습니까?`
+          )
+        ) {
+          navigate("/");
+          setSessionUserInfo({
+            id: "",
+            notDuplicated: false,
+            pwd: "",
+            pwdCheck: "",
+            name: "",
+            birth: "",
+            gender: "",
+            phone: "",
+            quiz: "",
+            answer: "",
+            emailId: "",
+            emailDomains: "",
+            no: "",
+            createdAt: "",
+            updatedAt: "",
+          });
+        }
+      })
+      .catch(() => {
+        alert("변경 실패 관리자에게 문의하세요.");
+      })
+      .finally(() => {});
+  };
 
-  const [signUpInfo, setSignUpInfo] = useState({
-    id: "",
-    notDuplicated: false,
-    pwd: "",
-    pwdCheck: "",
-    name: "",
-    birth: "",
-    gender: "남성",
-    phone: "",
-    quiz: "",
-    answer: "",
-    emailId: "",
-    emailDomains: "",
-  });
   //======================================================
   const selectQuiz = [
     {
@@ -105,38 +213,24 @@ const ChangeUserInfo = ({ login }) => {
     { label: "outlook.com", value: "@outlook.com" },
   ];
   //======================================================
-  // // const handleGender = (e) => {
-  // //   setGenderValue(e.target.value);
-  // // };
-
-  const handleSignUpInfo = (e) => {
-    // 중복확인 받고나서 다시 아이디 변경할 경우 대비한 조건문
-    if (e.target.name === "id") {
-      setSignUpInfo((prevSignUpInfo) => ({
-        ...prevSignUpInfo,
-        notDuplicated: false,
-      }));
-    }
-    setSignUpInfo((prevSignUpInfo) => ({
-      ...prevSignUpInfo,
-      [e.target.name]: e.target.value,
-    }));
-  };
 
   // 객체의 값중에 빈 문자열이 있는지 확인( boolean 자료형의 값이 할당 됨)
-  const allValuesNotEmpty = Object.values(signUpInfo).every(
-    (val) => val !== ""
-  );
+  // const allValuesNotEmpty = Object.values(sessionUserInfo).every(
+  //   (val) => val !== ""
+  // );
+  const allValuesNotEmptyExceptPwd = Object.entries(sessionUserInfo)
+    .filter(([key]) => key !== "pwd" && key !== "pwdCheck")
+    .every(([key, val]) => val !== "");
 
   const navigate = useNavigate();
 
   // 회원가입 정보 DB에 INSERT ======================================================
   const handleSubmit = () => {
-    if (!signUpInfo.notDuplicated) {
+    if (!sessionUserInfo.notDuplicated) {
       alert("아이디 중복을 확인해주세요.");
       return;
     }
-    if (signUpInfo.pwd !== signUpInfo.pwdCheck) {
+    if (sessionUserInfo.pwd !== sessionUserInfo.pwdCheck) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
@@ -152,7 +246,7 @@ const ChangeUserInfo = ({ login }) => {
       answer,
       emailId,
       emailDomains,
-    } = signUpInfo;
+    } = sessionUserInfo;
     axios
       .post("http://localhost:5000/users/insert", {
         id,
@@ -169,18 +263,17 @@ const ChangeUserInfo = ({ login }) => {
       .then((response) => {
         if (
           window.confirm(
-            `가입이 완료되었습니다. 로그인 창으로 이동하시겠습니까?`
+            `변경이 완료되었습니다. 메인화면으로 이동하시겠습니까?`
           )
         ) {
-          navigate("/login");
-          setSignUpInfo({
+          navigate("/");
+          setSessionUserInfo({
             id: "",
-            notDuplicated: false,
             pwd: "",
             pwdCheck: "",
             name: "",
             birth: "",
-            gender: "남성",
+            gender: "",
             phone: "",
             quiz: "",
             answer: "",
@@ -196,27 +289,7 @@ const ChangeUserInfo = ({ login }) => {
   };
 
   //============================================
-  //아이디 중복확인 =============================
-  const handleNotDuplicated = () => {
-    axios
-      .get(`http://localhost:5000/users/duplicatedId?inputId=${signUpInfo.id}`)
-      .then((response) => {
-        console.log("하아잇", response.data);
-        if (response.data.length === 0) {
-          alert("사용 가능한 아이디 입니다.");
-          setSignUpInfo((prevSignUpInfo) => ({
-            ...prevSignUpInfo,
-            notDuplicated: true,
-          }));
-        } else {
-          alert("이미 존재하는 아이디 입니다.");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-  //============================================
+
   // 패스워드 UI 관련 ===========================
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -226,7 +299,10 @@ const ChangeUserInfo = ({ login }) => {
     event.preventDefault();
   };
   // ==========================================
-  // console.log(signUpInfo);
+  // console.log(sessionUserInfo);
+
+  const [unauthorized, setUnauthorized] = useState(true);
+
   return (
     <BoxWrap component='form' noValidate autoComplete='off'>
       <BoxInner>
@@ -234,19 +310,20 @@ const ChangeUserInfo = ({ login }) => {
           color='primary'
           fontWeight={700}
           fontSize='20px'
-          marginBottom='30px'
+          marginBottom='10px'
         >
           회원 정보 수정
+        </Typography>
+        <Typography fontSize='12px' color='primary'>
+          수정을 진행하시려면 먼저 "기존 비밀번호"를 통해 인증해주세요.
         </Typography>
         <TextField
           name='id'
           value={(sessionUserInfo && sessionUserInfo.id) || ""}
-          onChange={handleSignUpInfo}
           id='outlined-basic'
           label='아이디'
           variant='outlined'
           fullWidth
-          required
           size='small'
           disabled
         />
@@ -262,9 +339,10 @@ const ChangeUserInfo = ({ login }) => {
             </InputLabel>
             <OutlinedInput
               name='pwd'
-              onChange={handleSignUpInfo}
+              onChange={handleAuthInfo}
               id='outlined-adornment-password'
               type={showPassword ? "text" : "password"}
+              error={unauthorized}
               endAdornment={
                 <InputAdornment position='end'>
                   <IconButton
@@ -283,20 +361,21 @@ const ChangeUserInfo = ({ login }) => {
           <Button
             variant='outlined'
             sx={{ width: "30px", marginLeft: "10px" }}
-            onClick={handleNotDuplicated}
+            onClick={handleSubmitAuthInfo}
           >
-            확인
+            인증
           </Button>
         </Box>
         <FormControl variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='outlined-adornment-password'>
-            새 비밀번호 *
+            새 비밀번호
           </InputLabel>
           <OutlinedInput
             name='pwd'
-            onChange={handleSignUpInfo}
+            onChange={handleSessionUserInfo}
             id='outlined-adornment-password'
             type={showPassword ? "text" : "password"}
+            disabled={unauthorized}
             endAdornment={
               <InputAdornment position='end'>
                 <IconButton
@@ -309,7 +388,7 @@ const ChangeUserInfo = ({ login }) => {
                 </IconButton>
               </InputAdornment>
             }
-            label='새 비밀번호 *'
+            label='새 비밀번호'
           />
         </FormControl>
         <Box sx={{ width: "100%" }}>
@@ -320,17 +399,15 @@ const ChangeUserInfo = ({ login }) => {
             size='small'
           >
             <InputLabel htmlFor='outlined-adornment-password'>
-              새 비밀번호 확인 *
+              새 비밀번호 확인
             </InputLabel>
             <OutlinedInput
               name='pwdCheck'
-              onChange={handleSignUpInfo}
-              error={signUpInfo.pwd === signUpInfo.pwdCheck ? false : true}
-              // helperText={
-              //   signUpInfo.pwd === signUpInfo.pwdCheck
-              //     ? "비밀번호 일치합니다."
-              //     : "비밀번호 일치하지 않습니다."
-              // }
+              onChange={handleSessionUserInfo}
+              error={
+                sessionUserInfo.pwd === sessionUserInfo.pwdCheck ? false : true
+              }
+              disabled={unauthorized}
               id='outlined-adornment-password'
               type={showPassword ? "text" : "password"}
               endAdornment={
@@ -345,7 +422,7 @@ const ChangeUserInfo = ({ login }) => {
                   </IconButton>
                 </InputAdornment>
               }
-              label='새 비밀번호 확인 *'
+              label='새 비밀번호 확인'
             />
           </FormControl>
 
@@ -354,55 +431,78 @@ const ChangeUserInfo = ({ login }) => {
             width='100%'
             paddingLeft='10px'
             // marginBottom='40px'
-            color={signUpInfo.pwd === signUpInfo.pwdCheck ? "green" : "red"}
+            color={
+              unauthorized
+                ? "grey"
+                : sessionUserInfo.pwd === sessionUserInfo.pwdCheck
+                ? "green"
+                : "red"
+            }
           >
-            {signUpInfo.pwd === signUpInfo.pwdCheck
-              ? "비밀번호가 일치합니다."
-              : "비밀번호가 일치하지 않습니다."}
+            {sessionUserInfo.pwd || sessionUserInfo.pwdCheck
+              ? sessionUserInfo.pwd === sessionUserInfo.pwdCheck
+                ? "비밀번호가 일치합니다."
+                : "비밀번호가 일치하지 않습니다."
+              : "새 비밀번호를 입력해주세요"}
           </Typography>
         </Box>
         <InnerInput
           name='name'
-          onChange={handleSignUpInfo}
+          onChange={handleSessionUserInfo}
           value={(sessionUserInfo && sessionUserInfo.name) || ""}
           id='outlined-basic'
           label='성명'
           variant='outlined'
-          required
           size='small'
+          disabled={unauthorized}
         />
         <InnerInput
           name='birth'
-          onChange={handleSignUpInfo}
+          onChange={handleSessionUserInfo}
           value={(sessionUserInfo && sessionUserInfo.birth) || ""}
           id='outlined-basic'
           label='생년월일'
           variant='outlined'
-          required
           size='small'
+          disabled={unauthorized}
         />
         <RadioBox>
-          <Typography sx={{ width: "20%" }}>성별 *</Typography>
+          <Typography
+            sx={{ width: "20%" }}
+            color={unauthorized ? "#c1c1c1" : ""}
+          >
+            성별
+          </Typography>
           <RadioGroup
             row
             aria-labelledby='demo-row-radio-buttons-group-label'
             name='gender'
-            value={(sessionUserInfo && signUpInfo.gender) || ""}
-            onChange={handleSignUpInfo}
+            value={(sessionUserInfo && sessionUserInfo.gender) || ""}
+            onChange={handleSessionUserInfo}
           >
-            <FormControlLabel value='남성' control={<Radio />} label='남성' />
-            <FormControlLabel value='여성' control={<Radio />} label='여성' />
+            <FormControlLabel
+              value='남성'
+              control={<Radio />}
+              label='남성'
+              disabled={unauthorized}
+            />
+            <FormControlLabel
+              value='여성'
+              control={<Radio />}
+              label='여성'
+              disabled={unauthorized}
+            />
           </RadioGroup>
         </RadioBox>
         <InnerInput
           name='phone'
-          onChange={handleSignUpInfo}
+          onChange={handleSessionUserInfo}
           value={(sessionUserInfo && sessionUserInfo.phone) || ""}
           id='outlined-basic'
           label='전화번호'
           variant='outlined'
-          required
           size='small'
+          disabled={unauthorized}
         />
         {/*  */}
         <TextField
@@ -412,11 +512,11 @@ const ChangeUserInfo = ({ login }) => {
           defaultValue=''
           value={(sessionUserInfo && sessionUserInfo.quiz) || ""}
           fullWidth
-          required
           name='quiz'
-          onChange={handleSignUpInfo}
+          onChange={handleSessionUserInfo}
           variant='outlined'
           size='small'
+          disabled={unauthorized}
           // value={currentCategory && currentCategory} // 필요 없는듯,..?
           // sx={{ width: "200px" }}
         >
@@ -432,26 +532,24 @@ const ChangeUserInfo = ({ login }) => {
           id='outlined-basic'
           label='답변'
           name='answer'
-          onChange={handleSignUpInfo}
+          onChange={handleSessionUserInfo}
           value={(sessionUserInfo && sessionUserInfo.answer) || ""}
           variant='outlined'
           fullWidth
-          required
           size='small'
+          disabled={unauthorized}
         />
         <Box display='flex' alignItems='center' sx={{ width: "100%" }}>
           <TextField
             id='outlined-basic'
             label='이메일 아이디'
             name='emailId'
-            onChange={handleSignUpInfo}
-            value={
-              (sessionUserInfo && sessionUserInfo.email.split("@")[0]) || ""
-            }
+            onChange={handleSessionUserInfo}
+            value={sessionUserInfo && sessionUserInfo.emailId}
             variant='outlined'
             fullWidth
-            required
             size='small'
+            disabled={unauthorized}
           />
           <Typography marginX='10px'>@</Typography>
           <TextField
@@ -459,16 +557,13 @@ const ChangeUserInfo = ({ login }) => {
             select
             label='도메인'
             defaultValue=''
-            value={
-              (sessionUserInfo && "@" + sessionUserInfo.email.split("@")[1]) ||
-              ""
-            }
+            value={sessionUserInfo && sessionUserInfo.emailDomains}
             fullWidth
-            required
             name='emailDomains'
-            onChange={handleSignUpInfo}
+            onChange={handleSessionUserInfo}
             variant='outlined'
             size='small'
+            disabled={unauthorized}
             // value={currentCategory && currentCategory} // 필요 없는듯,..?
             // sx={{ width: "200px" }}
           >
@@ -481,24 +576,38 @@ const ChangeUserInfo = ({ login }) => {
             ))}
           </TextField>
         </Box>
-        {/*  */}
+        <Box
+          display='flex'
+          width='100%'
+          flexDirection='column'
+          alignItems='start'
+        >
+          <Typography fontSize='12px' color='grey'>
+            회원 가입 일자 :{" "}
+            {sessionUserInfo &&
+              sessionUserInfo.createdAt &&
+              sessionUserInfo.createdAt.split("T")[0]}{" "}
+            {sessionUserInfo &&
+              sessionUserInfo.createdAt &&
+              sessionUserInfo.createdAt.split("T")[1]?.slice(0, 5)}
+          </Typography>
+          <Typography fontSize='12px' color='grey'>
+            최근 수정 일자 :{" "}
+            {sessionUserInfo &&
+              sessionUserInfo.updatedAt &&
+              sessionUserInfo.updatedAt.split("T")[0]}{" "}
+            {sessionUserInfo &&
+              sessionUserInfo.updatedAt &&
+              sessionUserInfo.updatedAt.split("T")[1]?.slice(0, 5)}
+          </Typography>
+        </Box>
         <SignBtn
           variant='contained'
-          disabled={!allValuesNotEmpty}
-          onClick={handleSubmit}
+          disabled={!allValuesNotEmptyExceptPwd}
+          onClick={handleSave}
         >
-          가입하기
+          저장하기
         </SignBtn>
-        <Box display='flex' marginTop='10px'>
-          <Typography color='grey'>
-            Already registered?&nbsp;&nbsp;&nbsp;
-          </Typography>
-          <Link to='/login'>
-            <Typography color='green' sx={{ cursor: "pointer" }}>
-              login
-            </Typography>
-          </Link>
-        </Box>
       </BoxInner>
     </BoxWrap>
   );

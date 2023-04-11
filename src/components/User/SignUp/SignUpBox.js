@@ -218,7 +218,7 @@ const SignUpSection = () => {
           />
           <Button
             variant='outlined'
-            sx={{ width: "150px", marginLeft: "20px" }}
+            sx={{ width: "150px", marginLeft: "10px" }}
             onClick={handleNotDuplicated}
           >
             중복확인
@@ -262,11 +262,6 @@ const SignUpSection = () => {
               name='pwdCheck'
               onChange={handleSignUpInfo}
               error={signUpInfo.pwd === signUpInfo.pwdCheck ? false : true}
-              // helperText={
-              //   signUpInfo.pwd === signUpInfo.pwdCheck
-              //     ? "비밀번호 일치합니다."
-              //     : "비밀번호 일치하지 않습니다."
-              // }
               id='outlined-adornment-password'
               type={showPassword ? "text" : "password"}
               endAdornment={
@@ -292,9 +287,11 @@ const SignUpSection = () => {
             // marginBottom='40px'
             color={signUpInfo.pwd === signUpInfo.pwdCheck ? "green" : "red"}
           >
-            {signUpInfo.pwd === signUpInfo.pwdCheck
-              ? "비밀번호가 일치합니다."
-              : "비밀번호가 일치하지 않습니다."}
+            {signUpInfo.pwd || signUpInfo.pwdCheck
+              ? signUpInfo.pwd === signUpInfo.pwdCheck
+                ? "비밀번호가 일치합니다."
+                : "비밀번호가 일치하지 않습니다."
+              : "새 비밀번호를 입력해주세요"}
           </Typography>
         </Box>
         <InnerInput

@@ -64,41 +64,49 @@ router.post("/login", (req, res) => {
   const sqlQuery = "SELECT * FROM users WHERE user_id = ?;";
   db.query(sqlQuery, [user_id], (err, result) => {
     if (err) {
-      console.log(err);
+      console.log("에러임", err);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal Server Error" });
     } else {
-      const isAuthenticated = verifyPassword(
-        req.body.pwd,
-        // user_hash,
-        // user.salt
-        result[0].user_hash,
-        result[0].user_salt
-      );
-      // console.log("일치정보", isAuthenticated);
-      if (isAuthenticated) {
-        // 사용자 정보를 포함하는 세션 객체 생성
-        const userInfo = {
-          no: result[0].user_no,
-          id: result[0].user_id,
-          name: result[0].user_name,
-          phone: result[0].user_phone,
-          gender: result[0].user_gender,
-          birth: result[0].user_birth,
-          quiz: result[0].user_quiz,
-          answer: result[0].user_answer,
-          email: result[0].user_email,
-          createdAt: result[0].user_createdAt,
-          updatedAt: result[0].user_updatedAt,
-        };
-
-        req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
-        console.log("확인들어갑니다잉", req.session.userInfo);
-        res.cookie("sid", req.sessionID, {
-          maxAge: 1000 * 60 * 60 * 24,
-          domain: "localhost",
-        }); // 세션 ID를 브라우저에 sid쿠키로 저장
-        res.send(userInfo); //필요 없을 듯.? 이 아니네 이거 없으면 쿠키 안생김 왜.,.?
+      if (!result[0]) {
+        // 원하는 아이디를 찾지 못한 경우
+        // (참고)(중요) : status가 200대가 아니면 무조건 catch로 가버린다.
+        res.status(200).json({ success: false, message: "wrongId" });
       } else {
-        res.send("Login failed");
+        const isAuthenticated = verifyPassword(
+          req.body.pwd,
+          result[0].user_hash,
+          result[0].user_salt
+        );
+        if (isAuthenticated) {
+          // 사용자 정보를 포함하는 세션 객체 생성
+          const userInfo = {
+            no: result[0].user_no,
+            id: result[0].user_id,
+            name: result[0].user_name,
+            phone: result[0].user_phone,
+            gender: result[0].user_gender,
+            birth: result[0].user_birth,
+            quiz: result[0].user_quiz,
+            answer: result[0].user_answer,
+            email: result[0].user_email,
+            createdAt: result[0].user_createdAt,
+            updatedAt: result[0].user_updatedAt,
+          };
+
+          req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
+          console.log("확인들어갑니다잉", req.session.userInfo);
+          res.cookie("sid", req.sessionID, {
+            maxAge: 1000 * 60 * 60 * 24,
+            domain: "localhost",
+          }); // 세션 ID를 브라우저에 sid쿠키로 저장
+          // res.send(userInfo); //필요 없을 듯.? 이 아니네 이거 없으면 쿠키 안생김 왜.,.?
+          res.status(200).json({ success: true, userInfo });
+        } else {
+          // res.send("Login failed");
+          res.status(200).json({ success: false, message: "wrongPw" });
+        }
       }
     }
   });
@@ -231,6 +239,117 @@ router.put("/findPw/changePw", (req, res) => {
       res.send(result);
     }
   });
+});
+//==============================================
+//회원정보 수정 =================================
+
+router.post("/changeUserInfo", (req, res) => {
+  const user_id = req.body.id;
+  const user_name = req.body.name;
+  const user_birth = req.body.birth;
+  const user_gender = req.body.gender;
+  const user_phone = req.body.phone;
+  const user_quiz = req.body.quiz;
+  const user_answer = req.body.answer;
+  const user_email = req.body.emailId + req.body.emailDomains;
+  const user_no = req.body.no;
+  const user_createdAt = req.body.createdAt;
+  const user_updatedAt = req.body.updatedAt;
+  let user_salt;
+  let user_hash;
+
+  // 새로 입력된 비밀번호값이 있다면, 해시화 해서 변수에 각각 저장한다.
+  if (req.body.pwd) {
+    const { salt, hash } = hashPassword(req.body.pwd);
+    user_salt = salt;
+    user_hash = hash;
+  }
+
+  if (req.body.pwd) {
+    // 새로 입력된 비밀번호값이 있다면, 비번 포함 업데이트
+    const sqlQuery =
+      "UPDATE users SET user_salt=?,user_hash=?,user_name=?,user_birth=?,user_gender=?,user_phone=?,user_quiz=?,user_answer=?,user_email=? WHERE user_id = ?;";
+    db.query(
+      sqlQuery,
+      [
+        user_salt,
+        user_hash,
+        user_name,
+        user_birth,
+        user_gender,
+        user_phone,
+        user_quiz,
+        user_answer,
+        user_email,
+        user_id,
+      ],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          const userInfo = {
+            no: user_no,
+            id: user_id,
+            name: user_name,
+            phone: user_phone,
+            gender: user_gender,
+            birth: user_birth,
+            quiz: user_quiz,
+            answer: user_answer,
+            email: user_email,
+            createdAt: user_createdAt,
+            updatedAt: user_updatedAt,
+            salt: user_salt,
+            hash: user_hash,
+          };
+
+          console.log("확인좀해보자1", result);
+          req.session.userInfo = userInfo;
+          res.send(result);
+        }
+      }
+    );
+  } else {
+    // // 새로 입력된 비밀번호값이 없다면, 비번 미포함 업데이트
+    const sqlQuery =
+      "UPDATE users SET user_name=?,user_birth=?,user_gender=?,user_phone=?,user_quiz=?,user_answer=?,user_email=? WHERE user_id = ?;";
+    db.query(
+      sqlQuery,
+      [
+        user_name,
+        user_birth,
+        user_gender,
+        user_phone,
+        user_quiz,
+        user_answer,
+        user_email,
+        user_id,
+      ],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          const userInfo = {
+            no: user_no,
+            id: user_id,
+            name: user_name,
+            phone: user_phone,
+            gender: user_gender,
+            birth: user_birth,
+            quiz: user_quiz,
+            answer: user_answer,
+            email: user_email,
+            createdAt: user_createdAt,
+            updatedAt: user_updatedAt,
+          };
+
+          console.log("확인좀해보자2", result);
+          req.session.userInfo = userInfo;
+          res.send(result);
+        }
+      }
+    );
+  }
 });
 //==============================================
 

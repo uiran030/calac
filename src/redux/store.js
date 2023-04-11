@@ -1,13 +1,22 @@
 import { createStore } from "redux";
-import rootReducer from "./rootReducer";
-// import logger from "redux-logger";
-// import { composeWithDevTools } from "redux-devtools-extension";
+import sidCookieReducer from "./user/reducer";
+import { setHasSidCookie } from "./user/actions";
 
-// const middleware = [logger]; // 미들웨어가 여러개가 될 수 있기 때문에 하는 작업
+const store = createStore(sidCookieReducer);
 
-const store = createStore(
-  rootReducer
-  // composeWithDevTools(applyMiddleware(...middleware))
-);
+const checkSidCookie = () => {
+  // 브라우저에 저장된 쿠키를 받아오는 함수
+  const sidCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  };
+
+  const hasSidCookie = Boolean(sidCookie("sid"));
+  store.dispatch(setHasSidCookie(hasSidCookie));
+};
+
+// 1초마다 checkSidCookie 함수 호출
+setInterval(checkSidCookie, 1000);
 
 export default store;
