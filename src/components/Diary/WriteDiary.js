@@ -19,7 +19,7 @@ const WriteDiary = () => {
   const imgLink = "http://localhost:5000/images/diary";
   // ckeditor img upload ==================================
   const customUploadAdapter = (loader) => {
-    return {
+    return {  
       upload(){
         return new Promise ((resolve, reject) => {
           const data = new FormData();
