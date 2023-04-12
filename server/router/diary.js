@@ -24,15 +24,6 @@ router.get('/',(req,res) => {
   })
 });
 //==============================================
-router.post('/onePost', (req,res) => {
-  const no = req.body.no;
-  let selectQuery = `SELECT * FROM diary WHERE diary_no=${no}`;
-  db.query(selectQuery, (err,result) => {
-    if(err) console.log("err",err);
-    else {res.send(result)}
-  })
-})
-//==============================================
 router.get('/count',(req,res)=>{
   const countQuery = 'SELECT COUNT(*) FROM diary;'
   db.query(countQuery, (err, result) => {
@@ -101,6 +92,26 @@ const upload = multer({
 
 router.post('/upload', upload.single("file"), (req,res) => {
   res.status(200).json(req.file);
+});
+
+//==============================================
+router.post('/onePost', (req,res) => {
+  const no = req.body.no;
+  let selectQuery = `SELECT * FROM diary WHERE diary_no=${no}`;
+  db.query(selectQuery, (err,result) => {
+    if(err) console.log("err",err);
+    else {res.send(result)}
+  })
+});
+//==============================================
+router.post('/modify', (req,res) => {
+  const no = req.body.no;
+  const newTitle = req.body.newTitle;
+  let modifyQuery = `UPDATE diary SET title=${newTitle} WHERE diary_no=${no}`;
+  db.query(modifyQuery, (err,result) => {
+    if(err) console.log("err",err);
+    else {res.send(result)}
+  })
 });
 //==============================================
 module.exports = router;

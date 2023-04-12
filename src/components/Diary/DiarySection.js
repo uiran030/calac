@@ -3,9 +3,8 @@ import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import DiaryCard from './DiaryCard';
 import WriteDiary from './WriteDiary';
-import axios from 'axios';
 
-const FeedSection = () => {
+const FeedSection = ({ hasSidCookie }) => {
   return (
     <MyBox>
       <Title>

@@ -41,8 +41,6 @@ const FindIdPwBox = () => {
         console.error(error);
       });
   };
-  //====================================================
-  //##########################################################################################
   return (
     <IdBoxWrap>
       <Typography color='primary' fontWeight={700} fontSize='20px'>

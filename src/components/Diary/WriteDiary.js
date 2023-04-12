@@ -6,9 +6,10 @@ import CreateIcon from '@mui/icons-material/Create';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
-import DiaryCard from './DiaryCard';
+import NoPermissionBlock from "../common/NoPermissionBlock";
+import { connect } from "react-redux";
 
-const WriteDiary = () => {
+const WriteDiary = ({ hasSidCookie }) => {
   const [open, setOpen] = useState(false);
   const [allContent, setAllContent] = useState({
     title : '',
@@ -19,7 +20,7 @@ const WriteDiary = () => {
   const imgLink = "http://localhost:5000/images/diary";
   // ckeditor img upload ==================================
   const customUploadAdapter = (loader) => {
-    return {
+    return {  
       upload(){
         return new Promise ((resolve, reject) => {
           const data = new FormData();
@@ -100,6 +101,7 @@ const WriteDiary = () => {
         onClick={()=>setOpen(true)}
       > Write
       </Button>
+      
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -125,9 +127,8 @@ const WriteDiary = () => {
                 multiline 
                 name="title"
                 onChange={getValue}
-              />
+                />
             </TitleBox>
-
             <EditorBox>
               <CKEditor
                 style={{paddingTop:'20px'}}
@@ -148,16 +149,26 @@ const WriteDiary = () => {
                 }}
               />
             </EditorBox>
-
-            <BtnBox>
-              <SubmitButton fullWidth variant="outlined" onClick={submit}>Submit</SubmitButton>
-            </BtnBox>
+            {hasSidCookie ? (
+              <BtnBox>
+                <SubmitButton fullWidth variant="outlined" onClick={submit}>Submit</SubmitButton>
+              </BtnBox>
+            ):(
+              <NoPermissionBlock
+                menu='Diary 작성(은)'
+              />
+            )}
           </ModalBox>
         </Fade>
       </Modal>
     </Box>
   )
 };
+
+// 리덕스 =================================================
+const mapStateToProps = (state) => ({
+  hasSidCookie: state.hasSidCookie,
+});
 //style=================================================
 const ModalBox = styled(Box)({
   position: 'absolute',
@@ -165,7 +176,7 @@ const ModalBox = styled(Box)({
   left: '57%',
   transform: 'translate(-50%, -50%)',
   width: 600,
-  height: '60vh',
+  height: '70vh',
   backgroundColor: '#fff',
   border: '3px solid #07553B',
   boxShadow: 24,
@@ -191,4 +202,4 @@ const SubmitButton = styled(Button)({
 });
 //======================================================
 
-export default WriteDiary
+export default connect(mapStateToProps)(WriteDiary)

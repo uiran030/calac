@@ -37,7 +37,7 @@ const LedgerWeeklyGraph = () => {
           }
         },
       },
-      colors:['#cd2ff5'],
+      colors:['#8f1fab'],
       labels: [`이번주 수입 :`],
     },
   };
@@ -62,6 +62,7 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
+  borderRadius:'10px',
   position:'relative'
 });
 const ChartTopTextBox = styled(Box)({
