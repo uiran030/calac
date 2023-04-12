@@ -13,14 +13,13 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
-// import { connect } from "react-redux";
-// import { setCurrentUser } from "../../../redux/index";
 
-const LoginInputBox = ({ newLogin, setCurrentUser }) => {
+const LoginInputBox = () => {
+  const navigate = useNavigate();
   // 비밀번호 UI =====================================
   const [showPassword, setShowPassword] = useState(false);
 
@@ -60,14 +59,24 @@ const LoginInputBox = ({ newLogin, setCurrentUser }) => {
         { withCredentials: true }
       )
       .then((response) => {
-        console.log("로그인 결과", response.data);
+        const { success, message, userInfo } = response.data;
+        if (success) {
+          alert(`${userInfo.name}님, 환영합니다.`);
+          navigate("/");
+        } else {
+          if (message === "wrongId") {
+            alert("아이디를 확인해주세요.");
+          } else if (message === "wrongPw") {
+            alert("비밀번호를 확인해주세요.");
+          }
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
   // ================================================
-  console.log(loginInfo);
+  // ################################################
   return (
     <InputBoxWrap>
       <InputInner>
@@ -109,9 +118,6 @@ const LoginInputBox = ({ newLogin, setCurrentUser }) => {
           <Button onClick={handleSubmit} variant='contained'>
             로그인
           </Button>
-          {/* test */}
-          {/* <Typography>{newLogin && newLogin.name}</Typography> */}
-          {/*  */}
           <Box
             sx={{
               display: "flex",
@@ -168,20 +174,5 @@ const BtnWrap = styled(Box)({
   display: "flex",
   flexDirection: "column",
 });
-// Redux ===============================================
 
-// const mapStateToProps = (state) => {
-//   return {
-//     newLogin: state.currentUser.newLogin,
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setCurrentUser: () => dispatch(setCurrentUser),
-//   };
-// };
-
-//======================================================
 export default LoginInputBox;
-// export default connect(mapStateToProps, mapDispatchToProps)(LoginInputBox);
