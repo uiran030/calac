@@ -1,14 +1,17 @@
 import React, {useState,useEffect} from 'react';
 import { styled } from "@mui/material/styles";
-import { Box, List, ListItem, ListItemText, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
+import { Box, List, ListItem, ListItemButton, ListItemText, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import DiaryMoreButton from './DiaryMoreButton';
+import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DiaryDetail from './DiaryDetail';
 import axios from 'axios';
 import ReactHtmlParser from "react-html-parser";
+import DiaryModify from './DiaryModify';
 
 const DiaryCard = () => {
   const [openMoreButton, setOpenMoreButton] = useState(false);
+  const [isModify, setIsModify] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [countIndex, setCountIndex] = useState(0);
   const [id, setId] = useState('');
@@ -55,6 +58,22 @@ const DiaryCard = () => {
     }
   }
   //======================================================
+  const handleClickOpen = (id) => {
+    setIsModify(true);
+    console.log(isModify)
+  }
+  //======================================================
+  const onDelete = (id) => {
+    if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
+      axios.post('http://localhost:5000/diary/delete' , {
+        id : id
+      })
+      .then(()=>alert("삭제되었습니다 :)"))
+    } else { 
+      alert("취소되었습니다 :)")
+    }
+  }
+  //======================================================
   useEffect(()=>{
     loadDiary();
     let listRange = document.getElementById("postList");
@@ -74,11 +93,30 @@ const DiaryCard = () => {
                     <MoreVertIcon />
                     {countIndex === list.diary_no && (
                       openMoreButton && (
-                        <DiaryMoreButton 
-                          posts={posts} 
-                          id={list.diary_no}
-                          openMoreButton={openMoreButton}
-                          setOpenMoreButton={setOpenMoreButton}
+                        <MoreBox>
+                          <List>
+                            <ListItem disablePadding >
+                              <ListItemButtonIcon onClick={()=>handleClickOpen(list.diary_no)}> 
+                                <AutoFixNormalIcon />
+                                <ListItemText primary="modify"/>
+                              </ListItemButtonIcon>
+                            </ListItem>
+                            <ListItem disablePadding>
+                              <ListItemButtonIcon  onClick={()=>onDelete(list.diary_no)}>
+                                <DeleteOutlineIcon />
+                                <ListItemText primary="delete" />
+                              </ListItemButtonIcon>
+                            </ListItem>
+                          </List>
+                        </MoreBox>
+                      )
+                    )}
+                    {countIndex === list.diary_no && (
+                      isModify && (
+                        <DiaryModify
+                          isModify={isModify}
+                          setIsModify={setIsModify}
+                          diary_no={list.diary_no}
                         />
                       )
                     )}
@@ -189,6 +227,16 @@ const CommentBox = styled(Box)({
 const CountCommentTypography = styled(Typography)({
   color: 'rgba(0, 0, 0, 0.6)',
   fontSize: '0.875rem'
+});
+//======================================================
+const MoreBox = styled(Box)({
+  maxWidth: 200, 
+  position: 'absolute',
+  top: -7,
+  left: 35
+});
+const ListItemButtonIcon = styled(ListItemButton)({
+  padding: 0
 });
 //======================================================
 export default DiaryCard;
