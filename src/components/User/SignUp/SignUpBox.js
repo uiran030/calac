@@ -23,7 +23,9 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignUpSection = () => {
-  // const [genderValue, setGenderValue] = useState("남성");
+  const navigate = useNavigate();
+
+  //입력값 상태관리 =====================================
   const [signUpInfo, setSignUpInfo] = useState({
     id: "",
     notDuplicated: false,
@@ -38,38 +40,6 @@ const SignUpSection = () => {
     emailId: "",
     emailDomains: "",
   });
-  //======================================================
-  const selectQuiz = [
-    {
-      label: "어릴적 제일 친한 친구의 이름은?",
-      value: "bestFriend",
-    },
-    {
-      label: "나의 고향은?",
-      value: "hometown",
-    },
-    {
-      label: "아버지의 성함은?",
-      value: "father",
-    },
-  ];
-  //======================================================
-  const emailDomains = [
-    { label: "gmail.com", value: "@gmail.com" },
-    { label: "naver.com", value: "@naver.com" },
-    { label: "daum.net", value: "@daum.net" },
-    { label: "hanmail.net", value: "@hanmail.net" },
-    { label: "hotmail.com", value: "@hotmail.com" },
-    { label: "yahoo.com", value: "@yahoo.com" },
-    { label: "nate.com", value: "@nate.com" },
-    { label: "kakao.com", value: "@kakao.com" },
-    { label: "icloud.com", value: "@icloud.com" },
-    { label: "outlook.com", value: "@outlook.com" },
-  ];
-  //======================================================
-  // const handleGender = (e) => {
-  //   setGenderValue(e.target.value);
-  // };
 
   const handleSignUpInfo = (e) => {
     // 중복확인 받고나서 다시 아이디 변경할 경우 대비한 조건문
@@ -84,15 +54,13 @@ const SignUpSection = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
-  // 객체의 값중에 빈 문자열이 있는지 확인( boolean 자료형의 값이 할당 됨)
+  //======================================================
+  // 빈칸이 없는지 확인( boolean 자료형의 값이 할당 됨)=======
   const allValuesNotEmpty = Object.values(signUpInfo).every(
     (val) => val !== ""
   );
-
-  const navigate = useNavigate();
-
-  // 회원가입 정보 DB에 INSERT ======================================================
+  //=========================================================
+  // 회원가입 정보 DB에 INSERT ==============================
   const handleSubmit = () => {
     if (!signUpInfo.notDuplicated) {
       alert("아이디 중복을 확인해주세요.");
@@ -104,6 +72,7 @@ const SignUpSection = () => {
     }
 
     const {
+      // 디스트럭쳐링
       id,
       pwd,
       name,
@@ -163,7 +132,6 @@ const SignUpSection = () => {
     axios
       .get(`http://localhost:5000/users/duplicatedId?inputId=${signUpInfo.id}`)
       .then((response) => {
-        console.log("하아잇", response.data);
         if (response.data.length === 0) {
           alert("사용 가능한 아이디 입니다.");
           setSignUpInfo((prevSignUpInfo) => ({
@@ -188,7 +156,6 @@ const SignUpSection = () => {
     event.preventDefault();
   };
   // ==========================================
-  console.log(signUpInfo);
   return (
     <BoxWrap component='form' noValidate autoComplete='off'>
       <BoxInner>
@@ -346,10 +313,8 @@ const SignUpSection = () => {
           onChange={handleSignUpInfo}
           variant='outlined'
           size='small'
-          // value={currentCategory && currentCategory} // 필요 없는듯,..?
-          // sx={{ width: "200px" }}
         >
-          {selectQuiz.map((option, index) => (
+          {SELECTQUIZ.map((option, index) => (
             <MenuItem key={index} value={option.value && option.value}>
               <Box display='flex' alignItems='center'>
                 <Typography>{option.label}</Typography>
@@ -390,10 +355,8 @@ const SignUpSection = () => {
             onChange={handleSignUpInfo}
             variant='outlined'
             size='small'
-            // value={currentCategory && currentCategory} // 필요 없는듯,..?
-            // sx={{ width: "200px" }}
           >
-            {emailDomains.map((option, index) => (
+            {EMAIL_DOMAINS.map((option, index) => (
               <MenuItem key={index} value={option.value && option.value}>
                 <Box display='flex' alignItems='center'>
                   <Typography>{option.label}</Typography>
@@ -402,7 +365,6 @@ const SignUpSection = () => {
             ))}
           </TextField>
         </Box>
-        {/*  */}
         <SignBtn
           variant='contained'
           disabled={!allValuesNotEmpty}
@@ -441,18 +403,46 @@ const BoxInner = styled(Box)({
 });
 const InnerInput = styled(TextField)({
   width: "100%",
-  // marginBottom: "40px",
 });
 const RadioBox = styled(Box)({
   width: "100%",
   display: "flex",
   alignItems: "center",
-  // marginBottom: "40px",
 });
 const SignBtn = styled(Button)({
   width: "100%",
   height: "50px",
   fontSize: "20px",
 });
+//======================================================
+//이메일 선택 옵션 ======================================
+const EMAIL_DOMAINS = [
+  { label: "gmail.com", value: "@gmail.com" },
+  { label: "naver.com", value: "@naver.com" },
+  { label: "daum.net", value: "@daum.net" },
+  { label: "hanmail.net", value: "@hanmail.net" },
+  { label: "hotmail.com", value: "@hotmail.com" },
+  { label: "yahoo.com", value: "@yahoo.com" },
+  { label: "nate.com", value: "@nate.com" },
+  { label: "kakao.com", value: "@kakao.com" },
+  { label: "icloud.com", value: "@icloud.com" },
+  { label: "outlook.com", value: "@outlook.com" },
+];
+//======================================================
+// 질문 선택 옵션========================================
+const SELECTQUIZ = [
+  {
+    label: "어릴적 제일 친한 친구의 이름은?",
+    value: "bestFriend",
+  },
+  {
+    label: "나의 고향은?",
+    value: "hometown",
+  },
+  {
+    label: "아버지의 성함은?",
+    value: "father",
+  },
+];
 //======================================================
 export default SignUpSection;

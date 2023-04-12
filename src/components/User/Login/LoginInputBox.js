@@ -72,11 +72,11 @@ const LoginInputBox = () => {
         }
       })
       .catch((error) => {
-        console.log("에러염", error);
+        console.log(error);
       });
   };
   // ================================================
-  console.log(loginInfo);
+  // ################################################
   return (
     <InputBoxWrap>
       <InputInner>
@@ -118,9 +118,6 @@ const LoginInputBox = () => {
           <Button onClick={handleSubmit} variant='contained'>
             로그인
           </Button>
-          {/* test */}
-          {/* <Typography>{newLogin && newLogin.name}</Typography> */}
-          {/*  */}
           <Box
             sx={{
               display: "flex",

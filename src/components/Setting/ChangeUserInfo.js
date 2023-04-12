@@ -19,12 +19,14 @@ import { styled } from "@mui/material/styles";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 
-const ChangeUserInfo = ({ login }) => {
+const ChangeUserInfo = ({ hasSidCookie }) => {
   //
+  const navigate = useNavigate();
 
+  // 세션객체에서 받아오고, 수정되는 객체 상태 관리 ===================
   const [sessionUserInfo, setSessionUserInfo] = useState({
     id: "",
     pwd: "",
@@ -48,7 +50,7 @@ const ChangeUserInfo = ({ login }) => {
       [e.target.name]: e.target.value,
     });
   };
-
+  //=================================================================
   // 브라우저에 저장된 쿠키를 받아오는 함수  =========================
   function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -58,6 +60,7 @@ const ChangeUserInfo = ({ login }) => {
   //=================================================================
   //서버 세션객체에 저장되어 있는 정보를 가져옴 ========================
   useEffect(() => {
+    if (!hasSidCookie) return;
     axios
       .get("http://localhost:5000/users/user-info", {
         // 브라우저에 저장되어있는 쿠키를 참조해서 권한 획득
@@ -70,14 +73,11 @@ const ChangeUserInfo = ({ login }) => {
       })
       .then((response) => {
         const { success, userInfo } = response.data;
+        // 성공적으로 유저 정보를 받아온 경우 : 객체에 저장.
         if (success) {
-          console.log("세션객체", userInfo); // 성공적으로 유저 정보를 받아온 경우 userInfo 출력
           const parseEmailId = userInfo.email && userInfo.email.split("@")[0];
           const parseEmailDomains =
             "@" + (userInfo.email && userInfo.email.split("@")[1]);
-
-          console.log("test1", parseEmailId);
-          console.log("test2", parseEmailDomains);
 
           setSessionUserInfo((prev) => ({
             ...prev,
@@ -86,16 +86,16 @@ const ChangeUserInfo = ({ login }) => {
             emailDomains: parseEmailDomains,
           }));
         } else {
-          console.log("세션객체 Unauthorized"); // 유저 정보가 없는 경우 Unauthorized 출력
+          // 유저 정보가 없는 경우
+          console.log("세션객체 Unauthorized"); //  success 아니면 error 갈듯.
         }
       })
       .catch((error) => {
         console.log(error); // 에러 발생 시 에러 메시지 출력
       });
   }, []);
-
-  console.log("이상무!!!!", sessionUserInfo);
-  //==============================================
+  //=================================================================
+  // 인증 상태값 관리 ================================================
   const [authInfo, setAuthInfo] = useState({ id: "", pwd: "" });
   const handleAuthInfo = (e) =>
     setAuthInfo((prev) => ({
@@ -103,6 +103,9 @@ const ChangeUserInfo = ({ login }) => {
       id: sessionUserInfo.id,
       pwd: e.target.value,
     }));
+  //=================================================================
+  // 인증 요청 =======================================================
+  const [unauthorized, setUnauthorized] = useState(true);
   const handleSubmitAuthInfo = () => {
     console.log("확인", authInfo);
     axios
@@ -128,8 +131,8 @@ const ChangeUserInfo = ({ login }) => {
         console.log(error);
       });
   };
-
-  //==============================================
+  //=================================================================
+  //수정된 정보 DB에 UPDATE ==========================================
   const handleSave = () => {
     axios
       .post(
@@ -152,7 +155,6 @@ const ChangeUserInfo = ({ login }) => {
         { withCredentials: true }
       )
       .then((response) => {
-        console.log(response);
         if (
           window.confirm(
             `변경이 완료되었습니다. 메인화면으로 이동하시겠습니까?`
@@ -183,48 +185,12 @@ const ChangeUserInfo = ({ login }) => {
       })
       .finally(() => {});
   };
-
-  //======================================================
-  const selectQuiz = [
-    {
-      label: "어릴적 제일 친한 친구의 이름은?",
-      value: "bestFriend",
-    },
-    {
-      label: "나의 고향은?",
-      value: "hometown",
-    },
-    {
-      label: "아버지의 성함은?",
-      value: "father",
-    },
-  ];
-  //======================================================
-  const emailDomains = [
-    { label: "gmail.com", value: "@gmail.com" },
-    { label: "naver.com", value: "@naver.com" },
-    { label: "daum.net", value: "@daum.net" },
-    { label: "hanmail.net", value: "@hanmail.net" },
-    { label: "hotmail.com", value: "@hotmail.com" },
-    { label: "yahoo.com", value: "@yahoo.com" },
-    { label: "nate.com", value: "@nate.com" },
-    { label: "kakao.com", value: "@kakao.com" },
-    { label: "icloud.com", value: "@icloud.com" },
-    { label: "outlook.com", value: "@outlook.com" },
-  ];
-  //======================================================
-
-  // 객체의 값중에 빈 문자열이 있는지 확인( boolean 자료형의 값이 할당 됨)
-  // const allValuesNotEmpty = Object.values(sessionUserInfo).every(
-  //   (val) => val !== ""
-  // );
+  //=================================================================
+  // 비밀번호, 비밀번호 확인을 제외한 객체의 값중에 빈 문자열이 있는지 확인
   const allValuesNotEmptyExceptPwd = Object.entries(sessionUserInfo)
     .filter(([key]) => key !== "pwd" && key !== "pwdCheck")
     .every(([key, val]) => val !== "");
-
-  const navigate = useNavigate();
-
-  // 회원가입 정보 DB에 INSERT ======================================================
+  // 회원가입 정보 DB에 INSERT ========================================
   const handleSubmit = () => {
     if (!sessionUserInfo.notDuplicated) {
       alert("아이디 중복을 확인해주세요.");
@@ -289,7 +255,6 @@ const ChangeUserInfo = ({ login }) => {
   };
 
   //============================================
-
   // 패스워드 UI 관련 ===========================
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -299,10 +264,6 @@ const ChangeUserInfo = ({ login }) => {
     event.preventDefault();
   };
   // ==========================================
-  // console.log(sessionUserInfo);
-
-  const [unauthorized, setUnauthorized] = useState(true);
-
   return (
     <BoxWrap component='form' noValidate autoComplete='off'>
       <BoxInner>
@@ -327,12 +288,7 @@ const ChangeUserInfo = ({ login }) => {
           size='small'
           disabled
         />
-        <Box
-          display='flex'
-          justifyContent='space-between'
-          width='100%'
-          // marginBottom='40px'
-        >
+        <Box display='flex' justifyContent='space-between' width='100%'>
           <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='outlined-adornment-password'>
               기존 비밀번호 *
@@ -425,12 +381,10 @@ const ChangeUserInfo = ({ login }) => {
               label='새 비밀번호 확인'
             />
           </FormControl>
-
           <Typography
             fontSize='12px'
             width='100%'
             paddingLeft='10px'
-            // marginBottom='40px'
             color={
               unauthorized
                 ? "grey"
@@ -504,7 +458,6 @@ const ChangeUserInfo = ({ login }) => {
           size='small'
           disabled={unauthorized}
         />
-        {/*  */}
         <TextField
           id='outlined-select-currency'
           select
@@ -517,10 +470,8 @@ const ChangeUserInfo = ({ login }) => {
           variant='outlined'
           size='small'
           disabled={unauthorized}
-          // value={currentCategory && currentCategory} // 필요 없는듯,..?
-          // sx={{ width: "200px" }}
         >
-          {selectQuiz.map((option, index) => (
+          {SELECTQUIZ.map((option, index) => (
             <MenuItem key={index} value={option.value && option.value}>
               <Box display='flex' alignItems='center'>
                 <Typography>{option.label}</Typography>
@@ -564,10 +515,8 @@ const ChangeUserInfo = ({ login }) => {
             variant='outlined'
             size='small'
             disabled={unauthorized}
-            // value={currentCategory && currentCategory} // 필요 없는듯,..?
-            // sx={{ width: "200px" }}
           >
-            {emailDomains.map((option, index) => (
+            {EMAIL_DOMAINS.map((option, index) => (
               <MenuItem key={index} value={option.value && option.value}>
                 <Box display='flex' alignItems='center'>
                   <Typography>{option.label}</Typography>
@@ -612,6 +561,7 @@ const ChangeUserInfo = ({ login }) => {
     </BoxWrap>
   );
 };
+//#####################################################
 //style=================================================
 const BoxWrap = styled(Box)({
   display: "flex",
@@ -629,26 +579,53 @@ const BoxInner = styled(Box)({
 });
 const InnerInput = styled(TextField)({
   width: "100%",
-  // marginBottom: "40px",
 });
 const RadioBox = styled(Box)({
   width: "100%",
   display: "flex",
   alignItems: "center",
-  // marginBottom: "40px",
 });
 const SignBtn = styled(Button)({
   width: "100%",
   height: "50px",
   fontSize: "20px",
 });
-
-//리덕스========
-
+//======================================================
+//이메일 선택 옵션 ======================================
+const EMAIL_DOMAINS = [
+  { label: "gmail.com", value: "@gmail.com" },
+  { label: "naver.com", value: "@naver.com" },
+  { label: "daum.net", value: "@daum.net" },
+  { label: "hanmail.net", value: "@hanmail.net" },
+  { label: "hotmail.com", value: "@hotmail.com" },
+  { label: "yahoo.com", value: "@yahoo.com" },
+  { label: "nate.com", value: "@nate.com" },
+  { label: "kakao.com", value: "@kakao.com" },
+  { label: "icloud.com", value: "@icloud.com" },
+  { label: "outlook.com", value: "@outlook.com" },
+];
+//======================================================
+// 질문 선택 옵션========================================
+const SELECTQUIZ = [
+  {
+    label: "어릴적 제일 친한 친구의 이름은?",
+    value: "bestFriend",
+  },
+  {
+    label: "나의 고향은?",
+    value: "hometown",
+  },
+  {
+    label: "아버지의 성함은?",
+    value: "father",
+  },
+];
+//======================================================
+//리덕스================================================
 const mapStateToProps = (state) => {
   return {
-    login: state.login,
+    hasSidCookie: state.hasSidCookie,
   };
 };
-
+//======================================================
 export default connect(mapStateToProps)(ChangeUserInfo);
