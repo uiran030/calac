@@ -137,7 +137,7 @@ const LedgerTotalList = () => {
                 {data.ledger_createdAt.split("T")[0]}
                 {/* {(data.ledger_createdAt).toString()}  시간 잘못 보이는것 수정해야함*/}
               </Typography>
-              <Box sx={{width:'15%', display:'flex'}}>
+              <Box sx={{width:'15%', display:'flex', border:'1px solid red'}}>
                 <Button 
                   sx={{width:'50%'}}
                   onClick={()=>handleEdit(data.ledger_no)}
@@ -255,7 +255,7 @@ const ListTableTop = styled(Box)({
   borderBottom:'1px solid #ddd',
   display:'flex',
   alignItems:'center',
-  padding:'5px'
+  padding:'20px'
 });
 const ListTableWrap = styled(Box)({
   height:'calc(100% - 50px)',

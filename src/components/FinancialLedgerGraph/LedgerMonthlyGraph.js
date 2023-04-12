@@ -10,7 +10,6 @@ const LedgerGraphChart = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/monthly/data')
     .then((res) => {
-      console.log('teettt', res.data)
       setMonthlyData(res.data);
     })
   }, []);
