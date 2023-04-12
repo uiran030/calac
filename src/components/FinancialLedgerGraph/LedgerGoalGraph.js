@@ -26,6 +26,7 @@ const LedgerGoalGraph = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/goal')
     .then((res) => {
+<<<<<<< HEAD
       if (res.data.length === 0 ) {
         setNoData(true)
         setMonthlyGoalData(0);
@@ -37,13 +38,23 @@ const LedgerGoalGraph = () => {
         setCreated(res.data[0]['money_createdAt']);
         setUpdated(res.data[0]['money_updatedAt']);
       }
+=======
+      console.log('bbbbbbbbbbbbbbbbbb', res.data)
+      setMonthlyGoalData(res.data[0]);
+      setMoneyNo(res.data[0]['money_no']);
+      setMoney(res.data[0]['money_count']);
+      setCreated(res.data[0]['money_createdAt']);
+      setUpdated(res.data[0]['money_updatedAt']);
+>>>>>>> parent of b783cc8 (Merge branch 'work/euiran' into develop)
     })
   }, [money]);
+  console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa', money)
   //======================================================
   const type = 'expense'
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger/total?type=${type}`)
     .then((res) => {
+      console.log('rrrrrrrrrrrrrrrrrrrrrrrr', res.data[0][0])
       res.data[0][0] !== {} ? (
         setTotalCountData(res.data[0][0]['sum_count'])
       ) : (
@@ -51,6 +62,7 @@ const LedgerGoalGraph = () => {
       );
     })
   }, []);
+  console.log('dddddddddddddddddddddddddddd', totalCountData)
   //======================================================
   const hadleChangeGoalMoney = (e) => {
     setChangeGoalMoney(e.target.value);
@@ -252,7 +264,6 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
-  borderRadius:'10px',
   position:'relative'
 });
 const ChartTopTextBox = styled(Box)({
