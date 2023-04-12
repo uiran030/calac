@@ -53,13 +53,6 @@ const FindIdPwBox = () => {
         console.error(error);
       });
   };
-<<<<<<< HEAD
-  console.log(foundId);
-  //======================================================
-=======
-  //====================================================
-  //##########################################################################################
->>>>>>> parent of b783cc8 (Merge branch 'work/euiran' into develop)
   return (
     <IdBoxWrap>
       <Typography color='primary' fontWeight={700} fontSize='20px'>
