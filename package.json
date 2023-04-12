@@ -49,7 +49,6 @@
     "react-apexcharts": "^1.4.0",
     "react-calendar": "^4.0.0",
     "react-color": "^2.19.3",
-    "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-html-parser": "^2.0.2",
     "react-kakao-maps-sdk": "^1.1.6",

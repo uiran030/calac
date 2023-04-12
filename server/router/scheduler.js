@@ -69,7 +69,6 @@ router.put("/update/:id", (req, res) => {
   });
 });
 //==============================================
-
 router.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
   const sqlQuery = `DELETE FROM event_list WHERE id = ${id};`;

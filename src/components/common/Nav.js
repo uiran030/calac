@@ -1,33 +1,16 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Typography,
-} from "@mui/material";
+import { Box,List,ListItem,ListItemText,Divider,Typography } from "@mui/material";
 import "../../assets/css/App.css";
 import { Link } from "react-router-dom";
 import JoinRightRoundedIcon from "@mui/icons-material/JoinRightRounded";
-import { connect } from "react-redux";
-import { useCookies } from "react-cookie";
 
-const Nav = ({ hasSidCookie }) => {
+const Nav = () => {
   //=================================================================================
   const [btnActive, setBtnActive] = useState("dashBoard");
   //=================================================================================
   const toggleActive = () => {
     setBtnActive(true);
-  };
-
-  ///
-  const [cookies, setCookie, removeCookie] = useCookies(["sid", "connect.sid"]);
-
-  const handleLogout = () => {
-    removeCookie("sid", { path: "/" });
-    removeCookie("connect.sid", { path: "/" });
   };
   //=================================================================================
   return (
@@ -37,19 +20,11 @@ const Nav = ({ hasSidCookie }) => {
           <List disablePadding>
             <Link to='/'>
               <ListItem
-                sx={{ height: "110px", paddingRight: "30px" }}
-                onClick={() => {
-                  setBtnActive("dashBoard");
-                }}
+                sx={{height:"110px", paddingRight:"30px"}}
+                onClick={() => { setBtnActive("dashBoard"); }}
               >
-                <Typography
-                  color='secondary'
-                  fontSize='30px'
-                  sx={{ margin: "Auto" }}
-                >
-                  <JoinRightRoundedIcon
-                    sx={{ fontSize: "30px", marginX: "9px" }}
-                  />
+                <Typography color="secondary" fontSize="30px" sx={{margin:"Auto"}}>
+                  <JoinRightRoundedIcon sx={{fontSize: "30px", marginX:"9px"}} />
                   C A L A C
                 </Typography>
               </ListItem>
@@ -135,33 +110,21 @@ const Nav = ({ hasSidCookie }) => {
       </nav>
       <Box marginBottom={10} fontSize={30}>
         <nav>
-          {hasSidCookie ? (
-            <List>
-              <ListItem onClick={handleLogout}>
+          <List>
+            <Link to='/login'>
+              <ListItem
+                onClick={() => {
+                  setBtnActive("login");
+                }}
+              >
                 <TitleColor
-                  primary='Logout'
+                  primary='Login'
                   disableTypography
-                  sx={{ fontSize: "30px", cursor: "pointer" }}
+                  sx={{ fontSize: "30px" }}
                 />
               </ListItem>
-            </List>
-          ) : (
-            <List>
-              <Link to='/login'>
-                <ListItem
-                  onClick={() => {
-                    setBtnActive("login");
-                  }}
-                >
-                  <TitleColor
-                    primary='Login'
-                    disableTypography
-                    sx={{ fontSize: "30px" }}
-                  />
-                </ListItem>
-              </Link>
-            </List>
-          )}
+            </Link>
+          </List>
           <Link to='/login/signup'>
             <Typography sx={{ color: "#c1c1c1", textDecoration: "underline" }}>
               Sign up
@@ -194,16 +157,10 @@ const TitleColor = styled(ListItemText)({
   margin: `10px`,
 });
 const CommonListItem = styled(ListItem)({
-  height: "70px",
-  boxSize: "border-box",
+  height: "70px", 
+  boxSize: "border-box"
 });
 //======================================================
-// export default function StyledComponents() {
-//   return <Nav>StyledComponents</Nav>;
-// }
-
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
-
-export default connect(mapStateToProps)(Nav);
+export default function StyledComponents() {
+  return <Nav>StyledComponents</Nav>;
+}

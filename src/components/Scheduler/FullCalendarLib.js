@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
-import { Box, Typography, styled } from "@mui/material";
+import { Box } from "@mui/material";
 import listPlugin from "@fullcalendar/list";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap/dist/css/bootstrap.css";
@@ -18,7 +18,7 @@ import EventAddModal from "./EventAddModal";
 import EventRender from "./EventRender";
 import AlertControl from "./AlertControl";
 
-const DemoApp = () => {
+export default function DemoApp() {
   // 상태관리 변수 ===============================================================================
   const [currentEvents, setCurrentEvents] = useState([]); // 현재 모든 이벤트둘
   const [categoryList, setCategoryList] = useState([]); // 카테고리 목록
@@ -688,26 +688,4 @@ const DemoApp = () => {
       {/* <AlertControl alertEvents={alertEvents} /> */}
     </Box>
   );
-};
-
-//style=================================================
-
-const BlockBox = styled(Box)({
-  zIndex: 100,
-  position: "absolute",
-  top: "0",
-  left: "0",
-  // backgroundColor: "red",
-  color: "blue",
-  // bgcolor: "rgba(193, 193, 193, .75)",
-  // boxShadow : '0 6px 20px -15px #000',
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  flexDirection: "colum",
-  // gap: "20px",
-});
-
-//======================================================
-
-export default DemoApp;
+}

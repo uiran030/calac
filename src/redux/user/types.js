@@ -1,1 +1,0 @@
-export const SET_HAS_SID_COOKIE = "SET_HAS_SID_COOKIE";
