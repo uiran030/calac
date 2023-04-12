@@ -9,7 +9,6 @@ const connectDB = require('../config/connectDB.js');
 const db = connectDB.init();
 connectDB.open(db);
 //==============================================
-
 router.get('/',(req,res) => {
   const limit = req.query.limit;
   const offset = req.query.offset;
@@ -24,6 +23,15 @@ router.get('/',(req,res) => {
     else {res.send(result)}
   })
 });
+//==============================================
+router.post('/onePost', (req,res) => {
+  const no = req.body.no;
+  let selectQuery = `SELECT * FROM diary WHERE diary_no=${no}`;
+  db.query(selectQuery, (err,result) => {
+    if(err) console.log("err",err);
+    else {res.send(result)}
+  })
+})
 //==============================================
 router.get('/count',(req,res)=>{
   const countQuery = 'SELECT COUNT(*) FROM diary;'

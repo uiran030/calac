@@ -4,18 +4,33 @@ import { styled } from "@mui/material/styles";
 import { Box, Typography, Button, Divider, TextField, Dialog, DialogTitle, DialogContent, Avatar} from "@mui/material";
 import axios from 'axios';
 
-
-const DiaryModify = ({isModifyOpen,setIsModifyOpen,id,posts}) => {
+const DiaryModify = ({isModify,setIsModify,diary_no}) => {
   //======================================================
-  console.log("1",isModifyOpen)
+  const [getPost, setGetPost] = useState({
+    title : '',
+    content : '',
+    image : ''
+  });
+  const [test,setTest] = useState('testtest')
+  //======================================================
   useEffect(()=>{
+    console.log("modify",diary_no);
+    axios.post("http://localhost:5000/diary/onePost", {no:diary_no})
+    .then(res=>{
+      console.log(res.data[0])
+      setGetPost({
+        title : res.data[0].title,
+        content : res.data[0].content_parse,
+        image : res.data[0].image
+      })
+    });
   },[])
   //======================================================
   return (
     <Box>
       <MyDialog
-        open={isModifyOpen}
-        onClose={()=>setIsModifyOpen(!isModifyOpen)}
+        open={isModify}
+        onClose={()=>setIsModify(false)}
         aria-labelledby="customized-dialog-title"
       >
         <DialogBox>
@@ -23,7 +38,12 @@ const DiaryModify = ({isModifyOpen,setIsModifyOpen,id,posts}) => {
             <Avatar alt="Remy Sharp" src="/images/avatar.png">
               <UserTypography>{}</UserTypography>
             </Avatar>
-            <DialogTitle>{}</DialogTitle>
+            <TitleTextField
+                id="standard-helperText"
+                defaultValue={getPost.title}
+                helperText="update Title"
+                variant="standard"
+              />
           </TitleBox>
           <DateTypography>{}</DateTypography>
           <MyDialogContent dividers>
@@ -55,6 +75,9 @@ const TitleBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   padding: '15px 15px 0',
+})
+const TitleTextField = styled(TextField)({
+
 })
 const UserTypography = styled(Typography)({
   padding: 0,
