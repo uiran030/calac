@@ -1,6 +1,22 @@
-// import { combineReducers } from 'redux';
-// import goalReducer from './reducer/goalReducer';
+import { createStore } from "redux";
+import sidCookieReducer from "./user/reducer";
+import { setHasSidCookie } from "./user/actions";
 
-// export default combineReducers({
-//   goal : goalReducer,
-// })
+const store = createStore(sidCookieReducer);
+
+const checkSidCookie = () => {
+  // 브라우저에 저장된 쿠키를 받아오는 함수
+  const sidCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  };
+
+  const hasSidCookie = Boolean(sidCookie("sid"));
+  store.dispatch(setHasSidCookie(hasSidCookie));
+};
+
+// 1초마다 checkSidCookie 함수 호출
+setInterval(checkSidCookie, 1000);
+
+export default store;
