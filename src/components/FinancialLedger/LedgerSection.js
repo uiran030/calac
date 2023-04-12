@@ -7,10 +7,20 @@ import LedgerTopThree from './LedgerTopThree';
 import LedgerGraphSection from '../FinancialLedgerGraph/LedgerGraphSection';
 import OpenModalBtn from '../common/OpenModalBtn';
 import LedgerMonthlyGraph from '../FinancialLedgerGraph/LedgerMonthlyGraph';
+import NoPermissionBlock from "../common/NoPermissionBlock";
+import { connect } from "react-redux";
 
-const FinancialLedger = () => {
+const FinancialLedger = ({ hasSidCookie }) => {
   return (
     <LedgerWrap>
+      {hasSidCookie ? (
+        ""
+      ) : (
+        <NoPermissionBlock
+          menu='가계부'
+          /* comment='여기에 개별 멘트를 주가할 수 있습니다.' */
+        />
+      )}
       <TopBarWrap>
         <TopBar />
       </TopBarWrap>
@@ -52,4 +62,9 @@ const LedgerBox = styled(Box)({
   margin:'50px 0'
 });
 //======================================================
-export default FinancialLedger;
+// 리덕스 =================================================
+const mapStateToProps = (state) => ({
+  hasSidCookie: state.hasSidCookie,
+});
+// ========================================================
+export default connect(mapStateToProps)(FinancialLedger);
