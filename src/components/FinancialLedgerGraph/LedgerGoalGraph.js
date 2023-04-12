@@ -44,6 +44,7 @@ const LedgerGoalGraph = () => {
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger/total?type=${type}`)
     .then((res) => {
+      console.log('rrrrrrrrrrrrrrrrrrrrrrrr', res.data[0][0])
       res.data[0][0] !== {} ? (
         setTotalCountData(res.data[0][0]['sum_count'])
       ) : (
@@ -252,7 +253,6 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
-  borderRadius:'10px',
   position:'relative'
 });
 const ChartTopTextBox = styled(Box)({
