@@ -65,6 +65,7 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
+  borderRadius:'10px',
   position:'relative'
 });
 const ChartTopTextBox = styled(Box)({
