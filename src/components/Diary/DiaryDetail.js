@@ -96,7 +96,6 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
               </Avatar>
               <DialogTitle>{title}</DialogTitle>
             </TitleSmallBox>
-            <UpdateBox><Button>수정</Button></UpdateBox>
           </TitleBox>
           <DateTypography>{createdAt}</DateTypography>
           <MyDialogContent dividers>
@@ -176,8 +175,6 @@ const TitleSmallBox = styled(Box)({
 const UserTypography = styled(Typography)({
   padding: 0,
   marginLeft: 13,
-})
-const UpdateBox = styled(Box)({
 })
 const DateTypography = styled(Typography)({
   fontSize: 15,
