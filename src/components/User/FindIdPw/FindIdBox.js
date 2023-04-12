@@ -4,22 +4,7 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 
 const FindIdPwBox = () => {
-  //======================================================
-  const emailDomains = [
-    { label: "gmail.com", value: "@gmail.com" },
-    { label: "naver.com", value: "@naver.com" },
-    { label: "daum.net", value: "@daum.net" },
-    { label: "hanmail.net", value: "@hanmail.net" },
-    { label: "hotmail.com", value: "@hotmail.com" },
-    { label: "yahoo.com", value: "@yahoo.com" },
-    { label: "nate.com", value: "@nate.com" },
-    { label: "kakao.com", value: "@kakao.com" },
-    { label: "icloud.com", value: "@icloud.com" },
-    { label: "outlook.com", value: "@outlook.com" },
-  ];
-  //======================================================
-  const [foundId, setFoundId] = useState("");
-
+  // 입력값 상태관리 =======================================
   const [findIdInfo, setFindIdInfo] = useState({
     name: "",
     emailId: "",
@@ -32,12 +17,15 @@ const FindIdPwBox = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
+  //======================================================
+  // 모든 값이 빈칸이 아닌지 확인 ==========================
   const allValuesNotEmpty = Object.values(findIdInfo).every(
     (val) => val !== ""
   );
+  //=====================================================
+  // 아이디 찾기 =========================================
+  const [foundId, setFoundId] = useState("");
 
-  //=========================================
   const handleFindId = () => {
     axios
       .get(
@@ -53,8 +41,6 @@ const FindIdPwBox = () => {
         console.error(error);
       });
   };
-  console.log(foundId);
-  //======================================================
   return (
     <IdBoxWrap>
       <Typography color='primary' fontWeight={700} fontSize='20px'>
@@ -94,7 +80,7 @@ const FindIdPwBox = () => {
           size='small'
           onChange={handleFindIdInfo}
         >
-          {emailDomains.map((option, index) => (
+          {EMAIL_DOMAINS.map((option, index) => (
             <MenuItem key={index} value={option.value && option.value}>
               <Box display='flex' alignItems='center'>
                 <Typography>{option.label}</Typography>
@@ -137,5 +123,19 @@ const FindValueBox = styled(Box)({
   margin: "40px 0",
   textAlign: "center",
 });
+//======================================================
+//이메일 선택 옵션 ======================================
+const EMAIL_DOMAINS = [
+  { label: "gmail.com", value: "@gmail.com" },
+  { label: "naver.com", value: "@naver.com" },
+  { label: "daum.net", value: "@daum.net" },
+  { label: "hanmail.net", value: "@hanmail.net" },
+  { label: "hotmail.com", value: "@hotmail.com" },
+  { label: "yahoo.com", value: "@yahoo.com" },
+  { label: "nate.com", value: "@nate.com" },
+  { label: "kakao.com", value: "@kakao.com" },
+  { label: "icloud.com", value: "@icloud.com" },
+  { label: "outlook.com", value: "@outlook.com" },
+];
 //======================================================
 export default FindIdPwBox;

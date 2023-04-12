@@ -17,22 +17,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 
 const FindPwBox = () => {
-  //======================================================
-  const selectQuiz = [
-    {
-      label: "어릴적 제일 친한 친구의 이름은?",
-      value: "bestFriend",
-    },
-    {
-      label: "나의 고향은?",
-      value: "hometown",
-    },
-    {
-      label: "아버지의 성함은?",
-      value: "father",
-    },
-  ];
-  //==============================================
+  //입력값 상태관리================================
   const [identification, setIdentification] = useState({
     id: "",
     quiz: "",
@@ -54,23 +39,15 @@ const FindPwBox = () => {
   const allValuesNotEmpty = Object.values(identification).every(
     (val) => val !== ""
   );
-
-  const [identified, setIdentified] = useState({ message: "", boolean: false });
   //==============================================
+  //본인확인 ====================================
+  const [identified, setIdentified] = useState({ message: "", boolean: false });
   const [newPwd, setNewPwd] = useState({ pwd: "", pwdCheck: "" });
   const handleNewPwd = (e) => {
     setNewPwd((preNewPwd) => ({
       ...preNewPwd,
       [e.target.name]: e.target.value,
     }));
-  };
-  // 패스워드 UI 관련 ===========================
-  const [showPassword, setShowPassword] = React.useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
   };
 
   const handleFindPw = () => {
@@ -79,7 +56,6 @@ const FindPwBox = () => {
         `http://localhost:5000/users/findPw?inputId=${identification.id}&inputQuiz=${identification.quiz}&inputAnswer=${identification.answer}`
       )
       .then((response) => {
-        // console.log("되겠지", response);
         if (response.data) {
           setIdentified({
             message: "본인 확인이 완료되었습니다.",
@@ -91,15 +67,12 @@ const FindPwBox = () => {
             boolean: response.data,
           });
         }
-        // if (response.data.length === 0) {
-        //   setFoundId(`일치하는 정보가 없습니다.`);
-        // } else
-        //   setFoundId(`귀하의 아이디는 ${response.data[0].user_id} 입니다.`);
       })
       .catch((error) => {
         console.error(error);
       });
   };
+  //==============================================
   // 비밀번호 변경 ==============================
   const handleChangePw = () => {
     axios // 새 이벤트 DB에 UPDATE
@@ -134,10 +107,16 @@ const FindPwBox = () => {
       });
   };
   // ===========================================
+  // 패스워드 UI 관련 ===========================
+  const [showPassword, setShowPassword] = React.useState(false);
 
-  // ==========================================
-  console.log(identification);
-  console.log(newPwd);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  // =============================================
+  // ############################################
   return (
     <PwBoxWrap>
       <Typography color='primary' fontWeight={700} fontSize='20px'>
@@ -164,7 +143,6 @@ const FindPwBox = () => {
           select
           label='질문'
           defaultValue=''
-          // value={identification.id}
           fullWidth
           required
           variant='outlined'
@@ -172,7 +150,7 @@ const FindPwBox = () => {
           name='quiz'
           onChange={handleIdentification}
         >
-          {selectQuiz.map((option, index) => (
+          {SELECTQUIZ.map((option, index) => (
             <MenuItem key={index} value={option.value && option.value}>
               <Box display='flex' alignItems='center'>
                 <Typography>{option.label}</Typography>
@@ -330,4 +308,20 @@ const FindValueBox = styled(Box)({
   textAlign: "center",
 });
 //======================================================
+//질문 옵션  ==========================================
+const SELECTQUIZ = [
+  {
+    label: "어릴적 제일 친한 친구의 이름은?",
+    value: "bestFriend",
+  },
+  {
+    label: "나의 고향은?",
+    value: "hometown",
+  },
+  {
+    label: "아버지의 성함은?",
+    value: "father",
+  },
+];
+//==============================================
 export default FindPwBox;
