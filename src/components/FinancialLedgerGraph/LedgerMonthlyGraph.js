@@ -77,6 +77,7 @@ const LedgerGraphChart = () => {
 const ChartWrap = styled(Box)({
   width:'100%',
   border:'1px solid #ddd',
+  borderRadius:'10px',
   padding:'10px',
   height:'450px'
 });
