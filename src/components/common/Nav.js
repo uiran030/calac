@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -16,8 +16,9 @@ import { useCookies } from "react-cookie";
 
 const Nav = ({ hasSidCookie }) => {
   //=================================================================================
-  const [btnActive, setBtnActive] = useState("dashBoard");
+  const [btnActive, setBtnActive] = useState("");
   //=================================================================================
+
   const toggleActive = () => {
     setBtnActive(true);
   };
@@ -29,6 +30,10 @@ const Nav = ({ hasSidCookie }) => {
     removeCookie("sid", { path: "/" });
     removeCookie("connect.sid", { path: "/" });
   };
+  //=================================================================================
+  useEffect(()=>{
+    setBtnActive(window.location.pathname.slice(1));
+  })
   //=================================================================================
   return (
     <NavBar>
@@ -67,7 +72,7 @@ const Nav = ({ hasSidCookie }) => {
               >
                 <TitleColor
                   primary='Dashboard'
-                  className={btnActive === "dashBoard" ? "active" : ""}
+                  className={btnActive === "" ? "active" : ""}
                   onClick={toggleActive}
                   disableTypography
                 />
@@ -94,7 +99,7 @@ const Nav = ({ hasSidCookie }) => {
               >
                 <TitleColor
                   primary='Financial Ledger'
-                  className={btnActive === "financialLedger" ? "active" : ""}
+                  className={btnActive === "financialledger" ? "active" : ""}
                   disableTypography
                 />
               </CommonListItem>
@@ -162,11 +167,14 @@ const Nav = ({ hasSidCookie }) => {
               </Link>
             </List>
           )}
+
+          {!hasSidCookie && (
           <Link to='/login/signup'>
             <Typography sx={{ color: "#c1c1c1", textDecoration: "underline" }}>
               Sign up
             </Typography>
           </Link>
+          )}
         </nav>
       </Box>
     </NavBar>

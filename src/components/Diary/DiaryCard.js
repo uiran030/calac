@@ -8,8 +8,10 @@ import DiaryDetail from './DiaryDetail';
 import axios from 'axios';
 import ReactHtmlParser from "react-html-parser";
 import DiaryModify from './DiaryModify';
+import NoPermissionBlock from "../common/NoPermissionBlock";
+import { connect } from "react-redux";
 
-const DiaryCard = () => {
+const DiaryCard = ({hasSidCookie}) => {
   const [openMoreButton, setOpenMoreButton] = useState(false);
   const [isModify, setIsModify] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -67,13 +69,16 @@ const DiaryCard = () => {
   }
   //======================================================
   const onDelete = (id) => {
-    if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
-      axios.post('http://localhost:5000/diary/delete' , {
-        id : id
-      })
-      .then(()=>alert("삭제되었습니다 :)"))
-    } else { 
-      alert("취소되었습니다 :)")
+    if (!hasSidCookie) {alert("삭제 권한이 없습니다. 로그인을 진행해주세요 :(")}
+    else {
+      if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
+        axios.post('http://localhost:5000/diary/delete' , {
+          id : id
+        })
+        .then(()=>alert("삭제되었습니다 :)"))
+      } else { 
+        alert("취소되었습니다 :)")
+      }
     }
   }
   //======================================================
@@ -184,6 +189,10 @@ const DiaryCard = () => {
     </CardBox>
   );
 };
+// 리덕스 =================================================
+const mapStateToProps = (state) => ({
+  hasSidCookie: state.hasSidCookie,
+});
 //style=================================================
 const CardBox = styled(Box)({
   height:'100%'
@@ -242,4 +251,4 @@ const ListItemButtonIcon = styled(ListItemButton)({
   padding: 0
 });
 //======================================================
-export default DiaryCard;
+export default connect(mapStateToProps)(DiaryCard);

@@ -4,8 +4,10 @@ import { styled } from "@mui/material/styles";
 import { Box, List, ListItem, ListItemText, CardMedia, Typography, Button, Divider, TextField, Dialog, DialogTitle, DialogContent, Avatar} from "@mui/material";
 import ReactHtmlParser from "react-html-parser";
 import axios from 'axios';
+import NoPermissionBlock from "../common/NoPermissionBlock";
+import { connect } from "react-redux";
 
-const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) => {
+const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,hasSidCookie}) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState ({comment: ''})
   const [isUpdate, setIsUpdate] = useState('false');
@@ -106,13 +108,23 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
             </DetailBox>
             <DetailDivider/>
             <CommentBox>
-              <CommentTextField 
-                id="outlined-basic" 
-                variant="outlined" 
-                label="댓글달기" 
-                size="small" 
-                onChange={commentHandle}
-              />
+              {!hasSidCookie ? (
+                <CommentTextField
+                  disabled
+                  id="outlined-basic-disabled" 
+                  variant="outlined" 
+                  defaultValue="로그인을 진행해주세요" 
+                  size="small" 
+                />
+              ):(
+                <CommentTextField 
+                  id="outlined-basic" 
+                  variant="outlined" 
+                  label="댓글달기" 
+                  size="small" 
+                  onChange={commentHandle}
+                />
+              )}
               <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
               <List>
                 {comments.map(list => {
@@ -136,9 +148,13 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
                           size="small" 
                           onChange={commentHandle}
                         />
-                        )}
-                      <CommentUpdate onClick={()=>clickUpdateBtn(list.comment_no)}>{isUpdate ? "수정" : "완료"}</CommentUpdate>
-                    <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
+                      )}
+                      {hasSidCookie && (
+                        <>
+                          <CommentUpdate onClick={()=>clickUpdateBtn(list.comment_no)}>{isUpdate ? "수정" : "완료"}</CommentUpdate>
+                          <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
+                        </>
+                      )}
                     </ListItem>
                   )
                 })}
@@ -150,6 +166,10 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt}) 
     </Box>
   )
 };
+// 리덕스 =================================================
+const mapStateToProps = (state) => ({
+  hasSidCookie: state.hasSidCookie,
+});
 //style=================================================
 const MyDialog = styled(Dialog)({
 })
@@ -216,4 +236,4 @@ const CommentDelete = styled(Button)({
 });
 //======================================================
 
-export default DiaryDetail
+export default connect(mapStateToProps)(DiaryDetail)
