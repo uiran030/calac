@@ -115,29 +115,29 @@ const LedgerTotalList = () => {
       </ToggleButtonGroup>
       <ListBox>
         <ListTableTop>
-          <Typography sx={{width:'20%'}}>카테고리</Typography>
-          <Typography sx={{width:'20%'}}>설명</Typography>
-          <Typography sx={{width:'20%'}}>가격</Typography>
-          <Typography sx={{width:'25%'}}>작성일</Typography>
-          <Typography sx={{width:'5%'}}>기능</Typography>
+          <Typography sx={{width:'20%', textAlign:'center'}}>카테고리</Typography>
+          <Typography sx={{width:'20%', textAlign:'center'}}>설명</Typography>
+          <Typography sx={{width:'20%', textAlign:'center'}}>가격</Typography>
+          <Typography sx={{width:'25%', textAlign:'center'}}>작성일</Typography>
+          <Typography sx={{width:'15%', textAlign:'center'}}>기능</Typography>
         </ListTableTop>
         <ListTableWrap>
           {monthlyData && monthlyData.map(data => (
             <ListTableBox key={data.ledger_no}>
-              <Typography sx={{width:'20%'}}>
+              <ListTableText sx={{width:'20%'}}>
                 {data.ledger_category}
-              </Typography>
-              <Typography sx={{width:'20%'}}>
+              </ListTableText>
+              <ListTableText sx={{width:'20%'}}>
                 {data.ledger_description}
-              </Typography>
-              <Typography sx={{width:'20%'}}>
+              </ListTableText>
+              <ListTableText sx={{width:'20%'}}>
                 {data.ledger_count}
-              </Typography>
-              <Typography sx={{width:'25%'}}>
+              </ListTableText>
+              <ListTableText sx={{width:'25%'}}>
                 {data.ledger_createdAt.split("T")[0]}
                 {/* {(data.ledger_createdAt).toString()}  시간 잘못 보이는것 수정해야함*/}
-              </Typography>
-              <Box sx={{width:'15%', display:'flex', border:'1px solid red'}}>
+              </ListTableText>
+              <Box sx={{width:'15%'}}>
                 <Button 
                   sx={{width:'50%'}}
                   onClick={()=>handleEdit(data.ledger_no)}
@@ -260,13 +260,20 @@ const ListTableTop = styled(Box)({
 const ListTableWrap = styled(Box)({
   height:'calc(100% - 50px)',
   overflowY:'scroll',
-  padding:'5px'
+  padding:'5px',
 });
 const ListTableBox = styled(Box)({
   display:'flex',
   alignItems:'center',
   height:'70px',
 });
+const ListTableText = styled(Typography)({
+  height:'100%', 
+  width:'100%',
+  display:'flex', 
+  alignItems:'center',
+  textAlign:'center'
+})
 const ModalTitle = styled(Box)({
   display:'flex',
   justifyContent:'space-between',
