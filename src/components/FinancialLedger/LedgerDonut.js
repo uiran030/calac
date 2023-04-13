@@ -136,7 +136,6 @@ const DountWrap = styled(Box)({
   position:'relative',
   border:'1px solid #ddd',
   padding:'5px',
-  borderRadius:'10px',
   height:'450px'
 });
 const DountGraph = styled(Box)({

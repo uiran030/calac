@@ -22,10 +22,13 @@ const DiaryCard = () => {
   const [posts, setPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState([]);
   //======================================================
+  const [open, setOpen] = useState(false);
+  //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
     setOpenMoreButton(!openMoreButton);
-  }
+    // setOpen(true);
+  };
   //======================================================
   const openDetailModal = (id,title,content,image,createdAt) => {
     setIsDetailOpen(true);
