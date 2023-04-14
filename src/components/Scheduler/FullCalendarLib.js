@@ -46,7 +46,7 @@ const DemoApp = () => {
 
   // 카테고리 목록을 불러옴.
   useEffect(() => {
-    if (!hasSidCookie) return; // 세션 이슈 해결하면 session으로 해도 될듯
+    if (!hasSidCookie || !session || !session.userInfo) return; // 세션 이슈 해결하면 session으로 해도 될듯
     axios
       .get(
         `http://localhost:5000/scheduler/category?currentUserNo=${session.userInfo.no}`
@@ -63,7 +63,7 @@ const DemoApp = () => {
 
   //이벤트 목록을 불러옴.
   useEffect(() => {
-    if (!hasSidCookie) return;
+    if (!hasSidCookie || !session || !session.userInfo) return;
     axios
       .get(
         `http://localhost:5000/scheduler?currentUserNo=${session.userInfo.no}`,
