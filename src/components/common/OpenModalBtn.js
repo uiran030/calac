@@ -15,9 +15,6 @@ const BottomLedgerButton = () => {
   const [count, setCount] = useState(false);
   const [description, setDescription] = useState('');
   //=================================================================================
-  // 새로운 카테고리
-  const [openNew, setOpenNew] = useState(false);
-  //=================================================================================
   // 지출과 수입의 카테고리 구분함
   const [expenseCategory, setExpenseCategory] = useState('식비');
   const [incomeCategory, setIncomeCategory] = useState('월급');
@@ -44,17 +41,12 @@ const BottomLedgerButton = () => {
     setChoiceModal(event);
   };
   //=================================================================================
-  // 카테고리 입력창 (빈값 허용)
-  const hadleCategory = (e) => {
-    const categoryValue = e.target.value;
-    setExpenseCategory(categoryValue);
-  };
-  //=================================================================================
   // 설명 입력창 (빈값 허용)
-  const handleCategory = (e) => {
+  const handleDescription = (e) => {
     const descriptionValue = e.target.value;
-    if (choiceModal === 'expense') { setExpenseCategory(descriptionValue) }
-    if (choiceModal === 'income') { setIncomeCategory(descriptionValue) }
+    setDescription(descriptionValue) 
+    // if (choiceModal === 'expense') { setDescription(descriptionValue) }
+    // if (choiceModal === 'income') { setDescription(descriptionValue) }
   };
   //=================================================================================
   // 금액 입력창
@@ -75,7 +67,7 @@ const BottomLedgerButton = () => {
   const handleSave = () => {
     if (choiceModal === 'expense') {
       modalData.push({choiceModal, expenseCategory, count, description});
-      console.log('expe', expenseCategory)
+      // console.log('expe', expenseCategory)
       axios.post('http://localhost:5000/ledger/insert', {
         category : modalData[0].expenseCategory,
         type : modalData[0].choiceModal,
@@ -84,7 +76,7 @@ const BottomLedgerButton = () => {
       })
     } else {
       modalData.push({choiceModal, incomeCategory, count, description});
-      console.log('inc', incomeCategory)
+      // console.log('inc', incomeCategory)
       axios.post('http://localhost:5000/ledger/insert', {
         category : modalData[0].incomeCategory,
         type : modalData[0].choiceModal,
@@ -93,11 +85,7 @@ const BottomLedgerButton = () => {
       })
     }
     setOpen(false);
-    console.log('modal', modalData)
-  };
-  //=================================================================================
-  const addCategory = () => {
-    console.log('click')
+    // console.log('modal', modalData)
   };
   //=================================================================================
   const style = {
@@ -200,13 +188,13 @@ const BottomLedgerButton = () => {
           <Box sx={{mt:3, textAlign:'right'}}>
             <Input 
               sx={{mt:3}}
-              id="money"
+              id="description"
               startAdornment={<InputAdornment position="start">설명</InputAdornment>}
-              aria-describedby="money"
+              aria-describedby="description"
               inputProps={{
-                'aria-label': 'money',
+                'aria-label': 'description',
               }}
-              onChange={hadleCategory}
+              onChange={handleDescription}
             />
             <FormControl variant="standard" sx={{ mt:3, width:'100px'}}>
               <Input
