@@ -6,6 +6,48 @@ import axios from 'axios';
 
 const LedgerWeeklyGraph = () => {
   //======================================================
+  // const today = new Date();
+  // console.log('ddd', today)
+  // const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  // console.log('fir', firstDayOfMonth)
+  // // const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  // // console.log('weeeek1', firstDayOfMonth);
+  // // console.log('weeeek2', lastDayOfMonth);
+  // //======================================================
+  
+  // let todayYear = today.getFullYear();
+  // let todayMonth = ("0" + ( today.getMonth() + 1 )).slice(-2);
+  // let todayDay = ('0' + today.getDate()).slice(-2);
+  // console.log('aaa', todayDay)
+  // let todayDate = todayYear+'-'+todayMonth+'-'+todayDay;
+  // console.log('ddd', todayDate)
+  // //======================================================
+  // const weeks = [];
+  // let lastWeekDay = '';
+  // let todayDayOfWeek = today.getDay();
+  // if (todayDayOfWeek === 0) {
+  // }
+  // const test = new Date(today.getFullYear(), today.getMonth()+1, today.getDay()-7);
+  // console.log('444', todayDayOfWeek)
+  // console.log('mmmm', test)
+  // let currentWeekStart = firstDayOfMonth;
+  // let currentWeekEnd = new Date(currentWeekStart);
+  // currentWeekEnd.setDate(currentWeekEnd.getDate() + (7 - firstDayOfMonth.getDay()) % 7);
+
+  // while (currentWeekEnd.getMonth() === firstDayOfMonth.getMonth()) {
+  //   weeks.push({start: currentWeekStart, end: currentWeekEnd});
+
+  //   currentWeekStart = new Date(currentWeekEnd);
+  //   currentWeekStart.setDate(currentWeekStart.getDate() + 1);
+
+  //   currentWeekEnd = new Date(currentWeekStart);
+  //   currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
+  // }
+
+  // console.log('weeeek3', weeks);
+  // for (const week of weeks) {
+  //   console.log(`${week.start.toLocaleDateString()} - ${week.end.toLocaleDateString()}`);
+  // }
   //======================================================
   // useEffect(() => {
   //   axios.get(`http://localhost:5000/ledger/monthly/total`)

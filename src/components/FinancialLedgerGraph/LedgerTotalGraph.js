@@ -12,7 +12,6 @@ const LedgerTotalGraph = () => {
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger/monthly/total`)
     .then((res) => {
-      console.log('total_res_data', res.data)
       res.data.length === 0 ? ( setNoData(true) ) : ( setNoData(false) )
       if ( res.data.length === 1 && res.data[0]['ledger_type'] === 'income' ) {
         setTotalIncome(res.data[0]['sum_count'])
@@ -23,7 +22,9 @@ const LedgerTotalGraph = () => {
         setTotalIncome(res.data[1]['sum_count'])
       }
     })
-  }, []);
+  }, [noData]);
+  // console.log('totalIncome', totalIncome)
+  // console.log('totalExpense', totalExpense)
   //======================================================  
   const minusPercent = Math.round((totalExpense/totalIncome)*100);
   //======================================================

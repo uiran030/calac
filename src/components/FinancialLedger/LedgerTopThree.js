@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Box, ToggleButtonGroup, ToggleButton, Typography, ListItem, ListItemText } from '@mui/material';
+import { Box, ToggleButtonGroup, ToggleButton, Typography, ListItem, ListItemText, tabClasses } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import axios from 'axios';
 // import OpenModalBtn from '../common/OpenModalBtn';
@@ -8,7 +8,6 @@ const LedgerTopThree = () => {
   const [tabValue, setTabValue] = useState('expense');
   const [totalCountData, setTotalCountData] = useState({});
   const [recentThreeList, setRecentThreeList] = useState(false);
-  const [recentOneNo, setRecentOneNo] = useState(false);
   //======================================================
   let type = 'expense';
   const handleTabValue = (event, value) => { 
@@ -34,7 +33,9 @@ const LedgerTopThree = () => {
       );
     })
   }, [tabValue]);
-  // console.log('ddddddddddd', recentThreeList[0]['ledger_no'])
+  // 렌더링만 해결하면 됨.
+  // 최근순 3개를 뽑아내기 때문에 그중 첫번째의 ledger_no이 변경되면
+  // 리렌더링되도록 수정해봤으나 적용되지않음.
   //======================================================
   return (
   <AddInfoArea>

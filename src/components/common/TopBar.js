@@ -13,9 +13,11 @@ const DashboardTopStateBar = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/goal')
     .then((res) => {
+      console.log('aaa', res.data)
       setMoney(res.data[0]['money_count']);
     })
   }, []);
+  // 리렌더링 조건
   //======================================================
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger/total?type=expense`)

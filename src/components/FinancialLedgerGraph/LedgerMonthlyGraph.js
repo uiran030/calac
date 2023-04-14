@@ -13,16 +13,18 @@ const LedgerGraphChart = () => {
       setMonthlyData(res.data);
     })
   }, []);
+  // console.log('111', monthlyData)
   //======================================================
   const result = monthlyData.reduce((a, b) => {
     const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
     if (categoryIndex === -1) {
-      a.push({name: b.ledger_category, data: [b.monthly_sum_count]});
+      a.push({name: b.ledger_category, data: [b.monthly_sum_count], month:[b.current_month]});
     } else {
       a[categoryIndex].data.push(b.monthly_sum_count);
     }
     return a;
   }, []);
+  // console.log('22222', result)
   //======================================================
   let today = new Date();
   let year = today.getFullYear();

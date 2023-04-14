@@ -5,7 +5,6 @@ import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import { TableViewOutlined } from '@mui/icons-material';
 
 const LedgerTotalList = () => {
   const [tabValue, setTabValue] = useState('expense');
@@ -115,26 +114,31 @@ const LedgerTotalList = () => {
       </ToggleButtonGroup>
       <ListBox>
         <ListTableTop>
-          <Typography sx={{width:'20%', textAlign:'center'}}>카테고리</Typography>
-          <Typography sx={{width:'20%', textAlign:'center'}}>설명</Typography>
-          <Typography sx={{width:'20%', textAlign:'center'}}>가격</Typography>
-          <Typography sx={{width:'25%', textAlign:'center'}}>작성일</Typography>
+          <Typography sx={{width:'15%', textAlign:'center'}}>카테고리</Typography>
+          <Typography sx={{width:'15%', textAlign:'center'}}>설명</Typography>
+          <Typography sx={{width:'15%', textAlign:'center'}}>가격</Typography>
+          <Typography sx={{width:'20%', textAlign:'center'}}>작성일</Typography>
+          <Typography sx={{width:'20%', textAlign:'center'}}>수정일</Typography>
           <Typography sx={{width:'15%', textAlign:'center'}}>기능</Typography>
         </ListTableTop>
         <ListTableWrap>
           {monthlyData && monthlyData.map(data => (
             <ListTableBox key={data.ledger_no}>
-              <ListTableText sx={{width:'20%'}}>
+              <ListTableText sx={{width:'15%'}}>
                 {data.ledger_category}
               </ListTableText>
-              <ListTableText sx={{width:'20%'}}>
+              <ListTableText sx={{width:'15%'}}>
                 {data.ledger_description}
               </ListTableText>
-              <ListTableText sx={{width:'20%'}}>
+              <ListTableText sx={{width:'15%'}}>
                 {data.ledger_count}
               </ListTableText>
-              <ListTableText sx={{width:'25%'}}>
+              <ListTableText sx={{width:'20%'}}>
                 {data.ledger_createdAt.split("T")[0]}
+                {/* {(data.ledger_createdAt).toString()}  시간 잘못 보이는것 수정해야함*/}
+              </ListTableText>
+              <ListTableText sx={{width:'20%'}}>
+                {data.ledger_updatedAt.split("T")[0]}
                 {/* {(data.ledger_createdAt).toString()}  시간 잘못 보이는것 수정해야함*/}
               </ListTableText>
               <Box sx={{width:'15%'}}>
