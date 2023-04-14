@@ -3,70 +3,56 @@ import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ApexCharts from 'react-apexcharts';
 import axios from 'axios';
+import { CategoryOutlined } from '@mui/icons-material';
 
 const LedgerWeeklyGraph = () => {
   //======================================================
-  // const today = new Date();
-  // console.log('ddd', today)
-  // const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  // console.log('fir', firstDayOfMonth)
-  // // const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-  // // console.log('weeeek1', firstDayOfMonth);
-  // // console.log('weeeek2', lastDayOfMonth);
-  // //======================================================
-  
-  // let todayYear = today.getFullYear();
-  // let todayMonth = ("0" + ( today.getMonth() + 1 )).slice(-2);
-  // let todayDay = ('0' + today.getDate()).slice(-2);
-  // console.log('aaa', todayDay)
-  // let todayDate = todayYear+'-'+todayMonth+'-'+todayDay;
-  // console.log('ddd', todayDate)
-  // //======================================================
-  // const weeks = [];
-  // let lastWeekDay = '';
-  // let todayDayOfWeek = today.getDay();
-  // if (todayDayOfWeek === 0) {
-  // }
-  // const test = new Date(today.getFullYear(), today.getMonth()+1, today.getDay()-7);
-  // console.log('444', todayDayOfWeek)
-  // console.log('mmmm', test)
-  // let currentWeekStart = firstDayOfMonth;
-  // let currentWeekEnd = new Date(currentWeekStart);
-  // currentWeekEnd.setDate(currentWeekEnd.getDate() + (7 - firstDayOfMonth.getDay()) % 7);
-
-  // while (currentWeekEnd.getMonth() === firstDayOfMonth.getMonth()) {
-  //   weeks.push({start: currentWeekStart, end: currentWeekEnd});
-
-  //   currentWeekStart = new Date(currentWeekEnd);
-  //   currentWeekStart.setDate(currentWeekStart.getDate() + 1);
-
-  //   currentWeekEnd = new Date(currentWeekStart);
-  //   currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
-  // }
-
-  // console.log('weeeek3', weeks);
-  // for (const week of weeks) {
-  //   console.log(`${week.start.toLocaleDateString()} - ${week.end.toLocaleDateString()}`);
-  // }
+  const [weeklyList, setWeeklyList] = useState([]);
+  const [weeklyTopData, setWeeklyTopData] = useState({});
+  const [noData, setNoData] = useState(false);
   //======================================================
-  // useEffect(() => {
-  //   axios.get(`http://localhost:5000/ledger/monthly/total`)
-  //   .then((res) => {
-  //     res.data[0][0] !== null ? (
-  //       setTotalExpense(res.data[0][0]['sum_count'])
-  //     ):(
-  //       setTotalExpense(0)
-  //     );
-  //     res.data[0][1] !== null ? (
-  //       setTotalIncome(res.data[0][1]['sum_count'])
-  //     ) : (
-  //       setTotalIncome(0)
-  //     )
-  //   })
-  // }, []);
+  const today = new Date();
+  // 저번 주의 시작일 생성
+  const lastWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() - 5);
+  // 저번 주의 종료일 생성
+  const lastWeekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1);
+  //======================================================
+  // 시작일부터 종료일까지의 날짜 배열 생성
+  const dateArray = [];
+  let currentDate = new Date(lastWeekStart);
+  while (currentDate <= lastWeekEnd) {
+    dateArray.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  // 배열의 날짜를 원하는 형식으로 변환
+  const formattedDateArray = dateArray.map((date) => {
+    return date.toISOString().slice(0, 10);
+  });
+  //======================================================
+  useEffect(() => {
+    axios.get(`http://localhost:5000/ledger/weekly?weeklyStartDay=${formattedDateArray[0]}&weeklyLastDay=${formattedDateArray[6]}`)
+    .then((res) => {
+      if (res.data.length !== 0) {
+        setNoData(false)
+        setWeeklyList(res.data)
+        setWeeklyTopData(res.data[0])
+      } else {
+        setNoData(true)
+      }
+    })
+  }, []);
+  //======================================================
+  // 지난주 값들 있을 때 전체 지출금액
+  let sumsum = 0;
+  weeklyList.map(data => {
+    sumsum += data.weekly_sum_count
+  });
+  //======================================================
+  // 제일 지출이 많은 카테고리 퍼센트
+  let categoryPercent = Math.round((weeklyTopData['weekly_sum_count']/sumsum)*100);
   //======================================================
   const state = {
-    series: [40],
+    series: [categoryPercent],
     options: {
       chart: {
         height: 350,
@@ -80,22 +66,51 @@ const LedgerWeeklyGraph = () => {
         },
       },
       colors:['#cd2ff5'],
-      labels: [`이번주 수입 :`],
+      labels: [`소비많은 카테고리: ${weeklyTopData['ledger_category']}`],
+    },
+  };
+  //======================================================
+  const noState = {
+    series: [0],
+    options: {
+      chart: {
+        height: 350,
+        type: 'radialBar',
+      },
+      plotOptions: {
+        radialBar: {
+          hollow: {
+            size: '70%',
+          }
+        },
+      },
+      colors:['#cd2ff5'],
+      labels: [`입력된 값이 없습니다.`],
     },
   };
   //======================================================
   return (
     <ChartWrap>
       <ChartTopTextBox>
-        <Typography>이번주에 제일 많은 지출</Typography>
-      </ChartTopTextBox>  
-      <ApexCharts
-        options={state.options}
-        series={state.series}
-        type="radialBar"
-        height="300px"
-        width="100%"
-      />
+        <Typography>지난주에 제일 많은 지출</Typography>
+      </ChartTopTextBox>
+      {noData ? (
+        <ApexCharts
+          options={noState.options}
+          series={noState.series}
+          type="radialBar"
+          height="300px"
+          width="100%"
+        />
+      ):(
+        <ApexCharts
+          options={state.options}
+          series={state.series}
+          type="radialBar"
+          height="300px"
+          width="100%"
+        />
+      )}
     </ChartWrap>
   );
 };
@@ -104,7 +119,8 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
-  position:'relative'
+  position:'relative',
+  borderRadius:'10px'
 });
 const ChartTopTextBox = styled(Box)({
   height:'50px',

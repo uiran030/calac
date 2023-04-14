@@ -2,12 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { Box, ToggleButtonGroup, ToggleButton, Typography, ListItem, ListItemText, tabClasses } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import axios from 'axios';
-// import OpenModalBtn from '../common/OpenModalBtn';
 
 const LedgerTopThree = () => {
   const [tabValue, setTabValue] = useState('expense');
   const [totalCountData, setTotalCountData] = useState({});
   const [recentThreeList, setRecentThreeList] = useState(false);
+  const [recentNum, setRecentNum] = useState('');
   //======================================================
   let type = 'expense';
   const handleTabValue = (event, value) => { 
@@ -19,18 +19,17 @@ const LedgerTopThree = () => {
   const CHANGE_TOTAL = totalCountData.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   //======================================================
   useEffect(() => {
-    axios.get(`http://localhost:5000/ledger/total?type=${type}`)
+    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
     .then((res) => {
-      res.data[0][0]['sum_count'] !== null ? (
-        setTotalCountData(res.data[0][0]['sum_count'])
-      ) : (
-        setTotalCountData(0)
-      );
-      res.data[1].length !== 0 ? (
-        setRecentThreeList(res.data[1])
-      ) : (
-        setRecentThreeList(false)
-      );
+      setTotalCountData(res.data[0]['sum_count'])
+    })
+  }, [tabValue]);
+  //======================================================
+  useEffect(() => {
+    axios.get(`http://localhost:5000/ledger/monthly/recent?type=${type}`)
+    .then((res) => {
+      setRecentThreeList(res.data)
+      setRecentNum( res.data[0]['ledger_no'])
     })
   }, [tabValue]);
   // 렌더링만 해결하면 됨.
@@ -108,7 +107,8 @@ const AddInfoArea = styled(Box)({
   border:'1px solid #ddd',
   width:'30%',
   padding:'20px',
-  position:'relative'
+  position:'relative',
+  borderRadius:'10px'
 });
 const UpperText = styled(Box)({
   display:'flex',

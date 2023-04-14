@@ -37,13 +37,9 @@ const LedgerGoalGraph = () => {
   //======================================================
   const type = 'expense'
   useEffect(() => {
-    axios.get(`http://localhost:5000/ledger/total?type=${type}`)
+    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
     .then((res) => {
-      res.data[0][0] !== {} ? (
-        setTotalCountData(res.data[0][0]['sum_count'])
-      ) : (
-        setTotalCountData(0)
-      );
+      res.data.length !== 0 && setTotalCountData(res.data[0]['sum_count'])
     })
   }, []);
   //======================================================
@@ -259,7 +255,8 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
-  position:'relative'
+  position:'relative',
+  borderRadius:'10px'
 });
 const ChartTopTextBox = styled(Box)({
   height:'50px',

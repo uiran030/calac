@@ -10,7 +10,7 @@ const FinalncialLedgerDonut = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger')
     .then((res) => {
-      setMonthlyDountData(res.data[0]);
+      setMonthlyDountData(res.data);
     })
   }, [monthlyDonutData]);
   //=====================================================
@@ -134,7 +134,8 @@ const DountWrap = styled(Box)({
   position:'relative',
   border:'1px solid #ddd',
   padding:'5px',
-  height:'450px'
+  height:'450px',
+  borderRadius:'10px'
 });
 const DountGraph = styled(Box)({
   width:'100%',

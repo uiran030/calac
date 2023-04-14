@@ -10,21 +10,32 @@ const LedgerTotalGraph = () => {
   const [noData, setNoData] = useState(false);
   //======================================================
   useEffect(() => {
-    axios.get(`http://localhost:5000/ledger/monthly/total`)
+    let type = 'income'
+    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
     .then((res) => {
-      res.data.length === 0 ? ( setNoData(true) ) : ( setNoData(false) )
-      if ( res.data.length === 1 && res.data[0]['ledger_type'] === 'income' ) {
+      if(res.data.length === 0) {
+        setNoData(true);
+      } else {
+        setNoData(false);
         setTotalIncome(res.data[0]['sum_count'])
-      } else if (res.data.length === 1 && res.data[0]['ledger_type'] === 'expense') {
-        setTotalExpense(res.data[0]['sum_count'])
-      } else if (res.data.length === 2) {
-        setTotalExpense(res.data[0]['sum_count'])
-        setTotalIncome(res.data[1]['sum_count'])
-      }
+      };
     })
-  }, [noData]);
-  // console.log('totalIncome', totalIncome)
-  // console.log('totalExpense', totalExpense)
+  }, []);
+  // 렌더링 해결해야함.
+  //======================================================
+  useEffect(() => {
+    let type = 'expense'
+    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
+    .then((res) => {
+      if(res.data.length === 0) {
+        setNoData(true);
+      } else {
+        setNoData(false);
+        setTotalExpense(res.data[0]['sum_count'])
+      };
+    })
+  }, []);
+  // 렌더링 해결해야함.
   //======================================================  
   const minusPercent = Math.round((totalExpense/totalIncome)*100);
   //======================================================
@@ -97,7 +108,8 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
-  position:'relative'
+  position:'relative',
+  borderRadius:'10px'
 });
 const ChartTopTextBox = styled(Box)({
   height:'50px',

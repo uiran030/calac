@@ -42,9 +42,9 @@ const LedgerTotalList = () => {
   }
   //======================================================
   useEffect(() => {
-    axios.get(`http://localhost:5000/ledger?type=${type}`)
+    axios.get(`http://localhost:5000/ledger/total?type=${type}`)
     .then((res) => {
-      setMonthlyData(res.data[1]);
+      setMonthlyData(res.data);
     })
   }, [tabValue, monthlyData]);
   //======================================================
