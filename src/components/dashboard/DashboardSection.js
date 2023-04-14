@@ -16,7 +16,7 @@ const DashboardSection = () => {
 
   useEffect(() => {
     dispatch(getSession());
-  }, [hasSidCookie]); // 없어도 될라나? 테스트 해보자
+  }, [hasSidCookie]); // 없어도 될라나? 테스트 해
 
   return (
     <SectionWrap container>
