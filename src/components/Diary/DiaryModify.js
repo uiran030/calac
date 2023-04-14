@@ -3,21 +3,52 @@ import "../../assets/css/App.css";
 import { styled } from "@mui/material/styles";
 import { Box, Typography, Button, Divider, TextField, Dialog, DialogTitle, DialogContent, Avatar} from "@mui/material";
 import axios from 'axios';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import NoPermissionBlock from "../common/NoPermissionBlock";
+import { connect } from "react-redux";
 
-const DiaryModify = ({isModify,setIsModify,diary_no}) => {
+const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
   //======================================================
   const [getPost, setGetPost] = useState({
     title : '',
     content : '',
     image : ''
   });
-  const [test,setTest] = useState('testtest')
+  const [newContent,setNewContent] = useState({
+    title:'',
+    content:''
+  })
+  //======================================================
+  const titleModify = (e) => {
+    console.log(e.target.value)
+    const {name, value} = e.target;
+    setNewContent({
+      ...newContent,
+      [name]:value
+    })
+  }
+  //======================================================
+  const modify = (no) => {
+    if(newContent.title.length === 0) {
+      alert('변경된 내용이 없어 수정이 불가합니다.');
+      setIsModify(false);
+    }else {
+      console.log("new",newContent.title)
+      axios.post('http://localhost:5000/diary/modify',{
+        no : no,
+        newTitle : newContent.title
+      })
+      .then(res=>{
+        alert('수정되었습니다 :)');
+        setIsModify(false);
+      })
+    }
+  }
   //======================================================
   useEffect(()=>{
-    console.log("modify",diary_no);
     axios.post("http://localhost:5000/diary/onePost", {no:diary_no})
     .then(res=>{
-      console.log(res.data[0])
       setGetPost({
         title : res.data[0].title,
         content : res.data[0].content_parse,
@@ -35,30 +66,53 @@ const DiaryModify = ({isModify,setIsModify,diary_no}) => {
       >
         <DialogBox>
           <TitleBox>
-            <Avatar alt="Remy Sharp" src="/images/avatar.png">
-              <UserTypography>{}</UserTypography>
-            </Avatar>
+            <Avatar alt="Remy Sharp" src="/images/avatar.png"></Avatar>
             <TitleTextField
-                id="standard-helperText"
-                defaultValue={getPost.title}
-                helperText="update Title"
-                variant="standard"
-              />
+              id="standard-helperText"
+              defaultValue={getPost.title}
+              helperText="update Title"
+              variant="standard"
+              onChange={titleModify}
+            />
           </TitleBox>
-          <DateTypography>{}</DateTypography>
           <MyDialogContent dividers>
-            <DetailBox>
-              <ContentBox>
-                {}
-              </ContentBox>
-            </DetailBox>
-            <DetailDivider/>
+            <EditorBox>
+              <CKEditor
+                style={{paddingTop:'20px'}}
+                editor={ClassicEditor}
+                config={{
+                  placeholder: "내용을 입력하세요 :)"
+                }}
+                onReady={editor=>{
+                  // console.log('Editor is ready to use!', editor);
+                }}
+                onBlur={(event, editor) => {
+                    // console.log('Blur.', editor);
+                }}
+                onFocus={(event, editor) => {
+                    // console.log('Focus.', editor);
+                }}
+              />
+            </EditorBox>
           </MyDialogContent>
+          {hasSidCookie ? (
+            <BtnBox>
+              <ModifyButton fullWidth variant="outlined" onClick={()=>modify(diary_no)}>Modify</ModifyButton>
+            </BtnBox>
+          ):(
+            <NoPermissionBlock
+              menu='Diary 수정(은)'
+            />
+          )}
         </DialogBox>
       </MyDialog>
     </Box>
   )
 };
+// 리덕스 =================================================
+const mapStateToProps = (state) => ({
+  hasSidCookie: state.hasSidCookie,
+});
 //style=================================================
 const MyDialog = styled(Dialog)({
 })
@@ -74,33 +128,24 @@ const DialogBox = styled(Box)({
 const TitleBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
-  padding: '15px 15px 0',
+  padding: '15px 15px 20px',
 })
 const TitleTextField = styled(TextField)({
-
-})
-const UserTypography = styled(Typography)({
-  padding: 0,
-  marginLeft: 13,
-})
-const DateTypography = styled(Typography)({
-  fontSize: 15,
-  color: '#07553B',
-  textAlign: 'right',
-  marginBottom: 10,
+  paddingLeft : 15,
 })
 const MyDialogContent = styled(DialogContent)({
-  height: '50vh',
+  height: '43vh',
+  padding: '35px 24px 0'
 });
-const DetailBox = styled(Box)({
+const EditorBox = styled(Box)({
+  height: 290
+});
+const BtnBox = styled(Box)({
   padding: 20,
 });
-const ContentBox = styled(Box)({
-  fontSize: 20,
-  textAlign: 'center',
-  paddingTop: 30,
-});
-const DetailDivider = styled(Divider)({
+const ModifyButton = styled(Button)({
+  border: '1px solid #07553B',
+  "&:hover":{backgroundColor: '#07553B', color: '#fff'}
 });
 //======================================================
-export default DiaryModify
+export default connect(mapStateToProps)(DiaryModify)

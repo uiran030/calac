@@ -55,8 +55,7 @@ router.post("/insert", (req, res) => {
 //======================================================
 // ledger graph의 현재 달의 타입 구분없이 총액
 router.get('/monthly/total', (req, res) => {
-  let type = req.query.type;
-  const TotalExpenseIncomeQuery = `SELECT ledger_type, SUM(ledger_count) AS sum_count FROM ledger WHERE ledger_createdAt LIKE '${currentMonth}%' GROUP BY ledger_type;`
+  const TotalExpenseIncomeQuery = `SELECT ledger_type, SUM(ledger_count) AS sum_count FROM ledger WHERE ledger_createdAt LIKE '${currentMonth}%' GROUP BY ledger_type ORDER BY ledger_type;`
   db.query(TotalExpenseIncomeQuery, (err, result) => {
     res.send(result);
   });
@@ -66,6 +65,14 @@ router.get('/monthly/total', (req, res) => {
 router.get('/goal', (req, res) => {
   const goalMoneyQuery = `SELECT * FROM goal_money where money_createdAt LIKE '${currentMonth}%'`
   db.query(goalMoneyQuery, (err, result) => {
+    res.send(result);
+  });
+});
+// ledger goal의 insert
+router.post('/goal/insert', (req, res) => {
+  let count = req.body.count
+  const goalMoneyInsertQuery = `INSERT INTO goal_money (money_count) VALUES ('${count}');`
+  db.query(goalMoneyInsertQuery, (err, result) => {
     res.send(result);
   });
 });

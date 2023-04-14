@@ -7,7 +7,7 @@ import axios from "axios";
 
 const DashboardTopStateBar = ({ hasSidCookie, session }) => {
   const pathname = window.location.pathname;
-  const [money, setMoney] = useState(false);
+  const [money, setMoney] = useState(0);
   const [totalCountData, setTotalCountData] = useState(false);
   //======================================================
   useEffect(() => {
@@ -18,10 +18,8 @@ const DashboardTopStateBar = ({ hasSidCookie, session }) => {
   //======================================================
   useEffect(() => {
     axios.get(`http://localhost:5000/ledger/total?type=expense`).then((res) => {
-      console.log("res", res.data[0]);
-      res.data[0][0]["sum_count"] !== null
-        ? setTotalCountData(res.data[0][0]["sum_count"])
-        : setTotalCountData(0);
+      res.data[0][0]["sum_count"] !== null &&
+        setTotalCountData(res.data[0][0]["sum_count"]);
     });
   }, []);
   //======================================================
