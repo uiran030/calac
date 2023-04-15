@@ -18,11 +18,6 @@ const LedgerGoalGraph = () => {
   const [totalCountData, setTotalCountData] = useState(false);
   const [noData, setNoData] = useState(false);
   //======================================================
-  const hadleGoalMoney = (e) => {
-    const goalMoneyValue = e.target.value;
-    console.log('goal', goalMoneyValue)
-  }
-  //======================================================
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/goal')
     .then((res) => {
@@ -38,24 +33,17 @@ const LedgerGoalGraph = () => {
         setUpdated(res.data[0]['money_updatedAt']);
       }
     })
-  }, [money]);
+  }, [money, open]);
   //======================================================
   const type = 'expense'
   useEffect(() => {
-    axios.get(`http://localhost:5000/ledger/total?type=${type}`)
+    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
     .then((res) => {
-      console.log('rrrrrrrrrrrrrrrrrrrrrrrr', res.data[0][0])
-      res.data[0][0] !== {} ? (
-        setTotalCountData(res.data[0][0]['sum_count'])
-      ) : (
-        setTotalCountData(0)
-      );
+      res.data.length !== 0 && setTotalCountData(res.data[0]['sum_count'])
     })
   }, []);
   //======================================================
-  const hadleChangeGoalMoney = (e) => {
-    setChangeGoalMoney(e.target.value);
-  };
+  const hadleChangeGoalMoney = (e) => { setChangeGoalMoney(e.target.value); };
   //======================================================
   // + 버튼 : 모달창 열림
   const handleClick = () => { setOpen(true) }
@@ -65,6 +53,13 @@ const LedgerGoalGraph = () => {
     setOpen(false);
     setOpenInput(false);
   }
+  //======================================================
+  // 모달창 취소버튼
+  // const handleCancel = () => {
+  //   setOpenInput(false);
+  //   setMoney(money)
+  //   // setMoney(res.data[0]['money_count']);
+  // }
   //======================================================
   // 모달창 저장버튼
   const handleSave = () => {
@@ -180,9 +175,7 @@ const LedgerGoalGraph = () => {
                 <TextField
                   id="outlined-read-only-input"
                   defaultValue={money}
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  InputProps={{ readOnly: true }}
                   sx={{marginBottom:'10px'}}
                 />
               ) : (
@@ -198,7 +191,7 @@ const LedgerGoalGraph = () => {
               )}
               {created === updated ? (
                 <Typography>
-                  마지막 수정일 : {(created || "").split("T")[0]}
+                  작성일 : {(created || "").split("T")[0]}
                 </Typography>
               ) : (
                 <Typography>
@@ -227,19 +220,28 @@ const LedgerGoalGraph = () => {
                 취소
               </ClickBtn>
             ) }
-            {noData ? (
+            {noData && (
               <ClickBtn
               variant="contained"
               onClick={() => {handleSaveMoney()}}
               >
               새로 입력
               </ClickBtn>
-            ) : (
+            )}
+            {!noData && !openInput && (
               <ClickBtn
               variant="contained"
-              onClick={() => {handleSave()}}
+              onClick={() => {setOpen(false);}}
               >
-              저장
+              닫기
+              </ClickBtn>
+            )}
+            {openInput && (
+              <ClickBtn
+                variant="contained"
+                onClick={() => {handleSave()}}
+              >
+                저장
               </ClickBtn>
             )}
           </ClickBtnBox>
@@ -253,7 +255,8 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
-  position:'relative'
+  position:'relative',
+  borderRadius:'10px'
 });
 const ChartTopTextBox = styled(Box)({
   height:'50px',
