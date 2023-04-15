@@ -107,6 +107,7 @@ const AddInfoArea = styled(Box)({
   border:'1px solid #ddd',
   width:'30%',
   padding:'20px',
+  borderRadius:'10px',
   position:'relative'
 });
 const UpperText = styled(Box)({

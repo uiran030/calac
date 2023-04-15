@@ -109,7 +109,7 @@ router.post('/onePost', (req,res) => {
 router.post('/modify', (req,res) => {
   const no = req.body.no;
   const newTitle = req.body.newTitle;
-  let modifyQuery = `UPDATE diary SET title='${newTitle}' WHERE diary_no=${no}`;
+  let modifyQuery = `UPDATE diary SET title=${newTitle} WHERE diary_no=${no}`;
   db.query(modifyQuery, (err,result) => {
     if(err) console.log("err",err);
     else {res.send(result)}
