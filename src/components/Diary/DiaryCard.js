@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useRef} from 'react';
 import { styled } from "@mui/material/styles";
 import { Box, List, ListItem, ListItemButton, ListItemText, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -26,6 +26,8 @@ const DiaryCard = ({hasSidCookie}) => {
   //======================================================
   const [open, setOpen] = useState(false);
   //======================================================
+  let offsetRef = useRef(0);
+  //======================================================
   const handleOpenMoreButton = (e,idx) => {
     setCountIndex(idx);
     setOpenMoreButton(!openMoreButton);
@@ -48,13 +50,14 @@ const DiaryCard = ({hasSidCookie}) => {
     });
   },[commentCnt])
   //======================================================
-  let offset = 0;
+  // let offset = 0;
   const loadDiary = () => {
-    axios.get(`http://localhost:5000/diary?limit=10&offset=${offset}`)
+    axios.get(`http://localhost:5000/diary?limit=10&offset=${offsetRef.current}`)
     .then(res=>{
       setPosts(oldPosts => [...oldPosts, ...res.data]);
+      offsetRef.current += 10;
     });
-    offset += 10;
+    // offset += 10;
   }
   //======================================================
   const handleScroll = (e) => {

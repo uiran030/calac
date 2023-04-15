@@ -10,22 +10,17 @@ import { connect } from "react-redux";
 
 const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
   //======================================================
-  const [getPost, setGetPost] = useState({
-    title : '',
-    content : '',
-    image : ''
-  });
+  const [getTitle, setGetTitle] = useState('');
   const [newContent,setNewContent] = useState({
     title:'',
     content:''
   })
   //======================================================
   const titleModify = (e) => {
-    console.log(e.target.value)
-    const {name, value} = e.target;
+    const {value} = e.target;
     setNewContent({
       ...newContent,
-      [name]:value
+      title:value
     })
   }
   //======================================================
@@ -49,11 +44,7 @@ const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
   useEffect(()=>{
     axios.post("http://localhost:5000/diary/onePost", {no:diary_no})
     .then(res=>{
-      setGetPost({
-        title : res.data[0].title,
-        content : res.data[0].content_parse,
-        image : res.data[0].image
-      })
+      setGetTitle(res.data[0].title)
     });
   },[])
   //======================================================
@@ -69,8 +60,8 @@ const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
             <Avatar alt="Remy Sharp" src="/images/avatar.png"></Avatar>
             <TitleTextField
               id="standard-helperText"
-              defaultValue={getPost.title}
-              helperText="update Title"
+              value={newContent.title || getTitle}
+              helperText="Update Title"
               variant="standard"
               onChange={titleModify}
             />

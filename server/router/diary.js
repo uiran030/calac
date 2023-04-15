@@ -12,6 +12,8 @@ connectDB.open(db);
 router.get('/',(req,res) => {
   const limit = req.query.limit;
   const offset = req.query.offset;
+  console.log(limit)
+  console.log(offset)
   let selectQuery = '';
   if(limit !== undefined || offset !== undefined) {
     selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
@@ -107,7 +109,7 @@ router.post('/onePost', (req,res) => {
 router.post('/modify', (req,res) => {
   const no = req.body.no;
   const newTitle = req.body.newTitle;
-  let modifyQuery = `UPDATE diary SET title=${newTitle} WHERE diary_no=${no}`;
+  let modifyQuery = `UPDATE diary SET title='${newTitle}' WHERE diary_no=${no}`;
   db.query(modifyQuery, (err,result) => {
     if(err) console.log("err",err);
     else {res.send(result)}
