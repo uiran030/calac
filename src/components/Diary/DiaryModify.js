@@ -11,6 +11,7 @@ import { connect } from "react-redux";
 const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
   //======================================================
   const [getTitle, setGetTitle] = useState('');
+  const [getContent, setGetContent] = useState('');
   const [newContent,setNewContent] = useState({
     title:'',
     content:''
@@ -24,27 +25,39 @@ const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
     })
   }
   //======================================================
+  const contentModify = (e,editor) => {
+    const value = editor.getData();
+    setNewContent({
+      ...newContent,
+      content:value
+    })
+  }
+  //======================================================
   const modify = (no) => {
-    if(newContent.title.length === 0) {
-      alert('변경된 내용이 없어 수정이 불가합니다.');
-      setIsModify(false);
-    }else {
-      console.log("new",newContent.title)
+    // if(newContent.title.length === 0 || newContent.content.length === 0) {
+    //   alert('변경된 내용이 없어 수정이 불가합니다.');
+    //   setIsModify(false);
+    // }else {
+      console.log("newTitle",newContent.title)
+      console.log("newContent",newContent.content)
       axios.post('http://localhost:5000/diary/modify',{
         no : no,
-        newTitle : newContent.title
+        newTitle : newContent.title,
+        newContent : newContent.content
       })
       .then(res=>{
         alert('수정되었습니다 :)');
         setIsModify(false);
       })
-    }
+    // }
   }
   //======================================================
   useEffect(()=>{
     axios.post("http://localhost:5000/diary/onePost", {no:diary_no})
     .then(res=>{
+      console.log("d",res.data[0])
       setGetTitle(res.data[0].title)
+      setGetContent(res.data[0].content)
     });
   },[])
   //======================================================
@@ -71,9 +84,8 @@ const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
               <CKEditor
                 style={{paddingTop:'20px'}}
                 editor={ClassicEditor}
-                config={{
-                  placeholder: "내용을 입력하세요 :)"
-                }}
+                data={getContent}
+                onChange={(e, editor) => {contentModify(e, editor)}}
                 onReady={editor=>{
                   // console.log('Editor is ready to use!', editor);
                 }}
