@@ -15,20 +15,11 @@ router.post('/',(req,res) => {
   const user_no = req.body.user_no
   let selectQuery = '';
   if(limit !== undefined || offset !== undefined) {
-    if(user_no !== undefined) {
-      selectQuery = `SELECT * FROM diary WHERE user_no=${user_no} ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
-    } else {
-      selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
-    }
+    selectQuery = `SELECT d.diary_no, d.user_no, u.user_name, d.title, d.content, d.content_parse, d.image, d.createdAt, d.updatedAt FROM diary d INNER JOIN users u ON d.user_no = u.user_no ORDER BY d.diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
   } else {
-    if(user_no !== undefined) {
-      selectQuery = `SELECT * FROM diary WHERE user_no=${user_no} ORDER BY diary_no DESC;`;
-    } else {
-      selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC;`;
-    }
+    selectQuery = `SELECT d.diary_no, d.user_no, u.user_name, d.title, d.content, d.content_parse, d.image, d.createdAt, d.updatedAt FROM diary d INNER JOIN users u ON d.user_no = u.user_no ORDER BY d.diary_no DESC;`;
   }
   db.query(selectQuery, (err, result) => {
-    console.log(selectQuery)
     if(err) console.log("err",err);
     else {res.send(result)}
   })
@@ -44,6 +35,7 @@ router.get('/count',(req,res)=>{
 //==============================================
 
 router.post('/insert',(req,res) => {
+  const user_no = req.body.user_no;
   const title = req.body.title;
   const content = req.body.content;
   //content parsing =============================
@@ -63,7 +55,7 @@ router.post('/insert',(req,res) => {
   });
   //=============================================
   const image = req.body.image ? req.body.image : 'NULL';
-  const insertQuery = `INSERT INTO diary (user_no, title, content, content_parse, image) VALUES (1, '${title}', '${content}', '${contentResult}', '${image}');`
+  const insertQuery = `INSERT INTO diary (user_no, title, content, content_parse, image) VALUES (${user_no}, '${title}', '${content}', '${contentResult}', '${image}');`
   db.query(insertQuery, (err, result) => {
     if(err) console.log("err",err);
     else {res.send(result)}
