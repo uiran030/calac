@@ -110,7 +110,6 @@ export default function CategoryEditModalList({
                       },
                     }}
                     onClick={() => {
-                      // console.log("컬아뒤", option);
                       onUpdateColor(option);
                       const newVisible = [...colorPickerVisible];
                       newVisible[index] = !newVisible[index];

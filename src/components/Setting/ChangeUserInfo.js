@@ -87,7 +87,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
           }));
         } else {
           // 유저 정보가 없는 경우
-          console.log("세션객체 Unauthorized"); //  success 아니면 error 갈듯.
+          // console.log("세션객체 Unauthorized"); //  success 아니면 error 갈듯.
         }
       })
       .catch((error) => {
@@ -107,7 +107,6 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
   // 인증 요청 =======================================================
   const [unauthorized, setUnauthorized] = useState(true);
   const handleSubmitAuthInfo = () => {
-    console.log("확인", authInfo);
     axios
       .post(
         `http://calac.cafe24app.com:8001/users/login`,
