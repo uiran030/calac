@@ -1,28 +1,19 @@
 import React from "react";
 import { Box, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import LoginInputBox from './LoginInputBox';
 
 const LoginSection = () => {
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "97vh",
-        backgroundColor: "#07553B",
-      }}
-    >
-      <Link to='/login/signup' style={{ textDecoration: "none" }}>
-        <Button variant='outlined' color='secondary'>
-          회원가입
-        </Button>
-      </Link>
-      <Link to='/login/findidpw' style={{ textDecoration: "none" }}>
-        <Button variant='outlined' color='secondary'>
-          ID / PW 찾기
-        </Button>
-      </Link>
-    </Box>
+    <LoginWrap>
+      <LoginInputBox/>
+    </LoginWrap>
   );
 };
-
+//style=================================================
+const LoginWrap = styled(Box)({
+  width: "100%",
+  height: "100vh",
+});
+//======================================================
 export default LoginSection;

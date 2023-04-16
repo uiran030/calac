@@ -1,11 +1,11 @@
 import React from "react";
 import { Box } from "@mui/material";
-import FinancialLedgerSection from "../../components/FinancialLedger/FinancialLedgerSection";
+import LedgerSection from "../../components/FinancialLedger/LedgerSection";
 
 const FinancialLedger = () => {
   return (
     <Box> 
-      <FinancialLedgerSection />
+      <LedgerSection />
     </Box>
   );
 };
