@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import ApexCharts from 'react-apexcharts';
-import axios from 'axios';
+import ApexCharts from "react-apexcharts";
+import axios from "axios";
 
 const LedgerTotalGraph = () => {
   const [totalExpense, setTotalExpense] = useState(0);
@@ -10,51 +10,57 @@ const LedgerTotalGraph = () => {
   const [noData, setNoData] = useState(false);
   //======================================================
   useEffect(() => {
-    let type = 'income'
-    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
-    .then((res) => {
-      if(res.data.length === 0) {
-        setNoData(true);
-      } else {
-        setNoData(false);
-        setTotalIncome(res.data[0]['sum_count'])
-      };
-    })
+    let type = "income";
+    axios
+      .get(`http://localhost:8001/ledger/monthly/total?type=${type}`)
+      .then((res) => {
+        if (res.data.length === 0) {
+          setNoData(true);
+        } else {
+          setNoData(false);
+          setTotalIncome(res.data[0]["sum_count"]);
+        }
+      });
   }, []);
   // 렌더링 해결해야함.
   //======================================================
   useEffect(() => {
-    let type = 'expense'
-    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
-    .then((res) => {
-      if(res.data.length === 0) {
-        setNoData(true);
-      } else {
-        setNoData(false);
-        setTotalExpense(res.data[0]['sum_count'])
-      };
-    })
+    let type = "expense";
+    axios
+      .get(`http://localhost:8001/ledger/monthly/total?type=${type}`)
+      .then((res) => {
+        if (res.data.length === 0) {
+          setNoData(true);
+        } else {
+          setNoData(false);
+          setTotalExpense(res.data[0]["sum_count"]);
+        }
+      });
   }, []);
   // 렌더링 해결해야함.
-  //======================================================  
-  let minusPercent = Math.round(totalExpense/totalIncome*100);
+  //======================================================
+  let minusPercent = Math.round((totalExpense / totalIncome) * 100);
   //======================================================
   const state = {
     series: [minusPercent],
     options: {
       chart: {
         height: 350,
-        type: 'radialBar',
+        type: "radialBar",
       },
       plotOptions: {
         radialBar: {
           hollow: {
-            size: '70%',
-          }
+            size: "70%",
+          },
         },
       },
-      colors:['#164ef5'],
-      labels: [`이번달 수입 : ${totalIncome.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`],
+      colors: ["#164ef5"],
+      labels: [
+        `이번달 수입 : ${totalIncome
+          .toString()
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`,
+      ],
     },
   };
   //======================================================
@@ -63,16 +69,16 @@ const LedgerTotalGraph = () => {
     options: {
       chart: {
         height: 350,
-        type: 'radialBar',
+        type: "radialBar",
       },
       plotOptions: {
         radialBar: {
           hollow: {
-            size: '70%',
-          }
+            size: "70%",
+          },
         },
       },
-      colors:['#164ef5'],
+      colors: ["#164ef5"],
       labels: [`이번달 수입 : 0`],
     },
   };
@@ -86,36 +92,35 @@ const LedgerTotalGraph = () => {
         <ApexCharts
           options={noState.options}
           series={noState.series}
-          type="radialBar"
-          height="300px"
-          width="100%"
+          type='radialBar'
+          height='300px'
+          width='100%'
         />
       ) : (
         <ApexCharts
-        options={state.options}
-        series={state.series}
-        type="radialBar"
-        height="300px"
-        width="100%"
+          options={state.options}
+          series={state.series}
+          type='radialBar'
+          height='300px'
+          width='100%'
         />
       )}
-      
     </ChartWrap>
   );
 };
 //style=================================================
 const ChartWrap = styled(Box)({
-  position:'relative',
-  width:'30%',
-  border:'1px solid #ddd',
-  position:'relative',
-  borderRadius:'10px'
+  position: "relative",
+  width: "30%",
+  border: "1px solid #ddd",
+  position: "relative",
+  borderRadius: "10px",
 });
 const ChartTopTextBox = styled(Box)({
-  height:'50px',
-  display:'flex', 
-  alignItems:'center', 
-  justifyContent:'center'
+  height: "50px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 });
 //======================================================
 export default LedgerTotalGraph;
