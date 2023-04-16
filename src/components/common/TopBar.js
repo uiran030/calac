@@ -11,20 +11,23 @@ const DashboardTopStateBar = ({ hasSidCookie, session }) => {
   const [totalCountData, setTotalCountData] = useState(false);
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:5000/ledger/goal").then((res) => {
+    axios.get("http://localhost:8001/ledger/goal").then((res) => {
       setMoney(res.data[0]["money_count"]);
     });
   }, []);
   // 리렌더링 조건
   //======================================================
   useEffect(() => {
-    axios.get(`http://localhost:5000/ledger/monthly/total?type=expense`)
-    .then((res) => {
-      res.data.length !== 0 && setTotalCountData(res.data[0]["sum_count"]);
-    });
+    axios
+      .get(`http://localhost:8001/ledger/monthly/total?type=expense`)
+      .then((res) => {
+        res.data.length !== 0 && setTotalCountData(res.data[0]["sum_count"]);
+      });
   }, []);
   //======================================================
-  const change_money = money.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  const change_money = money
+    .toString()
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   const minusGoal = money - totalCountData;
   //======================================================
   return (

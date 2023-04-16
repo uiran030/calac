@@ -49,7 +49,7 @@ const DemoApp = () => {
     if (!hasSidCookie || !session || !session.userInfo) return; // 세션 이슈 해결하면 session으로 해도 될듯
     axios
       .get(
-        `http://localhost:5000/scheduler/category?currentUserNo=${session.userInfo.no}`
+        `http://localhost:8001/scheduler/category?currentUserNo=${session.userInfo.no}`
       )
       .then((response) => {
         setCategoryList(response.data);
@@ -66,7 +66,7 @@ const DemoApp = () => {
     if (!hasSidCookie || !session || !session.userInfo) return;
     axios
       .get(
-        `http://localhost:5000/scheduler?currentUserNo=${session.userInfo.no}`,
+        `http://localhost:8001/scheduler?currentUserNo=${session.userInfo.no}`,
         { withCredentials: true }
       )
       .then((response) => {
@@ -143,7 +143,7 @@ const DemoApp = () => {
     // 새 이벤트 DB에 INSERT ======================================================
 
     axios
-      .post("http://localhost:5000/scheduler/insert", {
+      .post("http://localhost:8001/scheduler/insert", {
         // (주의) id값 전송안함. DB 저장시 바로 생성
         title,
         start,
@@ -238,7 +238,7 @@ const DemoApp = () => {
   // 이벤트의 날짜가 수정되었을 때, 저장 =========================================
   function handleEventChange(changeInfo) {
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://localhost:5000/scheduler/update/${changeInfo.event.id}`, {
+      .put(`http://localhost:8001/scheduler/update/${changeInfo.event.id}`, {
         title: changeInfo.event.title,
         start: changeInfo.event.startStr,
         end: changeInfo.event.endStr,
@@ -308,7 +308,7 @@ const DemoApp = () => {
       return;
     }
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://localhost:5000/scheduler/update/${updatedEvent.id}`, {
+      .put(`http://localhost:8001/scheduler/update/${updatedEvent.id}`, {
         title: title,
         start: start,
         end: end,
@@ -368,7 +368,7 @@ const DemoApp = () => {
       window.confirm(`'${updatedEvent.title}'일정을 완전히 삭제하시겠습니까?`)
     ) {
       axios // 새 이벤트 DB에 DELETE
-        .delete(`http://localhost:5000/scheduler/delete/${updatedEvent.id}`)
+        .delete(`http://localhost:8001/scheduler/delete/${updatedEvent.id}`)
         .then(() => {
           // 성공시 UI에도 바로 반영
           // Remove event from calendar
@@ -412,7 +412,7 @@ const DemoApp = () => {
     }
 
     axios // DB에 INSERT
-      .post("http://localhost:5000/scheduler/category/insert", {
+      .post("http://localhost:8001/scheduler/category/insert", {
         value: pickedAddColor,
         label: categoryText,
         user_no: session.userInfo.no,
@@ -447,7 +447,7 @@ const DemoApp = () => {
       )
     ) {
       axios // DB에서 카테고리 DELETE
-        .delete(`http://localhost:5000/scheduler/category/delete/${option.id}`)
+        .delete(`http://localhost:8001/scheduler/category/delete/${option.id}`)
         .then(() => {
           // Remove event from calendar
           const test = categoryList.filter(
@@ -463,7 +463,7 @@ const DemoApp = () => {
           handleCloseDetail();
         });
 
-      const url = `http://localhost:5000/scheduler/event/color/delete/${encodeURIComponent(
+      const url = `http://localhost:8001/scheduler/event/color/delete/${encodeURIComponent(
         option.value
       )}`;
 
@@ -490,7 +490,7 @@ const DemoApp = () => {
   // 카테고리 색상변경 ==========================================================================
   const updateColor = (option) => {
     axios // DB에 카테고리 UPDATE
-      .put(`http://localhost:5000/scheduler/category/update/${option.id}`, {
+      .put(`http://localhost:8001/scheduler/category/update/${option.id}`, {
         value: pickedColor,
         label: option.label,
       })
@@ -516,7 +516,7 @@ const DemoApp = () => {
         console.error(error);
       });
 
-    const url = `http://localhost:5000/scheduler/event/color/update/${encodeURIComponent(
+    const url = `http://localhost:8001/scheduler/event/color/update/${encodeURIComponent(
       option.value
     )}`;
     axios // DB에 해당 카테고리를 가진 이벤드들 모두 UPDATE
