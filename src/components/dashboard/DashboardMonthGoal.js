@@ -10,7 +10,6 @@ const DashboardMonthGoal = () => {
   const [num,setNum] = useState('');
   //======================================================
   const handleCkeck = (idx) => {
-    console.log('ddd', idx)
     setNum(idx);
   };
   //======================================================
