@@ -33,10 +33,10 @@ const DemoApp = () => {
   const session = useSelector((state) => state.session);
   // ===========================================================================================
   // [데이터 불러오기] #################################################################################
-  console.log("카테고리", categoryList);
-  console.log("이벤트", currentEvents);
-  console.log("쿠키", hasSidCookie);
-  console.log("세션", session);
+  // console.log("카테고리", categoryList);
+  // console.log("이벤트", currentEvents);
+  // console.log("쿠키", hasSidCookie);
+  // console.log("세션", session);
   // 경고! 로그아웃해도 세션정보 남아있는 이슈 해결 요망
 
   useEffect(() => {

@@ -107,7 +107,6 @@ const WriteDiary = () => {
           image: uploadImg,
         })
         .then((res) => {
-          console.log(res.data);
           alert("등록되었습니다 :)");
           onReset();
           setOpen(false);
