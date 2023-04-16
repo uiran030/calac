@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import Weather from "../Dashboard/Weather";
+import Weather from "../Main/Weather";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const DashboardTopStateBar = ({ hasSidCookie, session }) => {
+const TopStateBar = ({ hasSidCookie, session }) => {
   const pathname = window.location.pathname;
   const [money, setMoney] = useState(0);
   const [totalCountData, setTotalCountData] = useState(false);
@@ -122,4 +122,4 @@ const Text = styled("p")({
   fontSize: "16px",
 });
 //======================================================
-export default DashboardTopStateBar;
+export default TopStateBar;

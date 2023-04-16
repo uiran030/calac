@@ -92,7 +92,6 @@ const LedgerTotalList = () => {
   };
   //=====================================================
   const handleEditModal = () => {
-    console.log("수정 버튼 클릭");
     modalData.push({ category, description, count });
     if (window.confirm(`수정하시겠습니까?`) == true) {
       alert("수정완료되었습니다.");

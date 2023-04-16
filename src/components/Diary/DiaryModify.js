@@ -57,7 +57,6 @@ const DiaryModify = ({ isModify, setIsModify, diary_no, hasSidCookie }) => {
       });
   };
   //======================================================
-  console.log("2", newContent.title.length);
   useEffect(() => {
     axios
       .post("http://calac.cafe24app.com:8001/diary/onePost", { no: diary_no })

@@ -168,7 +168,6 @@ router.post("/insert", (req, res) => {
           user_answer,
           user_email,
         };
-        console.log("여기", newEvent);
         res.send(newEvent);
       }
     }
@@ -182,7 +181,6 @@ router.get("/duplicatedId", (req, res) => {
   db.query(sqlQuery, (err, result) => {
     if (err) throw err;
     res.send(result);
-    console.log("result", result);
   });
 });
 //==============================================
@@ -194,7 +192,6 @@ router.get("/findId", (req, res) => {
   db.query(sqlQuery, [name, email], (err, result) => {
     if (err) throw err;
     res.send(result);
-    console.log("result", result);
   });
 });
 //==============================================
@@ -226,7 +223,6 @@ router.put("/findPw/changePw", (req, res) => {
   const sqlQuery =
     "UPDATE users SET user_salt=?, user_hash=? WHERE user_id = ?;";
   db.query(sqlQuery, [user_salt, user_hash, user_id], (err, result) => {
-    console.log(result);
     if (err) {
       console.log(err);
     } else {
