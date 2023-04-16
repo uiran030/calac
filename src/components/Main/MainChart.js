@@ -41,7 +41,7 @@ const data = [
   },
 ];
 
-const DashboardChart = () => {
+const MainChart = () => {
   return (
     <ChartWrap>
       <ChartLeftBox>
@@ -100,5 +100,4 @@ const ChartRightBox = styled(Box)({
   padding:'10px'
 });
 //======================================================
-
-export default DashboardChart;
+export default MainChart;

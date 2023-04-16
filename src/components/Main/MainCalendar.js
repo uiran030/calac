@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Box, Grid, Divider, Typography, List, ListItem } from "@mui/material";
+import { Box, Grid, Typography, List, ListItem } from "@mui/material";
 import Calendar from "react-calendar";
 import "../../assets/css/Calendar.css";
 import moment from "moment";
 import axios from "axios";
 import { useEffect } from "react";
 
-const DashboardCalendar = ({ hasSidCookie, session }) => {
+const MainCalendar = ({ hasSidCookie, session }) => {
   const [value, onChange] = useState(new Date());
   //======================================================
   const now = new Date();
@@ -24,8 +24,8 @@ const DashboardCalendar = ({ hasSidCookie, session }) => {
   // ===========================================================================================
   // [데이터 불러오기] ##########################################################################
   // console.log("이벤트", currentEvents);
-  console.log("쿠키", hasSidCookie);
-  console.log("세션", session);
+  // console.log("쿠키", hasSidCookie);
+  // console.log("세션", session);
   // 경고! 로그아웃해도 세션정보 남아있는 이슈 해결 요망
 
   //  useEffect(() => {
@@ -64,10 +64,7 @@ const DashboardCalendar = ({ hasSidCookie, session }) => {
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
-
-  console.log("한방에 되면 진짜 미친거다", parsedEventData);
-
-  //===========================
+  //======================================================
   return (
     <SectionCalendar container>
       <CalendarLeft item xs={8}>
@@ -157,4 +154,4 @@ const TodayScheduleBox = styled(Box)({
   justifyContent: "center",
 });
 //======================================================
-export default DashboardCalendar;
+export default MainCalendar;

@@ -119,7 +119,6 @@ const WeatherButton = styled(Button)(`
   height: 18px;
   width: 10px;
 `);
-//=
 //======================================================
 
 export default Weather;

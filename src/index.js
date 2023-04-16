@@ -4,7 +4,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import Dashboard from "./pages/Dashboard/Dashboard";
+import Main from "./pages/Main/Main";
 import NotFound from "./pages/NotFound/NotFound";
 import Diary from "./pages/Diary/Diary";
 import FinancialLedger from "./pages/FinancialLedger/FinancialLedger";
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Dashboard />,
+        element: <Main />,
       },
       {
         path: "/diary",

@@ -9,20 +9,17 @@ import {
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 
-const DashboardMonthGoal = () => {
+const MainMonthGoal = () => {
   //======================================================
-  // const [checked, setChecked] = useState([0]);
   const [goalList, setGoalList] = useState(false);
   const [num, setNum] = useState("");
   //======================================================
   const handleCkeck = (idx) => {
-    console.log("ddd", idx);
     setNum(idx);
   };
   //======================================================
   useEffect(() => {
     axios.get("http://calac.cafe24app.com:8001/dashboard/goal").then((res) => {
-      console.log("res", res.data);
       setGoalList(res.data);
     });
   }, []);
@@ -52,4 +49,4 @@ const MonthGoalWrap = styled(Box)({
   paddingLeft: "10px",
 });
 //======================================================
-export default DashboardMonthGoal;
+export default MainMonthGoal;
