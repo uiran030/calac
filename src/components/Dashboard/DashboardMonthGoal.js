@@ -21,7 +21,7 @@ const DashboardMonthGoal = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:8001/dashboard/goal").then((res) => {
+    axios.get("http://calac.cafe24app.com:8001/dashboard/goal").then((res) => {
       console.log("res", res.data);
       setGoalList(res.data);
     });

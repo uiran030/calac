@@ -40,7 +40,7 @@ const LedgerWeeklyGraph = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8001/ledger/weekly?weeklyStartDay=${formattedDateArray[0]}&weeklyLastDay=${formattedDateArray[6]}`
+        `http://calac.cafe24app.com:8001/ledger/weekly?weeklyStartDay=${formattedDateArray[0]}&weeklyLastDay=${formattedDateArray[6]}`
       )
       .then((res) => {
         if (res.data.length !== 0) {

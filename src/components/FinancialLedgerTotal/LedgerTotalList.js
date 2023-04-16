@@ -57,14 +57,14 @@ const LedgerTotalList = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get(`http://localhost:8001/ledger/total?type=${type}`).then((res) => {
+    axios.get(`http://calac.cafe24app.com:8001/ledger/total?type=${type}`).then((res) => {
       setMonthlyData(res.data);
     });
   }, [tabValue, monthlyData]);
   //======================================================
   const handleDelete = (index) => {
     if (window.confirm(`해당 데이터를 완전히 삭제하시겠습니까?`) == true) {
-      axios.delete(`http://localhost:8001/ledger/delete/${index}`);
+      axios.delete(`http://calac.cafe24app.com:8001/ledger/delete/${index}`);
     } else {
       alert("취소하셨습니다.");
     }
@@ -72,7 +72,7 @@ const LedgerTotalList = () => {
   //=====================================================
   const handleEdit = (id) => {
     setId(id);
-    axios.get(`http://localhost:8001/ledger/total/select/${id}`).then((res) => {
+    axios.get(`http://calac.cafe24app.com:8001/ledger/total/select/${id}`).then((res) => {
       setClickListData(res.data[0]);
       setCategory(res.data[0]["ledger_category"]);
       setDescription(res.data[0]["ledger_description"]);
@@ -96,7 +96,7 @@ const LedgerTotalList = () => {
     modalData.push({ category, description, count });
     if (window.confirm(`수정하시겠습니까?`) == true) {
       alert("수정완료되었습니다.");
-      axios.put(`http://localhost:8001/ledger/total/update/${id}`, {
+      axios.put(`http://calac.cafe24app.com:8001/ledger/total/update/${id}`, {
         category: modalData[0].category,
         count: modalData[0].count,
         description: modalData[0].description,

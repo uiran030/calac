@@ -61,7 +61,7 @@ const DiaryDetail = ({
   const submitComment = (id) => {
     if (newComment.comment.length > 0) {
       axios
-        .post("http://localhost:8001/comments/insert", {
+        .post("http://calac.cafe24app.com:8001/comments/insert", {
           diary_no: id,
           comment: newComment.comment,
           user: session.userInfo.no,
@@ -79,7 +79,7 @@ const DiaryDetail = ({
   const commentDelete = (id) => {
     if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
       axios
-        .post("http://localhost:8001/comments/delete", {
+        .post("http://calac.cafe24app.com:8001/comments/delete", {
           comment_no: id,
         })
         .then(() => alert("삭제되었습니다 :)"))
@@ -99,7 +99,7 @@ const DiaryDetail = ({
         updateComment.comment.length === 0 ? comment : updateComment.comment;
       if (window.confirm(`정말 수정하시겠습니까?`) === true) {
         axios
-          .post("http://localhost:8001/comments/update", {
+          .post("http://calac.cafe24app.com:8001/comments/update", {
             updateComment: sendComment,
             comment_no: id,
           })
@@ -115,7 +115,7 @@ const DiaryDetail = ({
   //======================================================
   useEffect(() => {
     axios
-      .post("http://localhost:8001/comments", {
+      .post("http://calac.cafe24app.com:8001/comments", {
         diary_no: id,
       })
       .then((res) => {

@@ -72,7 +72,7 @@ const DiaryCard = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:8001/comments/count").then((res) => {
+    axios.get("http://calac.cafe24app.com:8001/comments/count").then((res) => {
       setCommentCnt(res.data);
     });
   }, [commentCnt]);
@@ -80,7 +80,7 @@ const DiaryCard = () => {
   let offset = 0;
   const loadDiary = () => {
     axios
-      .post(`http://localhost:8001/diary?limit=10&offset=${offset}`)
+      .post(`http://calac.cafe24app.com:8001/diary?limit=10&offset=${offset}`)
       .then((res) => {
         setPosts((oldPosts) => [...oldPosts, ...res.data]);
       });
@@ -112,7 +112,7 @@ const DiaryCard = () => {
     } else {
       if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
         axios
-          .post("http://localhost:8001/diary/delete", {
+          .post("http://calac.cafe24app.com:8001/diary/delete", {
             id: id,
           })
           .then(() => alert("삭제되었습니다 :)"));
@@ -206,7 +206,7 @@ const DiaryCard = () => {
                       component='img'
                       width='40vh'
                       height='194'
-                      src={`http://localhost:8001/images/diary/${list.image}`}
+                      src={`http://calac.cafe24app.com:8001/images/diary/${list.image}`}
                       alt='이미지'
                     />
                   ) : (
