@@ -48,7 +48,7 @@ const DashboardCalendar = ({ hasSidCookie, session }) => {
     if (!hasSidCookie || !session || !session.userInfo) return;
     axios
       .get(
-        `http://localhost:5000/scheduler?currentUserNo=${session.userInfo.no}`,
+        `http://localhost:8001/scheduler?currentUserNo=${session.userInfo.no}`,
         { withCredentials: true }
       )
       .then((response) => {
