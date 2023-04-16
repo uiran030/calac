@@ -8,7 +8,7 @@ const FinalncialLedgerDonut = () => {
   const [monthlyDonutData, setMonthlyDountData] = useState([]);
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:8001/ledger").then((res) => {
+    axios.get("http://calac.cafe24app.com:8001/ledger").then((res) => {
       setMonthlyDountData(res.data);
     });
   }, [monthlyDonutData]);

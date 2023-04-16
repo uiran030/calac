@@ -30,7 +30,7 @@ const LedgerTopThree = () => {
   //======================================================
   useEffect(() => {
     axios
-      .get(`http://localhost:8001/ledger/monthly/total?type=${type}`)
+      .get(`http://calac.cafe24app.com:8001/ledger/monthly/total?type=${type}`)
       .then((res) => {
         setTotalCountData(res.data[0]["sum_count"]);
       });
@@ -38,7 +38,7 @@ const LedgerTopThree = () => {
   //======================================================
   useEffect(() => {
     axios
-      .get(`http://localhost:8001/ledger/monthly/recent?type=${type}`)
+      .get(`http://calac.cafe24app.com:8001/ledger/monthly/recent?type=${type}`)
       .then((res) => {
         setRecentThreeList(res.data);
         setRecentNum(res.data[0]["ledger_no"]);

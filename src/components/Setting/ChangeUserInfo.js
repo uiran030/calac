@@ -62,7 +62,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
   useEffect(() => {
     if (!hasSidCookie) return;
     axios
-      .get("http://localhost:8001/users/user-info", {
+      .get("http://calac.cafe24app.com:8001/users/user-info", {
         // 브라우저에 저장되어있는 쿠키를 참조해서 권한 획득
         headers: {
           Authorization: `Bearer ${getCookie("sid")}`,
@@ -110,7 +110,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
     console.log("확인", authInfo);
     axios
       .post(
-        `http://localhost:8001/users/login`,
+        `http://calac.cafe24app.com:8001/users/login`,
         {
           id: authInfo.id,
           pwd: authInfo.pwd,
@@ -136,7 +136,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
   const handleSave = () => {
     axios
       .post(
-        `http://localhost:8001/users/changeUserInfo`,
+        `http://calac.cafe24app.com:8001/users/changeUserInfo`,
         {
           id: sessionUserInfo.id,
           pwd: sessionUserInfo.pwd,
@@ -214,7 +214,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
       emailDomains,
     } = sessionUserInfo;
     axios
-      .post("http://localhost:8001/users/insert", {
+      .post("http://calac.cafe24app.com:8001/users/insert", {
         id,
         pwd,
         name,

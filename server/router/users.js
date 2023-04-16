@@ -95,7 +95,7 @@ router.post("/login", (req, res) => {
           req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
           res.cookie("sid", req.sessionID, {
             maxAge: 1000 * 60 * 60 * 24,
-            domain: "localhost",
+            domain: "calac.cafe24app.com",
           }); // 세션 ID를 브라우저에 sid쿠키로 저장
           // res.send(userInfo); //필요 없을 듯.?
           res.status(200).json({ success: true, userInfo });
