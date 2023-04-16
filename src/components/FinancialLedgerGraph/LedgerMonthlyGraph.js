@@ -8,7 +8,7 @@ const LedgerGraphChart = () => {
   const [monthlyData, setMonthlyData] = useState([]);
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:8001/ledger/monthly/category").then((res) => {
+    axios.get("http://calac.cafe24app.com:8001/ledger/monthly/category").then((res) => {
       setMonthlyData(res.data);
     });
   }, []);
