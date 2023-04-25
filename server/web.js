@@ -1,13 +1,12 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const PORT = process.env.PORT;
+const PORT = 8001;
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { urlencoded } = require("body-parser");
 const path = require("path");
 //==============================================
-// app.use(cors());
 app.use(
   cors({
     origin: "http://calac.cafe24app.com",
