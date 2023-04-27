@@ -26,7 +26,7 @@ const TopStateBar = ({ hasSidCookie, session }) => {
   }, []);
   //======================================================
   const change_money = money
-    .toString()
+    // .toString()
     .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   const minusGoal = money - totalCountData;
   //======================================================

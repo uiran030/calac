@@ -23,7 +23,7 @@ const FinancialLedger = () => {
         />
       )}
       <TopBarWrap>
-        <TopBar />
+        {/* <TopBar /> */}
       </TopBarWrap>
       <LedgerWrapBox>
         <LedgerBox>

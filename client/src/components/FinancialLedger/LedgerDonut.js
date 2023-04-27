@@ -9,6 +9,7 @@ const FinalncialLedgerDonut = () => {
   //======================================================
   useEffect(() => {
     axios.get("http://calac.cafe24app.com/ledger").then((res) => {
+      console.log('111', res.data)
       setMonthlyDountData(res.data);
     });
   }, [monthlyDonutData]);
